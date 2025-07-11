@@ -3,6 +3,7 @@ import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
 import AccessDenied from "@/components/Auth/AccessDenied";
 import ErrorSection from "@/components/Error/ErrorSection";
 import UserDetails from "@/components/User/UserDetails";
+import { UserType } from "@/types";
 
 export default async function UserPage({ params }: { params: { id: string } }) {
   let token: string;
@@ -13,7 +14,7 @@ export default async function UserPage({ params }: { params: { id: string } }) {
     return <AccessDenied />;
   }
 
-  let user;
+  let user: UserType;
 
   try {
     user = await fetchUserById(params.id, token);

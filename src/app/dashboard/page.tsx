@@ -65,6 +65,36 @@ export default async function DashboardPage() {
         >
           Gerenciar Associação (Profissional/Serviço)
         </Link>
+        <Link
+          href="/dashboard/appointments"
+          className="text-blue-600 hover:underline hover:cursor-pointer inline-block"
+        >
+          Gerenciar Agendamentos
+        </Link>
+        <Link
+          href="/dashboard/notifications"
+          className="text-blue-600 hover:underline hover:cursor-pointer inline-block"
+        >
+          Gerenciar Notificações
+        </Link>
+        <Link
+          href="/dashboard/business-hours"
+          className="text-blue-600 hover:underline hover:cursor-pointer inline-block"
+        >
+          Gerenciar Horário Comercial
+        </Link>
+        <Link
+          href="/dashboard/images"
+          className="text-blue-600 hover:underline hover:cursor-pointer inline-block"
+        >
+          Gerenciar Imagens
+        </Link>
+        <Link
+          href="/dashboard/appointment-history"
+          className="text-blue-600 hover:underline hover:cursor-pointer inline-block"
+        >
+          Gerenciar Histórico de Agendamentos
+        </Link>
       </div>
 
       <LogoutButton />

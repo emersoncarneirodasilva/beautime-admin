@@ -10,3 +10,8 @@ export * from "./service";
 export * from "./serviceUpdate";
 export * from "./servicePreview";
 export * from "./availability";
+export * from "./appointment";
+export * from "./notifications";
+export * from "./businessHour";
+export * from "./createBusinessHourInput";
+export * from "./appointmentHistory";

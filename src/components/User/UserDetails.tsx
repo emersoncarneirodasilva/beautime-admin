@@ -77,11 +77,19 @@ export default function UserDetails({ user, token }: Props) {
         </div>
       )}
 
-      <Link href="/dashboard/users">
-        <button className="px-6 py-2 mt-8 rounded-md bg-blue-500 text-white hover:bg-blue-600 hover:cursor-pointer transition">
-          Voltar
-        </button>
-      </Link>
+      <div className="flex gap-6">
+        <Link href="/dashboard/users">
+          <button className="px-6 py-2 mt-8 rounded-md bg-blue-500 text-white hover:bg-blue-600 hover:cursor-pointer transition">
+            Voltar
+          </button>
+        </Link>
+
+        <Link href={`/dashboard/notifications/create/${user.id}`}>
+          <button className="px-6 py-2 mt-8 rounded-md bg-green-500 text-white hover:bg-green-600 hover:cursor-pointer transition">
+            Criar Notificação
+          </button>
+        </Link>
+      </div>
     </div>
   );
 }
