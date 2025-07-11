@@ -36,6 +36,12 @@ export default async function DashboardPage() {
       </p>
       <div className="flex flex-col gap-4 my-6">
         <Link
+          href="/dashboard/salon"
+          className="text-blue-600 hover:underline hover:cursor-pointer inline-block"
+        >
+          Gerenciar Salão
+        </Link>
+        <Link
           href="/dashboard/users"
           className="text-blue-600 hover:underline hover:cursor-pointer inline-block"
         >

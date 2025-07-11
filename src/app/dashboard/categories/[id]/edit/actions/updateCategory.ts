@@ -3,7 +3,6 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
-import { fetchCategoryById } from "@/libs/api/fetchCategoryById";
 import { updateCategoryApi } from "@/libs/api/updateCategoryApi";
 
 export async function updateCategory(formData: FormData) {
