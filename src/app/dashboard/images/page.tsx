@@ -66,8 +66,10 @@ export default async function SalonImagesPage() {
         </h2>
         {Object.entries(groupedByProfessional).map(([id, imgs]) => {
           const name =
-            professionals.find((p) => p.id === id)?.name ||
-            "Profissional Desconhecido";
+            professionals.find(
+              (professional: { id: string; name: string }) =>
+                professional.id === id
+            )?.name || "Profissional Desconhecido";
           return <Section key={id} title={name} images={imgs} token={token} />;
         })}
       </div>

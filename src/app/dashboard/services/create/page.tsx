@@ -4,9 +4,7 @@ import { fetchCategories } from "@/libs/api/fetchCategories";
 import { Category } from "@/types";
 import { createService } from "./actions/createService";
 
-type Props = {};
-
-export default async function CreateServicePage({}: Props) {
+export default async function CreateServicePage() {
   const token = await verifyAdminAuth();
   if (!token) return <AccessDenied />;
 

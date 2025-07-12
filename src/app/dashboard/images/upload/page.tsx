@@ -61,9 +61,9 @@ export default async function UploadImagePage() {
             className="w-full border rounded px-3 py-2 bg-black"
           >
             <option value="">Nenhum</option>
-            {professionals.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
+            {professionals.map((professional: { id: string; name: string }) => (
+              <option key={professional.id} value={professional.id}>
+                {professional.name}
               </option>
             ))}
           </select>

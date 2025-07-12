@@ -19,7 +19,7 @@ export default async function ServicesOnProfessionalsPage() {
   ]);
 
   const professionalsWithServices = await Promise.all(
-    professionals.map(async (professional) => {
+    professionals.map(async (professional: { id: string }) => {
       const services = await fetchServicesByProfessional(
         professional.id,
         token
@@ -69,15 +69,15 @@ export default async function ServicesOnProfessionalsPage() {
               {professional.services.length > 0 ? (
                 professional.services.map((service: ServicePreview) => (
                   <li
-                    key={service.associationId}
+                    key={service.id} // use o id da associação ou service.id
                     className="flex justify-between items-center"
                   >
-                    {service.name}
+                    <span>{service.service.name}</span>
                     <form action={unlinkServiceFromProfessional}>
                       <input
                         type="hidden"
                         name="associationId"
-                        value={service.associationId}
+                        value={service.id} // id da associação que liga profissional e serviço
                       />
                       <button
                         type="submit"

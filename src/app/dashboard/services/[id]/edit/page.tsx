@@ -5,6 +5,7 @@ import { Category, Service } from "@/types";
 import AccessDenied from "@/components/Auth/AccessDenied";
 import ErrorSection from "@/components/Error/ErrorSection";
 import { updateService } from "./actions/updateService";
+import Link from "next/link";
 
 type Params = Promise<{ id: string }>;
 
@@ -142,12 +143,13 @@ export default async function EditServicePage({ params }: { params: Params }) {
           >
             Salvar Alterações
           </button>
-          <a
-            href="/dashboard/services"
-            className="text-blue-600 hover:underline px-4 py-2"
+
+          <Link
+            href="/dashboard/services/"
+            className="text-blue-600 px-4 py-2 hover:underline"
           >
             Cancelar
-          </a>
+          </Link>
         </div>
       </form>
     </div>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import fetchUserById from "@/libs/api/fetchUserById";
 import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
@@ -30,14 +31,20 @@ export default async function SalonPage() {
           </button>
         </Link>
       </div>
+
       <h1 className="text-3xl font-bold mb-6">Informações do Salão</h1>
+
       <div className="rounded-2xl shadow-lg p-6 bg-white space-y-6">
         <div className="flex items-center gap-4">
-          <img
-            src={salon.logoUrl}
-            alt="Logo do salão"
-            className="w-24 h-24 rounded-full object-cover border"
-          />
+          <div className="w-24 h-24 rounded-full overflow-hidden border border-gray-300 relative">
+            <Image
+              src={salon.logoUrl}
+              alt="Logo do salão"
+              fill
+              style={{ objectFit: "cover" }}
+              className="rounded-full"
+            />
+          </div>
           <div>
             <h2 className="text-2xl font-semibold text-gray-800">
               {salon.name}

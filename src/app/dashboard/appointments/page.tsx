@@ -1,7 +1,7 @@
+import Link from "next/link";
 import { fetchAppointments } from "@/libs/api/fetchAppointments";
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
 import AccessDenied from "@/components/Auth/AccessDenied";
-import Link from "next/link";
 import { formatIsoStringRaw } from "@/utils/formatIsoStringRaw";
 import { Appointment, AppointmentResponse } from "@/types";
 
@@ -12,20 +12,24 @@ interface SearchParams {
   paymentStatus?: string;
 }
 
-export default async function AppointmentsPage({
-  searchParams,
-}: {
+export default async function AppointmentsPage(props: {
   searchParams: Promise<SearchParams>;
 }) {
+  const searchParams = await props.searchParams;
+
   const token = await verifyAdminAuth();
   if (!token) return <AccessDenied />;
 
-  const resolvedParams = await searchParams;
-
-  const page = Number(resolvedParams.page) || 1;
-  const limit = Number(resolvedParams.limit) || 10;
-  const status = resolvedParams.appointmentStatus || "";
-  const paymentStatus = resolvedParams.paymentStatus || "";
+  const page = Number(searchParams.page) || 1;
+  const limit = Number(searchParams.limit) || 10;
+  const status =
+    typeof searchParams.appointmentStatus === "string"
+      ? searchParams.appointmentStatus
+      : "";
+  const paymentStatus =
+    typeof searchParams.paymentStatus === "string"
+      ? searchParams.paymentStatus
+      : "";
 
   const data: AppointmentResponse = await fetchAppointments({
     page,
@@ -36,16 +40,17 @@ export default async function AppointmentsPage({
 
   return (
     <main className="p-6 max-w-6xl mx-auto">
-      <Link href={"/dashboard"} className="text-blue-600 hover:underline">
+      <Link href="/dashboard" className="text-blue-600 hover:underline">
         ← Voltar
       </Link>
+
       <h1 className="text-2xl font-bold my-6">Agendamentos</h1>
 
       <form className="flex gap-4 mb-6">
         <select
           name="appointmentStatus"
           defaultValue={status}
-          className="border px-3 py-2 rounded bg-black"
+          className="border px-3 py-2 rounded bg-black text-white"
         >
           <option value="">Todos os Status</option>
           <option value="PENDING">Pendente</option>
@@ -57,7 +62,7 @@ export default async function AppointmentsPage({
         <select
           name="paymentStatus"
           defaultValue={paymentStatus}
-          className="border px-3 py-2 rounded bg-black"
+          className="border px-3 py-2 rounded bg-black text-white"
         >
           <option value="">Todos os Pagamentos</option>
           <option value="PENDING">Pendente</option>
@@ -69,7 +74,7 @@ export default async function AppointmentsPage({
         <select
           name="limit"
           defaultValue={String(limit)}
-          className="border px-3 py-2 rounded bg-black"
+          className="border px-3 py-2 rounded bg-black text-white"
         >
           <option value="5">5 por página</option>
           <option value="10">10 por página</option>
@@ -79,7 +84,7 @@ export default async function AppointmentsPage({
 
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 hover:cursor-pointer transition"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
         >
           Filtrar
         </button>
@@ -122,7 +127,7 @@ export default async function AppointmentsPage({
             <div>
               <strong>Serviços:</strong>
               <ul className="list-disc list-inside">
-                {appointment.services.map((s: any) => (
+                {appointment.services.map((s) => (
                   <li key={s.id}>
                     {s.service.name} – {s.professional.name}
                   </li>
@@ -137,7 +142,7 @@ export default async function AppointmentsPage({
         <Link
           href={`?page=${
             page - 1
-          }&limit=${limit}&status=${status}&paymentStatus=${paymentStatus}`}
+          }&limit=${limit}&appointmentStatus=${status}&paymentStatus=${paymentStatus}`}
           className={`px-4 py-2 rounded bg-gray-500 hover:bg-gray-600 ${
             page === 1 ? "opacity-50 pointer-events-none" : ""
           }`}
@@ -147,7 +152,7 @@ export default async function AppointmentsPage({
         <Link
           href={`?page=${
             page + 1
-          }&limit=${limit}&status=${status}&paymentStatus=${paymentStatus}`}
+          }&limit=${limit}&appointmentStatus=${status}&paymentStatus=${paymentStatus}`}
           className={`px-4 py-2 rounded bg-gray-500 hover:bg-gray-600 ${
             page >= data.totalPages ? "opacity-50 pointer-events-none" : ""
           }`}
