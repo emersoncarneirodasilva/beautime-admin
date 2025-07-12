@@ -31,8 +31,5 @@ export async function fetchProfessionalById(
     avatarUrl: data.avatarUrl,
     email: data.email,
     phone: data.phone,
-    services: data.services.map((s) => ({
-      serviceId: s.serviceId,
-    })),
   };
 }

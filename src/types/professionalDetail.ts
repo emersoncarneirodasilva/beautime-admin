@@ -5,7 +5,4 @@ export type ProfessionalDetail = {
   avatarUrl: string;
   email: string;
   phone: string;
-  services: {
-    serviceId: string;
-  }[];
 };
