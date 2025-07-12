@@ -3,14 +3,14 @@ import ErrorSection from "@/components/Error/ErrorSection";
 import ProfessionalAvatar from "@/components/Professional/ProfessionalAvatar";
 import { fetchProfessionals } from "@/libs/api/fetchProfessionals";
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
-import { ProfessionalPreview } from "@/types";
+import { ProfessionalsDTO } from "@/types";
 import Link from "next/link";
 
 export default async function ProfessionalsPage() {
   const token = await verifyAdminAuth();
   if (!token) return <AccessDenied />;
 
-  let professionals: ProfessionalPreview[] = [];
+  let professionals: ProfessionalsDTO[] = [];
 
   try {
     professionals = await fetchProfessionals(token);

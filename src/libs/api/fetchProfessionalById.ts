@@ -1,4 +1,4 @@
-import { ProfessionalDetail, ProfessionalType } from "@/types";
+import { ProfessionalDetail } from "@/types";
 
 export async function fetchProfessionalById(
   id: string,
@@ -22,7 +22,7 @@ export async function fetchProfessionalById(
     throw new Error("Erro ao buscar profissional.");
   }
 
-  const data: ProfessionalType = await res.json();
+  const data = await res.json();
 
   return {
     id: data.id,

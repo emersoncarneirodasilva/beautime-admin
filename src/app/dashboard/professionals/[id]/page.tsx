@@ -6,7 +6,7 @@ import { fetchProfessionalById } from "@/libs/api/fetchProfessionalById";
 import { fetchServicesByProfessional } from "@/libs/api/fetchServicesByProfessional";
 import ErrorSection from "@/components/Error/ErrorSection";
 import DeleteProfessionalButton from "@/components/Professional/DeleteProfessionalButton";
-import { Availability, ServicePreview } from "@/types";
+import { Availability, ProfessionalDetail, ServicePreview } from "@/types";
 import { fetchAvailabilityByProfessional } from "@/libs/api/fetchAvailabilityByProfessional";
 import { translateWeekday } from "@/utils/translateWeekday";
 
@@ -18,7 +18,7 @@ export default async function ProfessionalPage({ params }: { params: Params }) {
 
   const { id } = await params;
 
-  let professional;
+  let professional: ProfessionalDetail;
 
   try {
     professional = await fetchProfessionalById(id, token);

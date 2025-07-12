@@ -1,13 +1,4 @@
-import { ProfessionalType } from "@/types";
-
-type ProfessionalPreview = Pick<
-  ProfessionalType,
-  "id" | "name" | "email" | "avatarUrl"
->;
-
-export async function fetchProfessionals(
-  token: string
-): Promise<ProfessionalPreview[]> {
+export async function fetchProfessionals(token: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/professionals`, {
     method: "GET",
     headers: {
@@ -23,13 +14,5 @@ export async function fetchProfessionals(
     throw new Error("Erro ao buscar profissionais.");
   }
 
-  const data: ProfessionalType[] = await res.json();
-
-  // Filtra apenas os campos usados na listagem
-  return data.map((prof) => ({
-    id: prof.id,
-    name: prof.name,
-    email: prof.email,
-    avatarUrl: prof.avatarUrl,
-  }));
+  return await res.json();
 }

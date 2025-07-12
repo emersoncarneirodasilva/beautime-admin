@@ -1,4 +1,4 @@
-export type ProfessionalPreview = {
+export type ProfessionalsDTO = {
   id: string;
   name: string;
   email: string;

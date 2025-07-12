@@ -17,27 +17,5 @@ export async function fetchSalonByAdmin(token: string) {
     throw new Error("Erro ao buscar informações do salão.");
   }
 
-  // const {
-  //   id,
-  //   name,
-  //   slug,
-  //   description,
-  //   logoUrl,
-  //   createdAt,
-  //   updatedAt,
-  //   createdBy,
-  // } = await res.json();
-
-  // return {
-  //   id,
-  //   name,
-  //   slug,
-  //   description,
-  //   logoUrl,
-  //   createdAt,
-  //   updatedAt,
-  //   createdBy,
-  // };
-
   return await res.json();
 }
