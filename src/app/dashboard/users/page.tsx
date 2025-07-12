@@ -7,13 +7,8 @@ import ErrorSection from "@/components/Error/ErrorSection";
 import UsersList from "@/components/User/UsersList";
 
 export default async function UsersPage() {
-  let token: string;
-
-  try {
-    token = await verifyAdminAuth();
-  } catch {
-    return <AccessDenied />;
-  }
+  const token = await verifyAdminAuth();
+  if (!token) return <AccessDenied />;
 
   let users: UserType[] = [];
 

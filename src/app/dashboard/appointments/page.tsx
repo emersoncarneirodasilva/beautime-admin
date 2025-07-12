@@ -15,15 +15,17 @@ interface SearchParams {
 export default async function AppointmentsPage({
   searchParams,
 }: {
-  searchParams?: SearchParams;
+  searchParams: Promise<SearchParams>;
 }) {
   const token = await verifyAdminAuth();
   if (!token) return <AccessDenied />;
 
-  const page = Number(searchParams?.page) || 1;
-  const limit = Number(searchParams?.limit) || 10;
-  const status = searchParams?.appointmentStatus || "";
-  const paymentStatus = searchParams?.paymentStatus || "";
+  const resolvedParams = await searchParams;
+
+  const page = Number(resolvedParams.page) || 1;
+  const limit = Number(resolvedParams.limit) || 10;
+  const status = resolvedParams.appointmentStatus || "";
+  const paymentStatus = resolvedParams.paymentStatus || "";
 
   const data: AppointmentResponse = await fetchAppointments({
     page,

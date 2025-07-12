@@ -6,15 +6,18 @@ import Link from "next/link";
 import fetchUserById from "@/libs/api/fetchUserById";
 import { createNotification } from "./actions/createNotification";
 
+type Params = Promise<{ userId: string }>;
+
 export default async function CreateNotificationPage({
   params,
 }: {
-  params: { userId: string };
+  params: Params;
 }) {
   const token = await verifyAdminAuth();
   if (!token) return <AccessDenied />;
 
-  const userId = params.userId;
+  const { userId } = await params;
+
   const user = await fetchUserById(userId, token);
   const appointments = await fetchAppointmentsByUserId(userId);
 

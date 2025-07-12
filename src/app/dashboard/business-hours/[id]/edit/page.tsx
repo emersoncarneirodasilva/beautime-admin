@@ -5,15 +5,19 @@ import { fetchBusinessHourById } from "@/libs/api/fetchBusinessHourById";
 import { handleUpdateBusinessHour } from "./actions/updateBusinessHour";
 import Link from "next/link";
 
-type Props = {
-  params: { id: string };
-};
+type Params = Promise<{ id: string }>;
 
-export default async function EditBusinessHourPage({ params }: Props) {
+export default async function EditBusinessHourPage({
+  params,
+}: {
+  params: Params;
+}) {
   const token = await verifyAdminAuth();
   if (!token) return <AccessDenied />;
 
-  const hour = await fetchBusinessHourById(params.id, token);
+  const { id } = await params;
+
+  const hour = await fetchBusinessHourById(id, token);
 
   return (
     <form

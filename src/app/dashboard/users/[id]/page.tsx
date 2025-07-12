@@ -5,19 +5,18 @@ import ErrorSection from "@/components/Error/ErrorSection";
 import UserDetails from "@/components/User/UserDetails";
 import { UserType } from "@/types";
 
-export default async function UserPage({ params }: { params: { id: string } }) {
-  let token: string;
+type Params = Promise<{ id: string }>;
 
-  try {
-    token = await verifyAdminAuth();
-  } catch {
-    return <AccessDenied />;
-  }
+export default async function UserPage({ params }: { params: Params }) {
+  const token = await verifyAdminAuth();
+  if (!token) return <AccessDenied />;
+
+  const { id } = await params;
 
   let user: UserType;
 
   try {
-    user = await fetchUserById(params.id, token);
+    user = await fetchUserById(id, token);
   } catch (error) {
     return (
       <ErrorSection

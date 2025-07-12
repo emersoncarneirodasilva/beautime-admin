@@ -6,20 +6,22 @@ import ErrorSection from "@/components/Error/ErrorSection";
 import Link from "next/link";
 import { Appointment } from "@/types";
 
-interface Props {
-  params: {
-    id: string;
-  };
-}
+type Params = Promise<{ id: string }>;
 
-export default async function EditAppointmentPage({ params }: Props) {
+export default async function EditAppointmentPage({
+  params,
+}: {
+  params: Params;
+}) {
   const token = await verifyAdminAuth();
   if (!token) return <AccessDenied />;
+
+  const { id } = await params;
 
   let appointment: Appointment;
 
   try {
-    appointment = await fetchAppointmentById(params.id, token);
+    appointment = await fetchAppointmentById(id, token);
   } catch (err) {
     return (
       <ErrorSection

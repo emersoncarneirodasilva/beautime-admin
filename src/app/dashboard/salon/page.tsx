@@ -1,12 +1,14 @@
-import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
-import fetchUserById from "@/libs/api/fetchUserById";
-import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
 import Link from "next/link";
+import fetchUserById from "@/libs/api/fetchUserById";
+import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
+import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
+import AccessDenied from "@/components/Auth/AccessDenied";
 
 export default async function SalonPage() {
   const token = await verifyAdminAuth();
-  const salon = await fetchSalonByAdmin(token);
+  if (!token) return <AccessDenied />;
 
+  const salon = await fetchSalonByAdmin(token);
   const creator = await fetchUserById(salon.createdBy, token);
 
   return (

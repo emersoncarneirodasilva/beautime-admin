@@ -7,23 +7,15 @@ import { getFirstName } from "@/utils/getFirstName";
 import Link from "next/link";
 
 export default async function DashboardPage() {
-  let token: string;
-
-  try {
-    token = await verifyAdminAuth();
-  } catch {
-    return <AccessDenied />;
-  }
+  const token = await verifyAdminAuth();
+  if (!token) return <AccessDenied />;
 
   const salon = await fetchSalonByAdmin(token);
 
   const admin = await getUserFromToken();
+  if (!admin) return <AccessDenied />;
 
   const adminName = getFirstName(admin?.name);
-
-  if (!admin) {
-    return <AccessDenied />;
-  }
 
   return (
     <div className="max-w-2xl mx-auto p-4">

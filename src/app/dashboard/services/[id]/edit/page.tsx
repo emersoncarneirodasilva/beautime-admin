@@ -6,27 +6,20 @@ import AccessDenied from "@/components/Auth/AccessDenied";
 import ErrorSection from "@/components/Error/ErrorSection";
 import { updateService } from "./actions/updateService";
 
-type Props = {
-  params: {
-    id: string;
-  };
-};
+type Params = Promise<{ id: string }>;
 
-export default async function EditServicePage({ params }: Props) {
-  let token: string;
+export default async function EditServicePage({ params }: { params: Params }) {
+  const token = await verifyAdminAuth();
+  if (!token) return <AccessDenied />;
 
-  try {
-    token = await verifyAdminAuth();
-  } catch {
-    return <AccessDenied />;
-  }
+  const { id } = await params;
 
   let service: Service | null = null;
   let categories: Category[] = [];
 
   try {
     [service, categories] = await Promise.all([
-      fetchServiceById(token, params.id),
+      fetchServiceById(token, id),
       fetchCategories(token),
     ]);
   } catch (error) {
@@ -52,7 +45,7 @@ export default async function EditServicePage({ params }: Props) {
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded shadow">
+    <div className="max-w-2xl mx-auto mt-4 p-6 bg-white rounded shadow">
       <h1 className="text-2xl font-bold mb-6 text-gray-800">Editar Serviço</h1>
 
       <form action={updateService} className="space-y-4">

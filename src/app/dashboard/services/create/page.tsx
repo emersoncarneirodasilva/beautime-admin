@@ -7,13 +7,8 @@ import { createService } from "./actions/createService";
 type Props = {};
 
 export default async function CreateServicePage({}: Props) {
-  let token: string;
-
-  try {
-    token = await verifyAdminAuth();
-  } catch {
-    return <AccessDenied />;
-  }
+  const token = await verifyAdminAuth();
+  if (!token) return <AccessDenied />;
 
   let categories: Category[] = [];
 

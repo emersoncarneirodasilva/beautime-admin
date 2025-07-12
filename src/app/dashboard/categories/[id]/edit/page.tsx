@@ -4,25 +4,18 @@ import ErrorSection from "@/components/Error/ErrorSection";
 import { updateCategory } from "./actions/updateCategory";
 import { fetchCategoryById } from "@/libs/api/fetchCategoryById";
 
-type Props = {
-  params: {
-    id: string;
-  };
-};
+type Params = Promise<{ id: string }>;
 
-export default async function EditCategoryPage({ params }: Props) {
-  let token: string;
+export default async function EditCategoryPage({ params }: { params: Params }) {
+  const token = await verifyAdminAuth();
+  if (!token) return <AccessDenied />;
 
-  try {
-    token = await verifyAdminAuth();
-  } catch {
-    return <AccessDenied />;
-  }
+  const { id } = await params;
 
   let category;
 
   try {
-    category = await fetchCategoryById(params.id, token);
+    category = await fetchCategoryById(id, token);
   } catch (error) {
     return (
       <ErrorSection

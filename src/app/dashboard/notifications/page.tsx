@@ -1,9 +1,9 @@
+import Link from "next/link";
+import AccessDenied from "@/components/Auth/AccessDenied";
+import fetchUserById from "@/libs/api/fetchUserById";
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
 import { fetchNotifications } from "@/libs/api/fetchNotifications";
-import fetchUserById from "@/libs/api/fetchUserById";
 import { NotificationType } from "@/types/notifications";
-import AccessDenied from "@/components/Auth/AccessDenied";
-import Link from "next/link";
 import { formatIsoStringRaw } from "@/utils/formatIsoStringRaw";
 
 interface SearchParams {
@@ -15,17 +15,19 @@ interface SearchParams {
 export default async function NotificationsPage({
   searchParams,
 }: {
-  searchParams?: SearchParams;
+  searchParams: Promise<SearchParams>;
 }) {
   const token = await verifyAdminAuth();
   if (!token) return <AccessDenied />;
 
-  const page = Number(searchParams?.page) || 1;
-  const limit = Number(searchParams?.limit) || 10;
+  const resolvedParams = await searchParams;
+
+  const page = Number(resolvedParams.page || 1);
+  const limit = Number(resolvedParams.limit || 10);
   const isRead =
-    searchParams?.isRead === "true"
+    resolvedParams.isRead === "true"
       ? true
-      : searchParams?.isRead === "false"
+      : resolvedParams.isRead === "false"
       ? false
       : undefined;
 
@@ -47,8 +49,8 @@ export default async function NotificationsPage({
       <form className="flex flex-wrap gap-6 mb-6">
         <select
           name="isRead"
-          defaultValue={searchParams?.isRead || ""}
-          className="border px-3 py-2 rounded bg-black"
+          defaultValue={resolvedParams.isRead || ""}
+          className="border px-3 py-2 rounded bg-black text-white"
         >
           <option value="">Todas</option>
           <option value="true">Lidas</option>
@@ -58,7 +60,7 @@ export default async function NotificationsPage({
         <select
           name="limit"
           defaultValue={String(limit)}
-          className="border px-3 py-2 rounded bg-black"
+          className="border px-3 py-2 rounded bg-black text-white"
         >
           <option value="5">5 por página</option>
           <option value="10">10 por página</option>
@@ -67,7 +69,7 @@ export default async function NotificationsPage({
 
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 hover:cursor-pointer transition"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
         >
           Filtrar
         </button>
@@ -89,7 +91,7 @@ export default async function NotificationsPage({
                 }`}
               >
                 <div className="flex justify-between items-start">
-                  <div className="space-y-1">
+                  <div className="space-y-1 text-white">
                     <p>
                       <strong>📩 Mensagem:</strong> {notification.message}
                     </p>
@@ -115,7 +117,7 @@ export default async function NotificationsPage({
       <div className="flex justify-between mt-6">
         <Link
           href={`?page=${page - 1}&limit=${limit}&isRead=${
-            searchParams?.isRead || ""
+            resolvedParams.isRead || ""
           }`}
           className={`px-4 py-2 rounded bg-gray-500 hover:bg-gray-600 ${
             page === 1 ? "opacity-50 pointer-events-none" : ""
@@ -123,9 +125,10 @@ export default async function NotificationsPage({
         >
           Anterior
         </Link>
+
         <Link
           href={`?page=${page + 1}&limit=${limit}&isRead=${
-            searchParams?.isRead || ""
+            resolvedParams.isRead || ""
           }`}
           className={`px-4 py-2 rounded bg-gray-500 hover:bg-gray-600 ${
             page >= notifications.totalPages

@@ -10,13 +10,8 @@ import ProfessionalAvatar from "@/components/Professional/ProfessionalAvatar";
 import Link from "next/link";
 
 export default async function ServicesOnProfessionalsPage() {
-  let token: string;
-
-  try {
-    token = await verifyAdminAuth();
-  } catch {
-    return <AccessDenied />;
-  }
+  const token = await verifyAdminAuth();
+  if (!token) return <AccessDenied />;
 
   const [professionals, allServices] = await Promise.all([
     fetchProfessionals(token),
@@ -34,13 +29,13 @@ export default async function ServicesOnProfessionalsPage() {
   );
 
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-gray-50 min-h-screen">
+    <div className="max-w-6xl mx-auto p-6 my-4 rounded bg-gray-300 min-h-screen">
       <div className="mb-4">
         <Link
           href="/dashboard"
           className="inline-block text-blue-600 hover:underline hover:cursor-pointer"
         >
-          ← Voltar para Dashboard
+          ← Voltar
         </Link>
       </div>
       <h1 className="text-2xl font-bold mb-6 text-gray-900">

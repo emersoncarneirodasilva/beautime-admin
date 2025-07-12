@@ -1,19 +1,13 @@
+import Link from "next/link";
 import AccessDenied from "@/components/Auth/AccessDenied";
 import ErrorSection from "@/components/Error/ErrorSection";
 import { fetchServices } from "@/libs/api/fetchServices";
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
 import { Service } from "@/types";
-import Link from "next/link";
-import Image from "next/image";
 
 export default async function ServicesPage() {
-  let token: string;
-
-  try {
-    token = await verifyAdminAuth();
-  } catch {
-    return <AccessDenied />;
-  }
+  const token = await verifyAdminAuth();
+  if (!token) return <AccessDenied />;
 
   let services: Service[] = [];
 

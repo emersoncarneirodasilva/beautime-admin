@@ -10,25 +10,18 @@ import { Availability, ServicePreview } from "@/types";
 import { fetchAvailabilityByProfessional } from "@/libs/api/fetchAvailabilityByProfessional";
 import { translateWeekday } from "@/utils/translateWeekday";
 
-type Props = {
-  params: {
-    id: string;
-  };
-};
+type Params = Promise<{ id: string }>;
 
-export default async function ProfessionalPage({ params }: Props) {
-  let token: string;
+export default async function ProfessionalPage({ params }: { params: Params }) {
+  const token = await verifyAdminAuth();
+  if (!token) return <AccessDenied />;
 
-  try {
-    token = await verifyAdminAuth();
-  } catch {
-    return <AccessDenied />;
-  }
+  const { id } = await params;
 
   let professional;
 
   try {
-    professional = await fetchProfessionalById(params.id, token);
+    professional = await fetchProfessionalById(id, token);
   } catch (error) {
     return (
       <ErrorSection
@@ -41,12 +34,12 @@ export default async function ProfessionalPage({ params }: Props) {
   }
 
   const services: ServicePreview[] = await fetchServicesByProfessional(
-    params.id,
+    id,
     token
   );
 
   const availability: Availability[] = await fetchAvailabilityByProfessional(
-    params.id,
+    id,
     token
   );
 
@@ -119,7 +112,7 @@ export default async function ProfessionalPage({ params }: Props) {
             )}
 
             <Link
-              href={`/dashboard/professionals/${params.id}/availability`}
+              href={`/dashboard/professionals/${id}/availability`}
               className="inline-block mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             >
               Gerenciar disponibilidade

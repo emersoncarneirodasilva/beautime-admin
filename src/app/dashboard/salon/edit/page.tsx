@@ -1,3 +1,4 @@
+import AccessDenied from "@/components/Auth/AccessDenied";
 import { updateSalon } from "./actions/updateSalon";
 import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
@@ -5,6 +6,8 @@ import Link from "next/link";
 
 export default async function EditSalonPage() {
   const token = await verifyAdminAuth();
+  if (!token) return <AccessDenied />;
+
   const salon = await fetchSalonByAdmin(token);
 
   return (
@@ -65,7 +68,7 @@ export default async function EditSalonPage() {
         href="/dashboard/salon"
         className="text-sm text-blue-600 hover:underline block mt-6"
       >
-        ← Voltar para informações do salão
+        ← Voltar
       </Link>
     </div>
   );

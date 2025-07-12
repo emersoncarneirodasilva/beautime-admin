@@ -8,25 +8,18 @@ import Image from "next/image";
 import { deleteService } from "./edit/actions/deleteService";
 import DeleteServiceButton from "@/components/Service/DeleteServiceButton";
 
-type Props = {
-  params: {
-    id: string;
-  };
-};
+type Params = Promise<{ id: string }>;
 
-export default async function ServicePage({ params }: Props) {
-  let token: string;
+export default async function ServicePage({ params }: { params: Params }) {
+  const token = await verifyAdminAuth();
+  if (!token) return <AccessDenied />;
 
-  try {
-    token = await verifyAdminAuth();
-  } catch {
-    return <AccessDenied />;
-  }
+  const { id } = await params;
 
   let service: Service | null = null;
 
   try {
-    service = await fetchServiceById(token, params.id);
+    service = await fetchServiceById(token, id);
   } catch (error) {
     return (
       <ErrorSection
@@ -50,7 +43,7 @@ export default async function ServicePage({ params }: Props) {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded shadow">
+    <div className="max-w-4xl mx-auto mt-4 p-6 bg-white rounded shadow">
       <h1 className="text-3xl font-bold mb-4 text-gray-900">{service.name}</h1>
 
       {service.imageUrl && (

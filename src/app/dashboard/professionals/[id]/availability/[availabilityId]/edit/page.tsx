@@ -6,43 +6,44 @@ import Link from "next/link";
 import { fetchAvailabilityByProfessional } from "@/libs/api/fetchAvailabilityByProfessional";
 import { updateAvailability } from "./actions/updateAvailability";
 
-type Props = {
-  params: {
-    id: string; // profissionalId
-    availabilityId: string;
-  };
-};
+type Params = Promise<{
+  id: string; // profissionalId
+  availabilityId: string;
+}>;
 
-export default async function EditAvailabilityPage({ params }: Props) {
+export default async function EditAvailabilityPage({
+  params,
+}: {
+  params: Params;
+}) {
   const token = await verifyAdminAuth();
-
   if (!token) return <AccessDenied />;
+
+  const { id, availabilityId } = await params;
 
   let availabilityList: Availability[];
 
   try {
-    availabilityList = await fetchAvailabilityByProfessional(params.id, token);
+    availabilityList = await fetchAvailabilityByProfessional(id, token);
   } catch (error) {
     return (
       <ErrorSection
         title="Erro ao carregar disponibilidades"
         message={(error as Error).message}
-        linkHref={`/dashboard/professionals/${params.id}/availability`}
+        linkHref={`/dashboard/professionals/${id}/availability`}
         linkText="Voltar"
       />
     );
   }
 
-  const availability = availabilityList.find(
-    (a) => a.id === params.availabilityId
-  );
+  const availability = availabilityList.find((a) => a.id === availabilityId);
 
   if (!availability) {
     return (
       <ErrorSection
         title="Disponibilidade não encontrada"
         message="A disponibilidade que você está tentando editar não existe."
-        linkHref={`/dashboard/professionals/${params.id}/availability`}
+        linkHref={`/dashboard/professionals/${id}/availability`}
         linkText="Voltar"
       />
     );
@@ -54,7 +55,7 @@ export default async function EditAvailabilityPage({ params }: Props) {
 
       <form action={updateAvailability}>
         <input type="hidden" name="availabilityId" value={availability.id} />
-        <input type="hidden" name="professionalId" value={params.id} />
+        <input type="hidden" name="professionalId" value={id} />
 
         <div className="mb-4">
           <label className="block mb-1 font-medium">Dia da semana:</label>
@@ -95,7 +96,7 @@ export default async function EditAvailabilityPage({ params }: Props) {
 
         <div className="flex items-end justify-between gap-4">
           <Link
-            href={`/dashboard/professionals/${params.id}/availability`}
+            href={`/dashboard/professionals/${id}/availability`}
             className="hover:text-blue-500 hover:underline transition"
           >
             Voltar

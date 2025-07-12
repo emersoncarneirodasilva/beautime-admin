@@ -4,25 +4,22 @@ import { updateProfessional } from "./actions/updateProfessional";
 import AccessDenied from "@/components/Auth/AccessDenied";
 import ErrorSection from "@/components/Error/ErrorSection";
 
-type Props = {
-  params: {
-    id: string;
-  };
-};
+type Params = Promise<{ id: string }>;
 
-export default async function EditProfessionalPage({ params }: Props) {
-  let token: string;
+export default async function EditProfessionalPage({
+  params,
+}: {
+  params: Params;
+}) {
+  const token = await verifyAdminAuth();
+  if (!token) return <AccessDenied />;
 
-  try {
-    token = await verifyAdminAuth();
-  } catch {
-    return <AccessDenied />;
-  }
+  const { id } = await params;
 
   let professional;
 
   try {
-    professional = await fetchProfessionalById(params.id, token);
+    professional = await fetchProfessionalById(id, token);
   } catch (error) {
     return (
       <ErrorSection

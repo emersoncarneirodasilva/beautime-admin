@@ -1,37 +1,30 @@
-import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
+import Link from "next/link";
 import AccessDenied from "@/components/Auth/AccessDenied";
 import ErrorSection from "@/components/Error/ErrorSection";
-import { fetchAvailabilityByProfessional } from "@/libs/api/fetchAvailabilityByProfessional";
 import { Availability } from "@/types";
-import { translateWeekday } from "@/utils/translateWeekday";
-import Link from "next/link";
 import { handleDeleteAvailability } from "./actions/deleteAvailability";
+import { translateWeekday } from "@/utils/translateWeekday";
+import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
+import { fetchAvailabilityByProfessional } from "@/libs/api/fetchAvailabilityByProfessional";
 
-type Props = {
-  params: {
-    id: string;
-  };
-};
+type Params = Promise<{ id: string }>;
 
-export default async function AvailabilityPage({ params }: Props) {
-  let token: string;
+export default async function AvailabilityPage({ params }: { params: Params }) {
+  const token = await verifyAdminAuth();
+  if (!token) return <AccessDenied />;
 
-  try {
-    token = await verifyAdminAuth();
-  } catch {
-    return <AccessDenied />;
-  }
+  const { id } = await params;
 
   let availability: Availability[];
 
   try {
-    availability = await fetchAvailabilityByProfessional(params.id, token);
+    availability = await fetchAvailabilityByProfessional(id, token);
   } catch (error) {
     return (
       <ErrorSection
         title="Erro ao carregar disponibilidade"
         message={(error as Error).message}
-        linkHref={`/dashboard/professionals/${params.id}`}
+        linkHref={`/dashboard/professionals/${id}`}
         linkText="Voltar ao profissional"
       />
     );
@@ -40,7 +33,7 @@ export default async function AvailabilityPage({ params }: Props) {
   return (
     <main className="p-6 max-w-2xl mx-auto">
       <Link
-        href={`/dashboard/professionals/${params.id}`}
+        href={`/dashboard/professionals/${id}`}
         className="text-blue-600 hover:underline"
       >
         ← Voltar ao profissional
@@ -64,18 +57,14 @@ export default async function AvailabilityPage({ params }: Props) {
               <div className="flex items-center space-x-2">
                 <button className="text-sm px-3 py-1 bg-yellow-400 rounded hover:bg-yellow-500 hover:cursor-pointer transition">
                   <Link
-                    href={`/dashboard/professionals/${params.id}/availability/${slot.id}/edit`}
+                    href={`/dashboard/professionals/${id}/availability/${slot.id}/edit`}
                   >
                     Editar
                   </Link>
                 </button>
                 <form action={handleDeleteAvailability}>
                   <input type="hidden" name="availabilityId" value={slot.id} />
-                  <input
-                    type="hidden"
-                    name="professionalId"
-                    value={params.id}
-                  />
+                  <input type="hidden" name="professionalId" value={id} />
 
                   <button
                     type="submit"
@@ -92,7 +81,7 @@ export default async function AvailabilityPage({ params }: Props) {
 
       <div className="mt-6">
         <Link
-          href={`/dashboard/professionals/${params.id}/availability/create`}
+          href={`/dashboard/professionals/${id}/availability/create`}
           className="inline-block mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
         >
           Criar disponibilidade
