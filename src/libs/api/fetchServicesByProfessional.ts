@@ -1,9 +1,9 @@
-import { Service } from "@/types";
+import { ServiceOnProfessional } from "@/types";
 
 export async function fetchServicesByProfessional(
   professionalId: string,
   token: string
-): Promise<Service[]> {
+): Promise<ServiceOnProfessional[]> {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/services-on-professionals/${professionalId}`,
     {
@@ -17,6 +17,5 @@ export async function fetchServicesByProfessional(
     throw new Error("Erro ao buscar serviços");
   }
 
-  const data: Service[] = await res.json();
-  return data;
+  return await res.json();
 }

@@ -1,19 +1,20 @@
 "use client";
 
 import Link from "next/link";
+import RoleToggleButton from "@/components/User/RoleToggleButton";
 import { useRouter } from "next/navigation";
 import { UserType } from "@/types";
 import { useSalon } from "@/context/SalonContext";
-import RoleToggleButton from "@/components/User/RoleToggleButton";
 import { deleteUser } from "@/libs/api/deleteUser";
 import { getUserIdFromToken } from "@/utils/getUserIdFromToken";
 
 type Props = {
   user: UserType;
   token: string;
+  slug: string;
 };
 
-export default function UserDetails({ user, token }: Props) {
+export default function UserDetails({ user, token, slug }: Props) {
   const salon = useSalon();
   const router = useRouter();
   const loggedUserId = getUserIdFromToken(token);
@@ -28,7 +29,7 @@ export default function UserDetails({ user, token }: Props) {
 
     try {
       await deleteUser(user.id, token);
-      router.push("/dashboard/users");
+      router.push(`/${slug}/dashboard/users`);
     } catch (error) {
       alert((error as Error).message);
     }
@@ -78,13 +79,13 @@ export default function UserDetails({ user, token }: Props) {
       )}
 
       <div className="flex gap-6">
-        <Link href="/dashboard/users">
+        <Link href={`/${slug}/dashboard/users`}>
           <button className="px-6 py-2 mt-8 rounded-md bg-blue-500 text-white hover:bg-blue-600 hover:cursor-pointer transition">
             Voltar
           </button>
         </Link>
 
-        <Link href={`/dashboard/notifications/create/${user.id}`}>
+        <Link href={`/${slug}/dashboard/notifications/create/${user.id}`}>
           <button className="px-6 py-2 mt-8 rounded-md bg-green-500 text-white hover:bg-green-600 hover:cursor-pointer transition">
             Criar Notificação
           </button>

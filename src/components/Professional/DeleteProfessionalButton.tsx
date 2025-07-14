@@ -1,9 +1,14 @@
 "use client";
 
 import { useRef } from "react";
-import { deleteProfessional } from "@/app/dashboard/professionals/[id]/actions/deleteProfessional";
+import { deleteProfessional } from "@/app/[slug]/dashboard/professionals/[id]/actions/deleteProfessional";
 
-export default function DeleteProfessionalButton({ id }: { id: string }) {
+interface Props {
+  slug: string;
+  id: string;
+}
+
+export default function DeleteProfessionalButton({ slug, id }: Props) {
   const formRef = useRef<HTMLFormElement>(null);
 
   const handleDelete = () => {
@@ -18,7 +23,9 @@ export default function DeleteProfessionalButton({ id }: { id: string }) {
 
   return (
     <form ref={formRef} action={deleteProfessional}>
+      <input type="hidden" name="slug" value={slug} />
       <input type="hidden" name="id" value={id} />
+
       <button
         type="button"
         onClick={handleDelete}

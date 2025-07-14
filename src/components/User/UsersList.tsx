@@ -6,9 +6,10 @@ import { useSalon } from "@/context/SalonContext";
 
 type Props = {
   users: UserType[];
+  slug: string;
 };
 
-export default function UsersList({ users }: Props) {
+export default function UsersList({ users, slug }: Props) {
   const salon = useSalon();
 
   if (users.length === 0) {
@@ -32,7 +33,7 @@ export default function UsersList({ users }: Props) {
               : "USUÁRIO"}{" "}
             —{" "}
             <Link
-              href={`/dashboard/users/${user.id}`}
+              href={`/${slug}/dashboard/users/${user.id}`}
               className="hover:text-blue-500 hover:cursor-pointer duration-200"
             >
               Ver detalhes
