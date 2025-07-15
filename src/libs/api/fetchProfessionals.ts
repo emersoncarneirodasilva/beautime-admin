@@ -1,12 +1,34 @@
-export async function fetchProfessionals(token: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/professionals`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    cache: "no-store",
+export async function fetchProfessionals({
+  token,
+  page = 1,
+  limit = 10,
+  search,
+}: {
+  token: string;
+  page?: number;
+  limit?: number;
+  search?: string;
+}) {
+  const params = new URLSearchParams({
+    page: String(page),
+    limit: String(limit),
   });
+
+  if (search) {
+    params.append("search", search);
+  }
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/professionals?${params.toString()}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      cache: "no-store",
+    }
+  );
 
   if (!res.ok) {
     const errorData = await res.json().catch(() => ({}));
@@ -14,5 +36,5 @@ export async function fetchProfessionals(token: string) {
     throw new Error("Erro ao buscar profissionais.");
   }
 
-  return await res.json();
+  return res.json();
 }

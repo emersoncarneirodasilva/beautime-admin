@@ -10,20 +10,32 @@ interface Params {
   slug: string;
 }
 
+interface SearchParams {
+  page?: string;
+  limit?: string;
+  search?: string;
+}
+
 export default async function ProfessionalsPage({
   params,
+  searchParams,
 }: {
   params: Promise<Params>;
+  searchParams: Promise<SearchParams>;
 }) {
   const token = await verifyAdminAuth();
   if (!token) return <AccessDenied />;
 
   const { slug } = await params;
+  const query = await searchParams;
 
-  let professionals: ProfessionalsDTO[] = [];
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 10;
+  const search = query.search || "";
 
+  let data;
   try {
-    professionals = await fetchProfessionals(token);
+    data = await fetchProfessionals({ token, page, limit, search });
   } catch (error) {
     return (
       <ErrorSection
@@ -35,54 +47,105 @@ export default async function ProfessionalsPage({
     );
   }
 
-  if (professionals.length === 0) {
-    return (
-      <p className="grid place-content-center h-[100vh] text-gray-500">
-        Nenhum profissional encontrado.
-      </p>
-    );
-  }
+  const { professionals, totalPages } = data;
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Profissionais</h1>
-      <ul className="space-y-3">
-        {professionals.map((professional) => (
-          <li key={professional.id} className="border p-3 rounded-md">
-            <div className="flex items-center justify-between gap-4">
-              <ProfessionalAvatar
-                src={professional.avatarUrl}
-                alt={`Avatar de ${professional.name}`}
-                width={64}
-                height={64}
-                className="w-16 h-16 rounded-sm object-cover"
-              />
-              <div className="flex-1">
-                <h2 className="font-semibold">{professional.name}</h2>
-                <p className="text-sm text-gray-500">{professional.email}</p>
-              </div>
-              <Link
-                href={`/${slug}/dashboard/professionals/${professional.id}`}
-                className="text-blue-600 hover:underline"
-              >
-                Ver detalhes
-              </Link>
-            </div>
-          </li>
-        ))}
-      </ul>
-
-      <div className="flex items-center justify-between mt-4">
-        <Link href={`/${slug}/dashboard`}>
-          <p className="hover:text-blue-500 hover:cursor-pointer hover:underline duration-200">
-            Voltar
-          </p>
+    <div className="max-w-5xl mx-auto p-6">
+      {/* Top bar */}
+      <div className="flex justify-between items-center mb-6">
+        <Link
+          href={`/${slug}/dashboard`}
+          className="text-blue-600 hover:underline"
+        >
+          ← Voltar ao painel
         </Link>
+        <Link
+          href={`/${slug}/dashboard/professionals/create`}
+          className="text-white bg-green-600 px-4 py-2 rounded hover:bg-green-700 transition"
+        >
+          Criar Profissional
+        </Link>
+      </div>
 
-        <Link href={`/${slug}/dashboard/professionals/create`}>
-          <p className="hover:text-blue-500 hover:cursor-pointer hover:underline duration-200">
-            Criar Profissional
-          </p>
+      {/* Título centralizado */}
+      <h1 className="text-3xl font-bold text-center mb-8">Profissionais</h1>
+
+      {/* Filtros */}
+      <form className="flex flex-col sm:flex-row sm:items-center gap-4 mb-8">
+        <input
+          type="text"
+          name="search"
+          placeholder="Buscar por nome..."
+          defaultValue={search}
+          className="bg-black text-white border px-4 py-2 rounded w-full sm:w-auto"
+        />
+        <select
+          name="limit"
+          defaultValue={String(limit)}
+          className="bg-black text-white border px-4 py-2 rounded w-full sm:w-auto"
+        >
+          <option value="5">5 por página</option>
+          <option value="10">10 por página</option>
+          <option value="20">20 por página</option>
+        </select>
+        <button
+          type="submit"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition w-full sm:w-auto"
+        >
+          Filtrar
+        </button>
+      </form>
+
+      {/* Lista de profissionais */}
+      {professionals.length === 0 ? (
+        <p className="text-center text-gray-500">
+          Nenhum profissional encontrado.
+        </p>
+      ) : (
+        <ul className="space-y-4">
+          {professionals.map((professional: ProfessionalsDTO) => (
+            <li key={professional.id} className="border p-4 rounded shadow-sm">
+              <div className="flex items-center justify-between gap-4">
+                <ProfessionalAvatar
+                  src={professional.avatarUrl}
+                  alt={`Avatar de ${professional.name}`}
+                  width={64}
+                  height={64}
+                  className="w-16 h-16 rounded object-cover"
+                />
+                <div className="flex-1">
+                  <h2 className="text-lg font-semibold">{professional.name}</h2>
+                  <p className="text-sm text-gray-500">{professional.email}</p>
+                </div>
+                <Link
+                  href={`/${slug}/dashboard/professionals/${professional.id}`}
+                  className="text-blue-600 hover:underline text-sm"
+                >
+                  Ver detalhes
+                </Link>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {/* Paginação */}
+      <div className="flex justify-between mt-8">
+        <Link
+          href={`?page=${page - 1}&limit=${limit}&search=${search}`}
+          className={`px-4 py-2 rounded bg-gray-500 hover:bg-gray-600 text-white ${
+            page <= 1 ? "opacity-50 pointer-events-none" : ""
+          }`}
+        >
+          Anterior
+        </Link>
+        <Link
+          href={`?page=${page + 1}&limit=${limit}&search=${search}`}
+          className={`px-4 py-2 rounded bg-gray-500 hover:bg-gray-600 text-white ${
+            page >= totalPages ? "opacity-50 pointer-events-none" : ""
+          }`}
+        >
+          Próxima
         </Link>
       </div>
     </div>
