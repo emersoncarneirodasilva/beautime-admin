@@ -14,6 +14,7 @@ interface SearchParams {
   limit?: string;
   appointmentStatus?: string;
   paymentStatus?: string;
+  search?: string;
 }
 
 export default async function AppointmentsPage(props: {
@@ -36,12 +37,15 @@ export default async function AppointmentsPage(props: {
     typeof searchParams.paymentStatus === "string"
       ? searchParams.paymentStatus
       : "";
+  const search =
+    typeof searchParams.search === "string" ? searchParams.search : "";
 
   const data: AppointmentResponse = await fetchAppointments({
     page,
     limit,
     status,
     paymentStatus,
+    search,
   });
 
   return (
@@ -55,7 +59,16 @@ export default async function AppointmentsPage(props: {
 
       <h1 className="text-2xl font-bold my-6">Agendamentos</h1>
 
-      <form className="flex gap-4 mb-6">
+      <form className="flex flex-wrap gap-4 mb-6" method="GET">
+        <input
+          type="text"
+          name="search"
+          defaultValue={search}
+          placeholder="Buscar por nome do cliente..."
+          className="border px-3 py-2 rounded bg-black text-white"
+          autoComplete="off"
+        />
+
         <select
           name="appointmentStatus"
           defaultValue={status}
@@ -93,7 +106,7 @@ export default async function AppointmentsPage(props: {
 
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 hover:cursor-pointer transition"
         >
           Filtrar
         </button>
@@ -151,7 +164,7 @@ export default async function AppointmentsPage(props: {
         <Link
           href={`?page=${
             page - 1
-          }&limit=${limit}&appointmentStatus=${status}&paymentStatus=${paymentStatus}`}
+          }&limit=${limit}&appointmentStatus=${status}&paymentStatus=${paymentStatus}&search=${search}`}
           className={`px-4 py-2 rounded bg-gray-500 hover:bg-gray-600 ${
             page === 1 ? "opacity-50 pointer-events-none" : ""
           }`}
@@ -161,7 +174,7 @@ export default async function AppointmentsPage(props: {
         <Link
           href={`?page=${
             page + 1
-          }&limit=${limit}&appointmentStatus=${status}&paymentStatus=${paymentStatus}`}
+          }&limit=${limit}&appointmentStatus=${status}&paymentStatus=${paymentStatus}&search=${search}`}
           className={`px-4 py-2 rounded bg-gray-500 hover:bg-gray-600 ${
             page >= data.totalPages ? "opacity-50 pointer-events-none" : ""
           }`}

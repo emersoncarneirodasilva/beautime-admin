@@ -5,11 +5,13 @@ export async function fetchAppointments({
   limit = 10,
   status,
   paymentStatus,
+  search,
 }: {
   page?: number;
   limit?: number;
   status?: string;
   paymentStatus?: string;
+  search?: string;
 }) {
   const token = await verifyAdminAuth();
 
@@ -20,6 +22,7 @@ export async function fetchAppointments({
 
   if (status) params.append("appointmentStatus", status);
   if (paymentStatus) params.append("paymentStatus", paymentStatus);
+  if (search) params.append("search", search);
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/appointments/admin/salon?${params}`,
