@@ -14,6 +14,7 @@ interface SearchParams {
   page?: string;
   limit?: string;
   status?: string;
+  search?: string;
 }
 
 export default async function AppointmentHistoryPage({
@@ -28,15 +29,23 @@ export default async function AppointmentHistoryPage({
 
   const queryParams = await searchParams;
   const { slug } = await params;
+
   const page = Number(queryParams?.page || 1);
   const limit = Number(queryParams?.limit || 10);
   const status = queryParams?.status;
+  const search = queryParams?.search;
 
   const statusFiltered =
     status === "CANCELED" || status === "COMPLETED" ? status : undefined;
 
   const [history, services] = await Promise.all([
-    fetchAppointmentHistory({ token, page, limit, status: statusFiltered }),
+    fetchAppointmentHistory({
+      token,
+      page,
+      limit,
+      status: statusFiltered,
+      search,
+    }),
     fetchServices(token),
   ]);
 
@@ -75,6 +84,14 @@ export default async function AppointmentHistoryPage({
           <option value="20">20 por página</option>
         </select>
 
+        <input
+          type="text"
+          name="search"
+          defaultValue={search || ""}
+          placeholder="Buscar por nome do cliente"
+          className="bg-black border px-3 py-2 rounded text-white placeholder-gray-400"
+        />
+
         <button
           type="submit"
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer transition"
@@ -98,6 +115,15 @@ export default async function AppointmentHistoryPage({
               {appt.status === "CANCELED" ? "Cancelado" : "Concluído"}
             </p>
             <p>
+              <strong>👤 Cliente:</strong> {appt.clientName}
+            </p>
+            <p>
+              <strong>📧 E-mail:</strong> {appt.clientEmail}
+            </p>
+            <p>
+              <strong>📞 Telefone:</strong> {appt.clientPhone}
+            </p>
+            <p>
               <strong>📤 Movido em:</strong> {formatIsoStringRaw(appt.movedAt)}
             </p>
             <p>
@@ -117,7 +143,9 @@ export default async function AppointmentHistoryPage({
 
       <div className="flex justify-between mt-6">
         <Link
-          href={`?page=${page - 1}&limit=${limit}&status=${status || ""}`}
+          href={`?page=${page - 1}&limit=${limit}&status=${
+            status || ""
+          }&search=${search || ""}`}
           className={`px-4 py-2 rounded bg-gray-600 hover:bg-gray-700 ${
             page <= 1 ? "opacity-50 pointer-events-none" : ""
           }`}
@@ -125,7 +153,9 @@ export default async function AppointmentHistoryPage({
           Anterior
         </Link>
         <Link
-          href={`?page=${page + 1}&limit=${limit}&status=${status || ""}`}
+          href={`?page=${page + 1}&limit=${limit}&status=${
+            status || ""
+          }&search=${search || ""}`}
           className={`px-4 py-2 rounded bg-gray-600 hover:bg-gray-700 ${
             page >= history.totalPages ? "opacity-50 pointer-events-none" : ""
           }`}

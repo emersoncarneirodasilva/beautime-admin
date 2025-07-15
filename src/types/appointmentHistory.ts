@@ -13,6 +13,9 @@ export interface AppointmentHistoryType {
   status: "CANCELED" | "COMPLETED";
   scheduledAt: string;
   movedAt: string;
+  clientName: string;
+  clientEmail: string;
+  clientPhone: string;
   services: {
     id: string;
     appointmentId: string;

@@ -3,11 +3,13 @@ export async function fetchAppointmentHistory({
   page = 1,
   limit = 10,
   status,
+  search,
 }: {
   token: string;
   page?: number;
   limit?: number;
   status?: string;
+  search?: string;
 }) {
   const params = new URLSearchParams();
 
@@ -16,6 +18,10 @@ export async function fetchAppointmentHistory({
 
   if (status === "CANCELED" || status === "COMPLETED") {
     params.set("status", status);
+  }
+
+  if (search && search.trim().length > 0) {
+    params.set("search", search.trim());
   }
 
   const url = `${
