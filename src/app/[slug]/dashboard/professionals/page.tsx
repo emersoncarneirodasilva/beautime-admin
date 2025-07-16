@@ -90,16 +90,15 @@ export default async function ProfessionalsPage({
         </select>
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition w-full sm:w-auto"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 hover:cursor-pointer transition w-full sm:w-auto"
         >
           Filtrar
         </button>
       </form>
 
-      {/* Lista de profissionais */}
       {professionals.length === 0 ? (
         <p className="text-center text-gray-500">
-          Nenhum profissional encontrado.
+          Nenhum profissional para os filtros aplicados.
         </p>
       ) : (
         <ul className="space-y-4">

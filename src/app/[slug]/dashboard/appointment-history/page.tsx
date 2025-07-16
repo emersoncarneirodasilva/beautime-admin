@@ -100,46 +100,53 @@ export default async function AppointmentHistoryPage({
         </button>
       </form>
 
-      <ul className="space-y-4">
-        {history.appointmentsHistory.map((appt: AppointmentHistoryType) => (
-          <li
-            key={appt.id}
-            className="bg-gray-800 p-4 rounded shadow-sm space-y-2"
-          >
-            <p>
-              <strong>📅 Horário:</strong>{" "}
-              {formatIsoStringRaw(appt.scheduledAt)}
-            </p>
-            <p>
-              <strong>📌 Status:</strong>{" "}
-              {appt.status === "CANCELED" ? "Cancelado" : "Concluído"}
-            </p>
-            <p>
-              <strong>👤 Cliente:</strong> {appt.clientName}
-            </p>
-            <p>
-              <strong>📧 E-mail:</strong> {appt.clientEmail}
-            </p>
-            <p>
-              <strong>📞 Telefone:</strong> {appt.clientPhone}
-            </p>
-            <p>
-              <strong>📤 Movido em:</strong> {formatIsoStringRaw(appt.movedAt)}
-            </p>
-            <p>
-              <strong>🧾 Serviços:</strong>{" "}
-              {appt.services.length > 0
-                ? appt.services
-                    .map(
-                      (s) =>
-                        serviceMap.get(s.serviceId) ?? "Serviço desconhecido"
-                    )
-                    .join(", ")
-                : "Nenhum"}
-            </p>
-          </li>
-        ))}
-      </ul>
+      {history.appointmentsHistory.length === 0 ? (
+        <p className="text-center text-gray-400">
+          Nenhum agendamento encontrado para os filtros aplicados.
+        </p>
+      ) : (
+        <ul className="space-y-4">
+          {history.appointmentsHistory.map((appt: AppointmentHistoryType) => (
+            <li
+              key={appt.id}
+              className="bg-gray-800 p-4 rounded shadow-sm space-y-2"
+            >
+              <p>
+                <strong>📅 Horário:</strong>{" "}
+                {formatIsoStringRaw(appt.scheduledAt)}
+              </p>
+              <p>
+                <strong>📌 Status:</strong>{" "}
+                {appt.status === "CANCELED" ? "Cancelado" : "Concluído"}
+              </p>
+              <p>
+                <strong>👤 Cliente:</strong> {appt.clientName}
+              </p>
+              <p>
+                <strong>📧 E-mail:</strong> {appt.clientEmail}
+              </p>
+              <p>
+                <strong>📞 Telefone:</strong> {appt.clientPhone}
+              </p>
+              <p>
+                <strong>📤 Movido em:</strong>{" "}
+                {formatIsoStringRaw(appt.movedAt)}
+              </p>
+              <p>
+                <strong>🧾 Serviços:</strong>{" "}
+                {appt.services.length > 0
+                  ? appt.services
+                      .map(
+                        (s) =>
+                          serviceMap.get(s.serviceId) ?? "Serviço desconhecido"
+                      )
+                      .join(", ")
+                  : "Nenhum"}
+              </p>
+            </li>
+          ))}
+        </ul>
+      )}
 
       <div className="flex justify-between mt-6">
         <Link

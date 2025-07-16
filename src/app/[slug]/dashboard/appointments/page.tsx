@@ -112,53 +112,59 @@ export default async function AppointmentsPage(props: {
         </button>
       </form>
 
-      <ul className="space-y-4">
-        {data.appointments.map((appointment: Appointment) => (
-          <li
-            key={appointment.id}
-            className="border p-4 rounded shadow-sm flex flex-col gap-2"
-          >
-            <div className="flex justify-between">
-              <div>
-                <p>
-                  <strong>Cliente:</strong> {appointment.user.name}
-                </p>
-                <p>
-                  <strong>Data:</strong>{" "}
-                  {formatIsoStringRaw(appointment.scheduledAt)}
-                </p>
-                <p>
-                  <strong>Status:</strong> {appointment.status}
-                </p>
-                <p>
-                  <strong>Pagamento:</strong> {appointment.payment.status} – R${" "}
-                  {appointment.payment.amount}
-                </p>
-                <p>
-                  <strong>Método:</strong> {appointment.payment.method}
-                </p>
+      {data.appointments.length === 0 ? (
+        <p className="text-center text-gray-400 mt-10">
+          Nenhum agendamento encontrado para os filtros aplicados.
+        </p>
+      ) : (
+        <ul className="space-y-4">
+          {data.appointments.map((appointment: Appointment) => (
+            <li
+              key={appointment.id}
+              className="border p-4 rounded shadow-sm flex flex-col gap-2"
+            >
+              <div className="flex justify-between">
+                <div>
+                  <p>
+                    <strong>Cliente:</strong> {appointment.user.name}
+                  </p>
+                  <p>
+                    <strong>Data:</strong>{" "}
+                    {formatIsoStringRaw(appointment.scheduledAt)}
+                  </p>
+                  <p>
+                    <strong>Status:</strong> {appointment.status}
+                  </p>
+                  <p>
+                    <strong>Pagamento:</strong> {appointment.payment.status} –
+                    R$ {appointment.payment.amount}
+                  </p>
+                  <p>
+                    <strong>Método:</strong> {appointment.payment.method}
+                  </p>
+                </div>
+                <Link
+                  href={`/${slug}/dashboard/appointments/${appointment.id}/edit`}
+                  className="self-start px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 text-sm hover:cursor-pointer transition"
+                >
+                  Editar
+                </Link>
               </div>
-              <Link
-                href={`/${slug}/dashboard/appointments/${appointment.id}/edit`}
-                className="self-start px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 text-sm hover:cursor-pointer transition"
-              >
-                Editar
-              </Link>
-            </div>
 
-            <div>
-              <strong>Serviços:</strong>
-              <ul className="list-disc list-inside">
-                {appointment.services.map((s) => (
-                  <li key={s.id}>
-                    {s.service.name} – {s.professional.name}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </li>
-        ))}
-      </ul>
+              <div>
+                <strong>Serviços:</strong>
+                <ul className="list-disc list-inside">
+                  {appointment.services.map((s) => (
+                    <li key={s.id}>
+                      {s.service.name} – {s.professional.name}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
 
       <div className="flex justify-between mt-6">
         <Link
