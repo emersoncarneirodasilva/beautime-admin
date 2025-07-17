@@ -1,12 +1,9 @@
-// src/app/[slug]/dashboard/users/page.tsx
-
 import Link from "next/link";
 import fetchUsers from "@/libs/api/fetchUsers";
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
 import AccessDenied from "@/components/Auth/AccessDenied";
 import ErrorSection from "@/components/Error/ErrorSection";
 import UsersList from "@/components/User/UsersList";
-import { UserType } from "@/types";
 
 interface Params {
   slug: string;

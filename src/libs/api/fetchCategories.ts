@@ -1,13 +1,27 @@
 import { Category } from "@/types";
 
-export async function fetchCategories(token: string): Promise<Category[]> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    cache: "no-store",
-  });
+export async function fetchCategories(
+  token: string,
+  search?: string,
+  page: number = 1,
+  limit: number = 10
+): Promise<{ categories: Category[]; total: number }> {
+  const params = new URLSearchParams();
+
+  if (search) params.set("search", search);
+  params.set("page", String(page));
+  params.set("limit", String(limit));
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/categories?${params.toString()}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      cache: "no-store",
+    }
+  );
 
   if (!res.ok) {
     const errorData = await res.json().catch(() => ({}));

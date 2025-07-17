@@ -98,7 +98,7 @@ export default async function ProfessionalsPage({
 
       {professionals.length === 0 ? (
         <p className="text-center text-gray-500">
-          Nenhum profissional para os filtros aplicados.
+          Nenhum profissional encontrado para os filtros aplicados.
         </p>
       ) : (
         <ul className="space-y-4">
