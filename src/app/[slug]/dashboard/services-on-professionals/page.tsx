@@ -13,21 +13,42 @@ interface Params {
   slug: string;
 }
 
+interface SearchParams {
+  page?: string;
+  limit?: string;
+  search?: string;
+}
+
 export default async function ServicesOnProfessionalsPage({
   params,
+  searchParams,
 }: {
   params: Promise<Params>;
+  searchParams?: Promise<SearchParams>;
 }) {
   const token = await verifyAdminAuth();
   if (!token) return <AccessDenied />;
 
   const { slug } = await params;
 
-  const [{ professionals }, { services: allServices }] = await Promise.all([
-    fetchProfessionals({ token }),
-    fetchServices(token),
-  ]);
+  const searchQuery = await searchParams;
 
+  const page = Number(searchQuery?.page ?? "1");
+  const limit = Number(searchQuery?.limit ?? "10");
+  const search = searchQuery?.search ?? "";
+
+  // Busca profissionais paginados e filtrados
+  const { professionals, totalPages, currentPage } = await fetchProfessionals({
+    token,
+    page,
+    limit,
+    search,
+  });
+
+  // Busca todos os serviços disponíveis (sem paginação)
+  const { services: allServices } = await fetchServices(token, 1, 100);
+
+  // Para cada profissional, busca os serviços vinculados
   const professionalsWithServices = await Promise.all(
     professionals.map(async (professional: { id: string }) => {
       const services = await fetchServicesByProfessional(
@@ -51,6 +72,32 @@ export default async function ServicesOnProfessionalsPage({
       <h1 className="text-2xl font-bold mb-6 text-gray-900">
         Vincular Serviços aos Profissionais
       </h1>
+
+      {/* Formulário de busca */}
+      <form method="GET" className="flex gap-3 mb-6">
+        <input
+          type="text"
+          name="search"
+          defaultValue={search}
+          placeholder="Buscar profissional..."
+          className="flex-grow border border-black text-black rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <select
+          name="limit"
+          defaultValue={limit.toString()}
+          className="border border-black text-black rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="5">5 por página</option>
+          <option value="10">10 por página</option>
+          <option value="20">20 por página</option>
+        </select>
+        <button
+          type="submit"
+          className="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 hover:cursor-pointer transition"
+        >
+          Buscar
+        </button>
+      </form>
 
       <div className="space-y-8">
         {professionalsWithServices.map((professional) => (
@@ -79,7 +126,7 @@ export default async function ServicesOnProfessionalsPage({
               {professional.services.length > 0 ? (
                 professional.services.map((service: ServicePreview) => (
                   <li
-                    key={service.id} // use o id da associação ou service.id
+                    key={service.id} // id da associação profissional-serviço
                     className="flex justify-between items-center"
                   >
                     <span>{service.service.name}</span>
@@ -88,7 +135,7 @@ export default async function ServicesOnProfessionalsPage({
                       <input
                         type="hidden"
                         name="associationId"
-                        value={service.id} // id da associação que liga profissional e serviço
+                        value={service.id}
                       />
 
                       <button
@@ -118,17 +165,32 @@ export default async function ServicesOnProfessionalsPage({
               <select
                 name="serviceId"
                 className="flex-1 border rounded px-2 py-1 text-sm text-gray-700"
+                defaultValue=""
               >
-                {allServices.map((service: Service) => (
-                  <option
-                    key={service.id}
-                    value={service.id}
-                    className="bg-gray-400"
-                  >
-                    {service.name}
-                  </option>
-                ))}
+                <option value="" disabled>
+                  Selecione serviço
+                </option>
+
+                {allServices.map((service: Service) => {
+                  const isLinked = professional.services.some(
+                    (linked: { service: { id: string } }) =>
+                      linked.service.id === service.id
+                  );
+                  return (
+                    <option
+                      key={service.id}
+                      value={service.id}
+                      disabled={isLinked}
+                      className={
+                        isLinked ? "bg-gray-200 text-gray-400" : "bg-gray-400"
+                      }
+                    >
+                      {service.name}
+                    </option>
+                  );
+                })}
               </select>
+
               <button
                 type="submit"
                 className="bg-purple-600 text-white px-4 py-1 rounded text-sm hover:bg-purple-700 hover:cursor-pointer transition"
@@ -138,6 +200,41 @@ export default async function ServicesOnProfessionalsPage({
             </form>
           </div>
         ))}
+      </div>
+
+      {/* Paginação */}
+      <div className="flex justify-between items-center mt-8">
+        <Link
+          href={`?page=${
+            currentPage - 1
+          }&limit=${limit}&search=${encodeURIComponent(search)}`}
+          className={`px-4 py-2 rounded ${
+            currentPage <= 1
+              ? "bg-gray-300 cursor-not-allowed text-gray-500"
+              : "bg-blue-600 text-white hover:bg-blue-700"
+          }`}
+          aria-disabled={currentPage <= 1}
+        >
+          Anterior
+        </Link>
+
+        <span className="text-gray-700">
+          Página {currentPage} de {totalPages}
+        </span>
+
+        <Link
+          href={`?page=${
+            currentPage + 1
+          }&limit=${limit}&search=${encodeURIComponent(search)}`}
+          className={`px-4 py-2 rounded ${
+            currentPage >= totalPages
+              ? "bg-gray-300 cursor-not-allowed text-gray-500"
+              : "bg-blue-600 text-white hover:bg-blue-700"
+          }`}
+          aria-disabled={currentPage >= totalPages}
+        >
+          Próxima
+        </Link>
       </div>
     </div>
   );
