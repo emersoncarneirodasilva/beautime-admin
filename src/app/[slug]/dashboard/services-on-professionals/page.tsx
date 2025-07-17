@@ -23,7 +23,7 @@ export default async function ServicesOnProfessionalsPage({
 
   const { slug } = await params;
 
-  const [{ professionals }, allServices] = await Promise.all([
+  const [{ professionals }, { services: allServices }] = await Promise.all([
     fetchProfessionals({ token }),
     fetchServices(token),
   ]);

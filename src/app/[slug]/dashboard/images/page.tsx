@@ -20,9 +20,9 @@ export default async function SalonImagesPage({
 
   const { slug } = await params;
 
-  const [images, professionals, services] = await Promise.all([
+  const [images, professionals, { services }] = await Promise.all([
     fetchSalonImages(token),
-    fetchProfessionals(token),
+    fetchProfessionals({ token }),
     fetchServices(token),
   ]);
 

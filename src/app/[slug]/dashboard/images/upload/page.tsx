@@ -18,8 +18,8 @@ export default async function UploadImagePage({
 
   const { slug } = await params;
 
-  const [professionals, services] = await Promise.all([
-    fetchProfessionals(token),
+  const [professionals, { services }] = await Promise.all([
+    fetchProfessionals({ token }),
     fetchServices(token),
   ]);
 
