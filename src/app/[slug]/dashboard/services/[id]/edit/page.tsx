@@ -26,7 +26,7 @@ export default async function EditServicePage({
   let categories: Category[] = [];
 
   try {
-    [service, categories] = await Promise.all([
+    [service, { categories }] = await Promise.all([
       fetchServiceById(token, id),
       fetchCategories(token),
     ]);
@@ -148,7 +148,7 @@ export default async function EditServicePage({
           </button>
 
           <Link
-            href={`/${slug}/dashboard/services/`}
+            href={`/${slug}/dashboard/services/${id}`}
             className="text-blue-600 px-4 py-2 hover:underline"
           >
             Cancelar

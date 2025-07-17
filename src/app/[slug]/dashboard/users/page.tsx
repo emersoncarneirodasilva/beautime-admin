@@ -19,17 +19,19 @@ export default async function UsersPage({
   params,
   searchParams,
 }: {
-  params: Params;
-  searchParams?: SearchParams;
+  params: Promise<Params>;
+  searchParams?: Promise<SearchParams>;
 }) {
   const token = await verifyAdminAuth();
   if (!token) return <AccessDenied />;
 
-  const { slug } = params;
+  const { slug } = await params;
 
-  const page = Number(searchParams?.page) || 1;
-  const limit = Number(searchParams?.limit) || 10;
-  const search = searchParams?.search || "";
+  const searchQueryParams = await searchParams;
+
+  const page = Number(searchQueryParams?.page || 1);
+  const limit = Number(searchQueryParams?.limit || 10);
+  const search = searchQueryParams?.search || "";
 
   let usersData;
 
@@ -48,13 +50,19 @@ export default async function UsersPage({
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-semibold">Usuários</h1>
+      <div className="flex items-center justify-between mb-8 relative">
         <Link
           href={`/${slug}/dashboard`}
-          className="text-blue-600 hover:underline text-sm"
+          className="text-blue-600 hover:underline text-sm absolute left-0"
         >
           ← Voltar ao painel
+        </Link>
+        <h1 className="text-3xl font-semibold mx-auto">Usuários</h1>
+        <Link
+          href={`/${slug}/dashboard/users/create`}
+          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition absolute right-0"
+        >
+          + Criar Usuário
         </Link>
       </div>
 

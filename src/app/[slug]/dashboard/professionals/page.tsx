@@ -27,11 +27,12 @@ export default async function ProfessionalsPage({
   if (!token) return <AccessDenied />;
 
   const { slug } = await params;
-  const query = await searchParams;
 
-  const page = Number(query.page) || 1;
-  const limit = Number(query.limit) || 10;
-  const search = query.search || "";
+  const searchQueryParams = await searchParams;
+
+  const page = Number(searchQueryParams?.page || 1);
+  const limit = Number(searchQueryParams?.limit || 10);
+  const search = searchQueryParams?.search || "";
 
   let data;
   try {

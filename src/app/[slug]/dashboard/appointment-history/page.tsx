@@ -38,7 +38,7 @@ export default async function AppointmentHistoryPage({
   const statusFiltered =
     status === "CANCELED" || status === "COMPLETED" ? status : undefined;
 
-  const [history, services] = await Promise.all([
+  const [history, { services }] = await Promise.all([
     fetchAppointmentHistory({
       token,
       page,

@@ -21,7 +21,8 @@ export default async function CreateServicePage({
   let categories: Category[] = [];
 
   try {
-    categories = await fetchCategories(token);
+    const res = await fetchCategories(token);
+    categories = res.categories; // extrai o array categories
   } catch {
     categories = [];
   }
