@@ -16,3 +16,4 @@ export * from "./businessHour";
 export * from "./createBusinessHourInput";
 export * from "./appointmentHistory";
 export * from "./serviceOnProfessional";
+export * from "./images";
