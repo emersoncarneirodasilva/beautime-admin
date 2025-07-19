@@ -33,8 +33,12 @@ export default function DeleteNotificationButton({
       } else {
         router.push(`/${slug}/dashboard/notifications`);
       }
-    } catch (error: any) {
-      alert(`Falha ao excluir notificação: ${error.message}`);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        alert(`Falha ao excluir notificação: ${error.message}`);
+      } else {
+        alert("Falha ao excluir notificação: erro desconhecido");
+      }
       setLoading(false);
     }
   }
