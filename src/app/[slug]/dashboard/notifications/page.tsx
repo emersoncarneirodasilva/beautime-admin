@@ -3,8 +3,9 @@ import AccessDenied from "@/components/Auth/AccessDenied";
 import fetchUserById from "@/libs/api/fetchUserById";
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
 import { fetchNotifications } from "@/libs/api/fetchNotifications";
-import { NotificationType } from "@/types/notifications";
+import { NotificationsResponse, NotificationType } from "@/types/notifications";
 import { formatIsoStringRaw } from "@/utils/formatIsoStringRaw";
+import DeleteNotificationButton from "@/components/notification/DeleteNotificationButton";
 
 interface Params {
   slug: string;
@@ -40,7 +41,7 @@ export default async function NotificationsPage({
       : undefined;
   const search = resolvedParams.search || "";
 
-  const { notifications } = await fetchNotifications({
+  const { notifications }: NotificationsResponse = await fetchNotifications({
     token,
     page,
     limit,
@@ -127,6 +128,24 @@ export default async function NotificationsPage({
                       <strong>📖 Status:</strong>{" "}
                       {notification.isRead ? "Lida" : "Não lida"}
                     </p>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <Link
+                      href={`/${slug}/dashboard/notifications/${notification.id}/edit`}
+                    >
+                      <button
+                        type="button"
+                        className="flex items-center gap-1 text-sm bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 hover:cursor-pointer transition"
+                      >
+                        ✏️ Atualizar
+                      </button>
+                    </Link>
+                    <DeleteNotificationButton
+                      notificationId={notification.id}
+                      slug={slug}
+                      token={token}
+                    />
                   </div>
                 </div>
               </li>
