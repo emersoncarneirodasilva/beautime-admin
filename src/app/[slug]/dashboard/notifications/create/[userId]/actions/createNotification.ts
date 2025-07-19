@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
+import { redirect } from "next/navigation";
 
 export async function createNotification(formData: FormData) {
   const token = await verifyAdminAuth();
@@ -30,4 +31,6 @@ export async function createNotification(formData: FormData) {
   }
 
   revalidatePath(`/${slug}/dashboard/notifications`);
+
+  redirect(`/${slug}/dashboard/notifications`);
 }

@@ -14,6 +14,7 @@ interface SearchParams {
   page?: string;
   limit?: string;
   isRead?: string;
+  search?: string;
 }
 
 export default async function NotificationsPage({
@@ -37,12 +38,14 @@ export default async function NotificationsPage({
       : resolvedParams.isRead === "false"
       ? false
       : undefined;
+  const search = resolvedParams.search || "";
 
   const { notifications } = await fetchNotifications({
     token,
     page,
     limit,
     isRead,
+    search,
   });
 
   return (
@@ -76,6 +79,14 @@ export default async function NotificationsPage({
           <option value="10">10 por página</option>
           <option value="20">20 por página</option>
         </select>
+
+        <input
+          type="search"
+          name="search"
+          placeholder="Buscar por mensagem ou cliente"
+          defaultValue={search}
+          className="border px-3 py-2 rounded bg-black text-white w-64"
+        />
 
         <button
           type="submit"
@@ -125,29 +136,31 @@ export default async function NotificationsPage({
       </ul>
 
       <div className="flex justify-between mt-6">
-        <Link
-          href={`?page=${page - 1}&limit=${limit}&isRead=${
-            resolvedParams.isRead || ""
-          }`}
-          className={`px-4 py-2 rounded bg-gray-500 hover:bg-gray-600 ${
-            page === 1 ? "opacity-50 pointer-events-none" : ""
-          }`}
-        >
-          Anterior
-        </Link>
+        {
+          page > 1 ? (
+            <Link
+              href={`?page=${page - 1}&limit=${limit}&isRead=${
+                resolvedParams.isRead || ""
+              }&search=${encodeURIComponent(search)}`}
+              className="px-4 py-2 rounded bg-gray-500 hover:bg-gray-600"
+            >
+              Anterior
+            </Link>
+          ) : (
+            <div></div>
+          ) /* Espaço vazio para manter o alinhamento */
+        }
 
-        <Link
-          href={`?page=${page + 1}&limit=${limit}&isRead=${
-            resolvedParams.isRead || ""
-          }`}
-          className={`px-4 py-2 rounded bg-gray-500 hover:bg-gray-600 ${
-            page >= notifications.totalPages
-              ? "opacity-50 pointer-events-none"
-              : ""
-          }`}
-        >
-          Próxima
-        </Link>
+        {page < notifications.totalPages && (
+          <Link
+            href={`?page=${page + 1}&limit=${limit}&isRead=${
+              resolvedParams.isRead || ""
+            }&search=${encodeURIComponent(search)}`}
+            className="px-4 py-2 rounded bg-gray-500 hover:bg-gray-600"
+          >
+            Próxima
+          </Link>
+        )}
       </div>
     </main>
   );

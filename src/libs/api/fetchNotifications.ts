@@ -5,15 +5,18 @@ export async function fetchNotifications({
   page = 1,
   limit = 10,
   isRead,
+  search,
 }: {
   token: string;
   page?: number;
   limit?: number;
   isRead?: boolean;
+  search?: string;
 }): Promise<NotificationsResponse> {
   const params = new URLSearchParams({
     page: String(page),
     limit: String(limit),
+    search: search || "",
   });
 
   if (isRead !== undefined) {

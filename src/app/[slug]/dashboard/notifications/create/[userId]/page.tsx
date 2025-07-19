@@ -6,6 +6,13 @@ import Link from "next/link";
 import fetchUserById from "@/libs/api/fetchUserById";
 import { createNotification } from "./actions/createNotification";
 
+const statusMap: Record<string, string> = {
+  PENDING: "Pendente",
+  CONFIRMED: "Confirmado",
+  CANCELED: "Cancelado",
+  COMPLETED: "Concluído",
+};
+
 type Params = { slug: string; userId: string };
 
 export default async function CreateNotificationPage({
@@ -53,12 +60,23 @@ export default async function CreateNotificationPage({
             className="w-full p-2 bg-black border rounded"
           >
             <option value="">Selecione um agendamento</option>
-            {appointments.map((a) => (
-              <option key={a.id} value={a.id}>
-                {new Date(a.scheduledAt).toLocaleString("pt-BR")} – Status:{" "}
-                {a.status}
-              </option>
-            ))}
+            {appointments.map((a) => {
+              const date = new Date(a.scheduledAt);
+              const datePart = date.toLocaleDateString("pt-BR"); // ex: 04/06/2025
+              const timePart = date.toLocaleTimeString("pt-BR", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false,
+              });
+
+              return (
+                <option key={a.id} value={a.id}>
+                  {datePart}, {timePart} – Status:{" "}
+                  {statusMap[a.status] || a.status} – Serviços:{" "}
+                  {a.services.map((s) => s.service.name).join(", ")}
+                </option>
+              );
+            })}
           </select>
         </div>
 
