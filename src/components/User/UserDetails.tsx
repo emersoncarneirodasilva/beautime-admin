@@ -8,11 +8,11 @@ import { useSalon } from "@/context/SalonContext";
 import { deleteUser } from "@/libs/api/deleteUser";
 import { getUserIdFromToken } from "@/utils/getUserIdFromToken";
 
-type Props = {
+interface Props {
   user: UserType;
   token: string;
   slug: string;
-};
+}
 
 export default function UserDetails({ user, token, slug }: Props) {
   const salon = useSalon();
@@ -24,7 +24,6 @@ export default function UserDetails({ user, token, slug }: Props) {
     const confirm = window.confirm(
       "Tem certeza que deseja excluir este usuário?"
     );
-
     if (!confirm) return;
 
     try {
@@ -36,23 +35,27 @@ export default function UserDetails({ user, token, slug }: Props) {
   };
 
   return (
-    <div className="max-w-xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Detalhes do Usuário</h1>
-      <ul className="space-y-2">
+    <div className="max-w-2xl mx-auto mt-10 bg-zinc-900 text-zinc-100 p-6 rounded-2xl shadow-lg">
+      <h1 className="text-3xl font-semibold mb-6 border-b border-zinc-700 pb-3">
+        Detalhes do Usuário
+      </h1>
+
+      <ul className="space-y-3 text-lg">
         <li>
-          <strong>ID:</strong> {user.id}
+          <span className="text-zinc-400">ID:</span> {user.id}
         </li>
         <li>
-          <strong>Nome:</strong> {user.name}
+          <span className="text-zinc-400">Nome:</span> {user.name}
         </li>
         <li>
-          <strong>Telefone:</strong> {user.phone || "Não informado"}
+          <span className="text-zinc-400">Telefone:</span>{" "}
+          {user.phone || "Não informado"}
         </li>
         <li>
-          <strong>Email:</strong> {user.email}
+          <span className="text-zinc-400">Email:</span> {user.email}
         </li>
         <li>
-          <strong>Função:</strong>{" "}
+          <span className="text-zinc-400">Função:</span>{" "}
           {salon.createdBy === user.id
             ? "Dono"
             : user.role === "ADMIN"
@@ -62,7 +65,7 @@ export default function UserDetails({ user, token, slug }: Props) {
       </ul>
 
       {isOwner && user.id !== loggedUserId && (
-        <div className="flex items-center gap-4">
+        <div className="mt-6 flex flex-wrap gap-4 items-center">
           <RoleToggleButton
             userId={user.id}
             initialRole={user.role}
@@ -71,22 +74,28 @@ export default function UserDetails({ user, token, slug }: Props) {
 
           <button
             onClick={handleDelete}
-            className="mt-6 px-6 py-2 rounded-md bg-red-500 text-white hover:bg-red-600 hover:cursor-pointer transition"
+            className="px-6 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 hover:cursor-pointer transition"
           >
             Excluir Usuário
           </button>
         </div>
       )}
 
-      <div className="flex gap-6">
+      <div className="mt-10 flex flex-wrap gap-4">
         <Link href={`/${slug}/dashboard/users`}>
-          <button className="px-6 py-2 mt-8 rounded-md bg-blue-500 text-white hover:bg-blue-600 hover:cursor-pointer transition">
+          <button className="px-6 py-2 rounded-lg bg-zinc-700 hover:bg-zinc-600 hover:cursor-pointer transition">
             Voltar
           </button>
         </Link>
 
+        <Link href={`/${slug}/dashboard/users/${user.id}/edit`}>
+          <button className="px-6 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 hover:cursor-pointer transition">
+            Atualizar
+          </button>
+        </Link>
+
         <Link href={`/${slug}/dashboard/notifications/create/${user.id}`}>
-          <button className="px-6 py-2 mt-8 rounded-md bg-green-500 text-white hover:bg-green-600 hover:cursor-pointer transition">
+          <button className="px-5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 hover:cursor-pointer transition">
             Criar Notificação
           </button>
         </Link>

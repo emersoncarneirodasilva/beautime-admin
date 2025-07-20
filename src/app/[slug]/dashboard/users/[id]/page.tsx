@@ -5,7 +5,10 @@ import ErrorSection from "@/components/Error/ErrorSection";
 import UserDetails from "@/components/User/UserDetails";
 import { UserType } from "@/types";
 
-type Params = { slug: string; id: string };
+interface Params {
+  slug: string;
+  id: string;
+}
 
 export default async function UserPage({
   params,

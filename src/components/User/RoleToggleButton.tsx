@@ -55,7 +55,7 @@ export default function RoleToggleButton({
         <button
           onClick={handlePromote}
           disabled={loading}
-          className="mt-6 bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 hover:cursor-pointer"
+          className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 hover:cursor-pointer"
         >
           {loading ? "Promovendo..." : "Promover a Admin"}
         </button>
@@ -65,7 +65,7 @@ export default function RoleToggleButton({
         <button
           onClick={handleDemote}
           disabled={loading}
-          className="mt-6 bg-yellow-600 text-white px-6 py-2 rounded hover:bg-yellow-700 hover:cursor-pointer"
+          className="bg-yellow-600 text-white px-6 py-2 rounded-lg hover:bg-yellow-700 hover:cursor-pointer"
         >
           {loading ? "Rebaixando..." : "Rebaixar para Usuário"}
         </button>
