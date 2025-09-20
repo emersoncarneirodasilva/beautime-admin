@@ -1,10 +1,3 @@
-export interface AppointmentHistoryResponse {
-  total: number;
-  currentPage: number;
-  totalPages: number;
-  appointmentsHistory: AppointmentHistoryType[];
-}
-
 export interface AppointmentHistoryType {
   id: string;
   originalId: string;
@@ -21,5 +14,7 @@ export interface AppointmentHistoryType {
     appointmentId: string;
     serviceId: string;
     professionalId: string;
+    price: number;
+    duration: number;
   }[];
 }

@@ -2,6 +2,7 @@ import Link from "next/link";
 import AccessDenied from "@/components/Auth/AccessDenied";
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
 import { Service } from "@/types";
+import { formatCurrency } from "@/utils/formatCurrency";
 
 interface Params {
   slug: string;
@@ -123,7 +124,7 @@ export default async function ServicesPage({
                   {service.category?.name}
                 </p>
                 <p className="text-green-700 font-medium mt-2">
-                  💰 R$ {service.price.toFixed(2)} — ⏱ {service.duration} min
+                  💰 {formatCurrency(service.price)} — ⏱ {service.duration} min
                 </p>
               </div>
 

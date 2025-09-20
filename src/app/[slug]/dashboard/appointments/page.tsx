@@ -4,6 +4,7 @@ import { fetchAppointments } from "@/libs/api/fetchAppointments";
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
 import { formatIsoStringRaw } from "@/utils/formatIsoStringRaw";
 import { Appointment, AppointmentResponse } from "@/types";
+import { formatCurrency } from "@/utils/formatCurrency";
 
 interface Params {
   slug: string;
@@ -77,8 +78,6 @@ export default async function AppointmentsPage(props: {
           <option value="">Todos os Status</option>
           <option value="PENDING">Pendente</option>
           <option value="CONFIRMED">Confirmado</option>
-          <option value="CANCELED">Cancelado</option>
-          <option value="COMPLETED">Concluído</option>
         </select>
 
         <select
@@ -101,7 +100,6 @@ export default async function AppointmentsPage(props: {
           <option value="5">5 por página</option>
           <option value="10">10 por página</option>
           <option value="20">20 por página</option>
-          <option value="50">50 por página</option>
         </select>
 
         <button
@@ -136,8 +134,8 @@ export default async function AppointmentsPage(props: {
                     <strong>Status:</strong> {appointment.status}
                   </p>
                   <p>
-                    <strong>Pagamento:</strong> {appointment.payment.status} –
-                    R$ {appointment.payment.amount}
+                    <strong>Pagamento:</strong> {appointment.payment.status} –{" "}
+                    {formatCurrency(appointment.payment.amount)}
                   </p>
                   <p>
                     <strong>Método:</strong> {appointment.payment.method}
@@ -152,11 +150,12 @@ export default async function AppointmentsPage(props: {
               </div>
 
               <div>
-                <strong>Serviços:</strong>
+                <strong>Serviço:</strong>
                 <ul className="list-disc list-inside">
                   {appointment.services.map((s) => (
                     <li key={s.id}>
-                      {s.service.name} – {s.professional.name}
+                      {s.service.name} ({s.service.duration} min) –{" "}
+                      {s.professional.name}
                     </li>
                   ))}
                 </ul>

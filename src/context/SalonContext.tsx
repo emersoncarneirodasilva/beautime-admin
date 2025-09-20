@@ -19,7 +19,9 @@ export const useSalon = () => {
   const context = useContext(SalonContext);
 
   if (!context) {
-    throw new Error("useSalon must be used within a SalonProvider");
+    throw new Error(
+      "Não conseguimos acessar as informações do salão no momento. Tente atualizar a página."
+    );
   }
 
   return context;

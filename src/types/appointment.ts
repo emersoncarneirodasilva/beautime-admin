@@ -70,3 +70,14 @@ export type Appointment = {
     createdAt: string;
   };
 };
+
+export type AppointmentService = {
+  serviceId: string;
+  quantity?: number;
+  service?: {
+    id: string;
+    name: string;
+    price: number;
+    duration: number;
+  };
+};
