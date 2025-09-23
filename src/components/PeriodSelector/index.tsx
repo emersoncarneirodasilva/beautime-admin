@@ -9,9 +9,13 @@ export default function PeriodSelector() {
 
   // valores iniciais vindos da URL ou padrão
   const initialType =
-    (searchParams.get("periodType") as "WEEK" | "MONTH" | "YEAR") || "YEAR";
+    (searchParams.get("periodType") as "WEEK" | "MONTH" | "YEAR") || "MONTH";
   const initialValue =
-    searchParams.get("periodValue") || new Date().getFullYear().toString();
+    searchParams.get("periodValue") ||
+    `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(
+      2,
+      "0"
+    )}`;
 
   const [periodType, setPeriodType] = useState<"WEEK" | "MONTH" | "YEAR">(
     initialType
@@ -90,7 +94,7 @@ export default function PeriodSelector() {
           type="week"
           value={periodValue}
           onChange={(e) => setPeriodValue(e.target.value)}
-          className="border px-2 py-1 rounded"
+          className="border px-2 py-1 rounded bg-white text-black"
         />
       )}
       {periodType === "MONTH" && (
@@ -98,7 +102,7 @@ export default function PeriodSelector() {
           type="month"
           value={periodValue}
           onChange={(e) => setPeriodValue(e.target.value)}
-          className="border px-2 py-1 rounded"
+          className="border px-2 py-1 rounded bg-white text-black"
         />
       )}
       {periodType === "YEAR" && (
@@ -106,13 +110,13 @@ export default function PeriodSelector() {
           type="number"
           value={periodValue}
           onChange={(e) => setPeriodValue(e.target.value)}
-          className="border px-2 py-1 rounded"
+          className="border px-2 py-1 rounded bg-white text-black"
         />
       )}
 
       <button
         onClick={applyFilter}
-        className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700"
+        className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 cursor-pointer"
       >
         Aplicar
       </button>

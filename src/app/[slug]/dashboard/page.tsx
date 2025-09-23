@@ -12,13 +12,17 @@ import { fetchProfessionals } from "@/libs/api/fetchProfessionals";
 import {
   AppointmentHistoryType,
   AppointmentResponse,
-  AppointmentService,
   UserType,
   Service,
   ProfessionalType,
   SalonType,
 } from "@/types";
 import PeriodSelector from "@/components/PeriodSelector";
+import { filterByPeriod } from "@/utils/filterByPeriod";
+import {
+  calculateCompletedRevenue,
+  calculateExpectedRevenue,
+} from "@/utils/dashboardMetrics";
 
 interface DashboardProps {
   searchParams?: Promise<{
@@ -29,13 +33,12 @@ interface DashboardProps {
 
 export default async function DashboardPage({ searchParams }: DashboardProps) {
   const token = await verifyAdminAuth();
-  if (!token) return <AccessDenied />;
 
   const admin = await getUserFromToken();
-  if (!admin) return <AccessDenied />;
 
   const salon: SalonType | null = await fetchSalonByAdmin(token);
-  if (!salon) return <AccessDenied />;
+
+  if (!token || !admin || !salon) return <AccessDenied />;
 
   // Fetch dos dados
   const usersData: { users: UserType[]; total: number } = await fetchUsers({
@@ -92,53 +95,17 @@ export default async function DashboardPage({ searchParams }: DashboardProps) {
 
   const adminName: string = getFirstName(admin.name);
 
-  // Período padrão: anual
+  // Período padrão: mensal (mês atual)
   const queryParams = searchParams ? await searchParams : {};
   const periodType: "WEEK" | "MONTH" | "YEAR" =
-    (queryParams.periodType as "WEEK" | "MONTH" | "YEAR") || "YEAR";
+    (queryParams.periodType as "WEEK" | "MONTH" | "YEAR") || "MONTH";
 
   const periodValue: string =
-    queryParams.periodValue || new Date().getFullYear().toString();
-
-  // Função para filtrar por período
-  function filterByPeriod<T, K extends keyof T>(
-    items: T[],
-    type: "WEEK" | "MONTH" | "YEAR",
-    value: string,
-    dateField: K
-  ): T[] {
-    return items.filter((item) => {
-      const rawValue = item[dateField];
-      if (!rawValue) return false;
-
-      const date = new Date(String(rawValue));
-
-      if (type === "WEEK") {
-        const [year, week] = value.split("-W").map(Number);
-        const firstDayOfYear = new Date(year, 0, 1);
-        const dayOfYear =
-          Math.floor(
-            (date.getTime() - firstDayOfYear.getTime()) / (24 * 60 * 60 * 1000)
-          ) + 1;
-        const currentWeek = Math.ceil(dayOfYear / 7);
-        return date.getFullYear() === year && currentWeek === week;
-      }
-
-      if (type === "MONTH") {
-        const [year, month] = value.split("-").map(Number);
-        const startDate = new Date(year, month - 1, 1);
-        const endDate = new Date(year, month, 0, 23, 59, 59, 999);
-        return date >= startDate && date <= endDate;
-      }
-
-      if (type === "YEAR") {
-        const year = Number(value);
-        return date.getFullYear() === year;
-      }
-
-      return true;
-    });
-  }
+    queryParams.periodValue ||
+    `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(
+      2,
+      "0"
+    )}`;
 
   // Filtrar agendamentos
   const filteredCompleted = filterByPeriod(
@@ -162,24 +129,9 @@ export default async function DashboardPage({ searchParams }: DashboardProps) {
     "scheduledAt"
   );
 
-  // Faturamento realizado (concluídos)
-  const completedRevenue: number = filteredCompleted.reduce(
-    (acc: number, appt: AppointmentHistoryType) =>
-      acc + appt.services.reduce((sum: number, s) => sum + s.price, 0),
-    0
-  );
-
-  // Faturamento previsto (ativos confirmados)
-  const expectedRevenue: number = filteredActive
-    .filter((a) => a.status === "CONFIRMED")
-    .reduce((acc: number, a) => {
-      if (a.payment?.amount) return acc + a.payment.amount;
-      const totalAppt = a.services.reduce(
-        (sum: number, s: AppointmentService) => sum + (s.service?.price || 0),
-        0
-      );
-      return acc + totalAppt;
-    }, 0);
+  // Faturamento
+  const completedRevenue = calculateCompletedRevenue(filteredCompleted);
+  const expectedRevenue = calculateExpectedRevenue(filteredActive);
 
   const periodLabel: string =
     periodType === "WEEK"

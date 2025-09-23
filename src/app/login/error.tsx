@@ -1,20 +1,11 @@
+// app/login/error.tsx
 "use client";
 
-import { useEffect, useState } from "react";
-
-export default function LoginError({ error }: { error: Error }) {
-  const [show, setShow] = useState(false);
-
-  useEffect(() => {
-    setShow(true);
-  }, []);
-
-  if (!show) return null;
-
+export default function LoginError() {
   return (
     <section className="grid place-items-center min-h-screen">
       <div className="p-8 bg-red-200 text-red-800 rounded">
-        <p>Erro no login: {error.message}</p>
+        <p>Erro no login: E-mail ou senha inválidos.</p>
         <button
           onClick={() => window.location.reload()}
           className="underline mt-4 cursor-pointer"
