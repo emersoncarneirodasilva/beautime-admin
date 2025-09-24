@@ -5,6 +5,7 @@ import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
 import { getUserFromToken } from "@/libs/auth/getUserFromToken";
 import { getFirstName } from "@/utils/getFirstName";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export default async function DashboardLayout({
   children,
@@ -16,7 +17,7 @@ export default async function DashboardLayout({
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
 
-  if (!token) throw new Error("Token não encontrado nos cookies");
+  if (!token) redirect("/login");
 
   const salon = await fetchSalonByAdmin(token);
 

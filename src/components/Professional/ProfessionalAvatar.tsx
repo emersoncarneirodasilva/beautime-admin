@@ -11,6 +11,7 @@ interface ProfessionalAvatarProps {
   className?: string;
 }
 
+// Domínios permitidos para imagens externas
 const allowedDomains = [
   "images.pexels.com",
   "images.unsplash.com",
@@ -27,10 +28,21 @@ export default function ProfessionalAvatar({
   const validImageUrl = useMemo(() => {
     if (!src) return null;
 
+    // Permite URLs relativas
+    if (src.startsWith("/")) return src;
+
     try {
       const url = new URL(src);
-      return allowedDomains.includes(url.hostname) ? src : null;
+
+      // Permite subdomínios dos domínios autorizados
+      const isAllowed = allowedDomains.some(
+        (domain) =>
+          url.hostname === domain || url.hostname.endsWith(`.${domain}`)
+      );
+
+      return isAllowed ? src : null;
     } catch {
+      // URL inválida cai no fallback
       return null;
     }
   }, [src]);
@@ -46,6 +58,8 @@ export default function ProfessionalAvatar({
       width={width}
       height={height}
       className={className}
+      placeholder="blur"
+      blurDataURL="/images/default-avatar.png"
       onError={() => setImgSrc("/images/default-avatar.png")}
     />
   );

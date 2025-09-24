@@ -6,14 +6,16 @@ import { useRouter } from "next/navigation";
 export default function GlobalError({ error, reset }: GlobalErrorProps) {
   const router = useRouter();
 
+  console.error("Global error:", error);
+
   return (
     <section className="grid place-items-center min-h-screen text-center px-4">
       <div className="p-8 bg-red-100 text-red-800 rounded shadow max-w-md">
         <h2 className="text-xl font-semibold mb-2">Erro inesperado</h2>
         <p className="mb-4">
-          Algo deu errado durante o carregamento da página.
+          Algo deu errado durante o carregamento da página. Por favor, tente
+          novamente mais tarde.
         </p>
-        <p className="mb-4 text-sm text-red-600">{error.message}</p>
 
         <div className="flex flex-col items-center justify-center gap-2">
           <button

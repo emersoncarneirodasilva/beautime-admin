@@ -7,7 +7,6 @@ import { fetchAppointmentHistory } from "@/libs/api/fetchAppointmentHistory";
 import { getUserFromToken } from "@/libs/auth/getUserFromToken";
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
 import { getFirstName } from "@/utils/getFirstName";
-import { formatCurrency } from "@/utils/formatCurrency";
 import { fetchProfessionals } from "@/libs/api/fetchProfessionals";
 import {
   AppointmentHistoryType,
@@ -23,6 +22,9 @@ import {
   calculateCompletedRevenue,
   calculateExpectedRevenue,
 } from "@/utils/dashboardMetrics";
+import RevenueChart from "@/components/Dashboard/RevenueChart";
+import AppointmentsChart from "@/components/Dashboard/AppointmentsChart";
+import GeneralStatsCards from "@/components/Dashboard/GeneralStatsCards";
 
 interface DashboardProps {
   searchParams?: Promise<{
@@ -152,61 +154,33 @@ export default async function DashboardPage({ searchParams }: DashboardProps) {
       {/* Período */}
       <PeriodSelector />
 
-      {/* Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-        <div className="bg-white rounded-xl shadow p-4">
-          <h2 className="text-gray-500 text-sm font-medium">Usuários</h2>
-          <p className="text-2xl font-bold text-gray-600">{totalUsers}</p>
-        </div>
-        <div className="bg-white rounded-xl shadow p-4">
-          <h2 className="text-gray-500 text-sm font-medium">Administradores</h2>
-          <p className="text-2xl font-bold text-gray-600">{totalAdmins}</p>
-        </div>
-        <div className="bg-white rounded-xl shadow p-4">
-          <h2 className="text-gray-500 text-sm font-medium">Serviços</h2>
-          <p className="text-2xl font-bold text-gray-600">
-            {servicesData.total}
-          </p>
-        </div>
-        <div className="bg-white rounded-xl shadow p-4">
-          <h2 className="text-gray-500 text-sm font-medium">Profissionais</h2>
-          <p className="text-2xl font-bold text-gray-600">
-            {professionalsData.total}
-          </p>
-        </div>
-        <div className="bg-white rounded-xl shadow p-4">
-          <h2 className="text-gray-500 text-sm font-medium">
-            Agendamentos Ativos
-          </h2>
-          <p className="text-2xl font-bold text-gray-600">
-            {filteredActive.length}
-          </p>
-        </div>
-        <div className="bg-white rounded-xl shadow p-4">
-          <h2 className="text-gray-500 text-sm font-medium">Concluídos</h2>
-          <p className="text-2xl font-bold text-gray-600">
-            {filteredCompleted.length}
-          </p>
-        </div>
-        <div className="bg-white rounded-xl shadow p-4">
-          <h2 className="text-gray-500 text-sm font-medium">Cancelados</h2>
-          <p className="text-2xl font-bold text-gray-600">
-            {filteredCanceled.length}
-          </p>
-        </div>
+      {/* Gráfico de Estatísticas Gerais */}
+      <div className="bg-white rounded-xl shadow p-6 mb-6">
+        <GeneralStatsCards
+          users={totalUsers}
+          admins={totalAdmins}
+          services={servicesData.total}
+          professionals={professionalsData.total}
+        />
       </div>
 
-      {/* Faturamento */}
+      {/* Gráfico de Agendamentos */}
+      <div className="bg-white rounded-xl shadow p-6 mb-6">
+        <AppointmentsChart
+          active={filteredActive.length}
+          completed={filteredCompleted.length}
+          canceled={filteredCanceled.length}
+          periodLabel={periodLabel}
+        />
+      </div>
+
+      {/* Gráfico de Faturamento */}
       <div className="bg-white rounded-xl shadow p-6">
-        <h2 className="text-gray-500 text-sm font-medium mb-2">
-          Faturamento ({periodLabel})
-        </h2>
-        <p className="text-xl font-bold text-green-600">
-          Realizado: {formatCurrency(completedRevenue)}
-        </p>
-        <p className="text-xl font-bold text-blue-600">
-          Previsto: {formatCurrency(expectedRevenue)}
-        </p>
+        <RevenueChart
+          completedRevenue={completedRevenue}
+          expectedRevenue={expectedRevenue}
+          periodLabel={periodLabel}
+        />
       </div>
     </div>
   );
