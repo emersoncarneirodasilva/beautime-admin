@@ -1,26 +1,23 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 export default function PeriodSelector() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // valores iniciais vindos da URL ou padrão
-  const initialType =
-    (searchParams.get("periodType") as "WEEK" | "MONTH" | "YEAR") || "MONTH";
-  const initialValue =
-    searchParams.get("periodValue") ||
-    `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(
-      2,
-      "0"
-    )}`;
-
+  const [isPending, startTransition] = useTransition(); // <-- useTransition
   const [periodType, setPeriodType] = useState<"WEEK" | "MONTH" | "YEAR">(
-    initialType
+    (searchParams.get("periodType") as "WEEK" | "MONTH" | "YEAR") || "MONTH"
   );
-  const [periodValue, setPeriodValue] = useState(initialValue);
+  const [periodValue, setPeriodValue] = useState(
+    searchParams.get("periodValue") ||
+      `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(
+        2,
+        "0"
+      )}`
+  );
 
   // Atualiza valor padrão quando muda o tipo
   useEffect(() => {
@@ -36,7 +33,6 @@ export default function PeriodSelector() {
     }
   }, [periodType]);
 
-  // Função auxiliar: calcula semana ISO
   function getWeekNumber(date: Date) {
     const d = new Date(
       Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
@@ -47,12 +43,14 @@ export default function PeriodSelector() {
     return Math.ceil(((+d - +yearStart) / 86400000 + 1) / 7);
   }
 
-  // Submeter sem reload
   function applyFilter() {
     const params = new URLSearchParams();
     params.set("periodType", periodType);
     params.set("periodValue", periodValue);
-    router.push(`?${params.toString()}`);
+
+    startTransition(() => {
+      router.push(`?${params.toString()}`);
+    });
   }
 
   return (
@@ -65,6 +63,7 @@ export default function PeriodSelector() {
             value="WEEK"
             checked={periodType === "WEEK"}
             onChange={() => setPeriodType("WEEK")}
+            disabled={isPending}
           />{" "}
           Semanal
         </label>
@@ -74,6 +73,7 @@ export default function PeriodSelector() {
             value="MONTH"
             checked={periodType === "MONTH"}
             onChange={() => setPeriodType("MONTH")}
+            disabled={isPending}
           />{" "}
           Mensal
         </label>
@@ -83,6 +83,7 @@ export default function PeriodSelector() {
             value="YEAR"
             checked={periodType === "YEAR"}
             onChange={() => setPeriodType("YEAR")}
+            disabled={isPending}
           />{" "}
           Anual
         </label>
@@ -95,6 +96,7 @@ export default function PeriodSelector() {
           value={periodValue}
           onChange={(e) => setPeriodValue(e.target.value)}
           className="border px-2 py-1 rounded bg-white text-black"
+          disabled={isPending}
         />
       )}
       {periodType === "MONTH" && (
@@ -103,6 +105,7 @@ export default function PeriodSelector() {
           value={periodValue}
           onChange={(e) => setPeriodValue(e.target.value)}
           className="border px-2 py-1 rounded bg-white text-black"
+          disabled={isPending}
         />
       )}
       {periodType === "YEAR" && (
@@ -111,14 +114,20 @@ export default function PeriodSelector() {
           value={periodValue}
           onChange={(e) => setPeriodValue(e.target.value)}
           className="border px-2 py-1 rounded bg-white text-black"
+          disabled={isPending}
         />
       )}
 
       <button
         onClick={applyFilter}
-        className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 cursor-pointer"
+        className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 cursor-pointer flex items-center gap-2"
+        disabled={isPending}
       >
-        Aplicar
+        {isPending ? (
+          <span className="animate-pulse">Carregando...</span>
+        ) : (
+          "Aplicar"
+        )}
       </button>
     </div>
   );

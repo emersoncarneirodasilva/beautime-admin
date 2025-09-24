@@ -54,7 +54,12 @@ export default function AppointmentsChart({
       },
       legend: {
         position: "bottom",
-        labels: { color: "#6b7280" },
+        labels: {
+          color: "#6b7280",
+          usePointStyle: true, // <--- faz os retângulos virarem círculos
+          pointStyle: "circle", // opcional, por padrão é circle
+          padding: 20, // aumenta o espaçamento se quiser
+        },
       },
       tooltip: {
         backgroundColor: "#1f2937",

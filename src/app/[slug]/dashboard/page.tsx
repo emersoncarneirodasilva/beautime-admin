@@ -154,7 +154,7 @@ export default async function DashboardPage({ searchParams }: DashboardProps) {
       {/* Período */}
       <PeriodSelector />
 
-      {/* Gráfico de Estatísticas Gerais */}
+      {/* Cards de Estatísticas Gerais */}
       <div className="bg-white rounded-xl shadow p-6 mb-6">
         <GeneralStatsCards
           users={totalUsers}

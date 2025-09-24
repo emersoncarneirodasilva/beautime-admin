@@ -34,14 +34,21 @@ export default function RevenueChart({
   periodLabel,
 }: RevenueChartProps) {
   const data: ChartData<"bar", number[], string> = {
-    labels: ["Realizado", "Previsto"],
+    labels: ["Faturamento"],
     datasets: [
       {
-        label: "Faturamento",
-        data: [completedRevenue ?? 0, expectedRevenue ?? 0],
-        backgroundColor: ["rgba(16, 185, 129, 0.8)", "rgba(59, 130, 246, 0.8)"],
+        label: "Realizado",
+        data: [completedRevenue ?? 0],
+        backgroundColor: "rgba(16, 185, 129, 0.8)",
         borderRadius: 6,
-        barThickness: 50,
+        barPercentage: 0.33,
+      },
+      {
+        label: "Previsto",
+        data: [expectedRevenue ?? 0],
+        backgroundColor: "rgba(59, 130, 246, 0.8)",
+        borderRadius: 6,
+        barPercentage: 0.33,
       },
     ],
   };
@@ -50,45 +57,35 @@ export default function RevenueChart({
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { display: false },
+      legend: { position: "bottom", labels: { color: "#6b7280" } },
       title: {
         display: true,
         text: `Faturamento (${periodLabel})`,
         font: { size: 18, weight: "bold" },
         color: "#374151",
-        padding: { top: 10, bottom: 20 },
       },
       tooltip: {
-        backgroundColor: "#1f2937",
-        titleColor: "#f9fafb",
-        bodyColor: "#f9fafb",
-        borderColor: "#4b5563",
-        borderWidth: 1,
-        padding: 10,
-        cornerRadius: 6,
         callbacks: {
-          label: (tooltipItem) =>
-            `R$ ${Number(tooltipItem.raw || 0).toLocaleString("pt-BR")}`,
+          label: (tooltipItem) => {
+            const value = tooltipItem.raw || 0;
+            const datasetLabel = tooltipItem.dataset.label; // "Realizado" ou "Previsto"
+            return `${datasetLabel}: R$ ${Number(value).toLocaleString(
+              "pt-BR"
+            )}`;
+          },
         },
       },
     },
     scales: {
       y: {
         beginAtZero: true,
-        ticks: {
-          color: "#6b7280",
-          callback: (val) => `R$ ${val}`,
-        },
+        ticks: { color: "#6b7280", callback: (val) => `R$ ${val}` },
         grid: { color: "#e5e7eb" },
       },
       x: {
-        ticks: { color: "#6b7280", font: { size: 14 } },
+        ticks: { display: false }, // remove os números/textos no eixo x
         grid: { display: false },
       },
-    },
-    animation: {
-      duration: 1200,
-      easing: "easeOutQuart",
     },
   };
 
