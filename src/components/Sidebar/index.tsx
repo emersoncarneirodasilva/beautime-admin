@@ -8,11 +8,11 @@ export default async function Sidebar({ params }: { params: Promise<Params> }) {
   const { slug } = await params;
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-64 bg-gray-900 text-white flex flex-col shadow-lg">
-      <div className="px-6 py-4 border-b border-gray-700">
-        <h2 className="text-xl font-bold">Menu</h2>
-      </div>
-
+    <aside
+      className="fixed left-0 top-16 h-[calc(100vh-64px)] w-64 
+      bg-[var(--color-gray-light)] dark:bg-[var(--color-gray-dark)] 
+      text-[var(--foreground)] flex flex-col shadow-lg transition-colors"
+    >
       <nav className="flex-1 flex flex-col gap-1 p-4 overflow-y-auto">
         <Link
           href={`/${slug}/dashboard`}

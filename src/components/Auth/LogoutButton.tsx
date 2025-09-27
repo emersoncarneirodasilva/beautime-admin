@@ -7,7 +7,13 @@ export default function LogoutButton() {
     <form action={handleLogout}>
       <button
         type="submit"
-        className="px-4 py-2 rounded bg-red-500 text-white hover:bg-red-600 hover:cursor-pointer transition"
+        className="
+          px-4 py-2 rounded-md
+          bg-[var(--color-error)] hover:bg-[#c92f3b]
+          text-primary font-semibold
+          shadow-sm hover:shadow-md
+          transition-all duration-300 ease-in-out cursor-pointer
+        "
       >
         Sair
       </button>

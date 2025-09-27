@@ -28,7 +28,7 @@ export default async function DashboardLayout({
     <SalonProvider salon={salon}>
       <Navbar salonName={salon.name} adminName={adminName} />
       <Sidebar params={params} />
-      <main className="ml-64 mt-16 p-6">{children}</main>
+      <main className="ml-64 p-6">{children}</main>
     </SalonProvider>
   );
 }
