@@ -144,7 +144,7 @@ export default async function DashboardPage({ searchParams }: DashboardProps) {
 
   return (
     <div className="max-w-7xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-2">Visão Geral</h1>
       <p className="text-gray-600 mb-6">
         Bem-vindo(a) <span className="font-semibold">{adminName}</span> ao
         painel de administração do{" "}
@@ -164,23 +164,25 @@ export default async function DashboardPage({ searchParams }: DashboardProps) {
         />
       </div>
 
-      {/* Gráfico de Agendamentos */}
-      <div className="bg-white rounded-xl shadow p-6 mb-6">
-        <AppointmentsChart
-          active={filteredActive.length}
-          completed={filteredCompleted.length}
-          canceled={filteredCanceled.length}
-          periodLabel={periodLabel}
-        />
-      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Gráfico de Agendamentos */}
+        <div className="bg-white rounded-xl shadow p-6 mb-6 h-[380px]">
+          <AppointmentsChart
+            active={filteredActive.length}
+            completed={filteredCompleted.length}
+            canceled={filteredCanceled.length}
+            periodLabel={periodLabel}
+          />
+        </div>
 
-      {/* Gráfico de Faturamento */}
-      <div className="bg-white rounded-xl shadow p-6">
-        <RevenueChart
-          completedRevenue={completedRevenue}
-          expectedRevenue={expectedRevenue}
-          periodLabel={periodLabel}
-        />
+        {/* Gráfico de Faturamento */}
+        <div className="bg-white rounded-xl shadow p-6 h-[380px]">
+          <RevenueChart
+            completedRevenue={completedRevenue}
+            expectedRevenue={expectedRevenue}
+            periodLabel={periodLabel}
+          />
+        </div>
       </div>
     </div>
   );

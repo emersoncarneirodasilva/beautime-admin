@@ -1,19 +1,58 @@
 @import "tailwindcss";
 
+/* ===== Light Theme ===== */
 :root {
-  --background: #ffffff;
+  /* Primária */
+  --color-primary: #146c94;
+  --color-primary-hover: #1d7dac;
+
+  /* Secundária / detalhes */
+  --color-secondary: #d4af37;
+  --color-secondary-hover: #e0b84a;
+
+  /* Neutros claros */
+  --color-white: #ffffff;
+  --color-gray-light: #f5f5f5;
+  --color-gray-medium: #c4c4c4;
+
+  /* Texto */
   --foreground: #171717;
+  --text-secondary: #555555;
+
+  /* Status */
+  --color-success: #28a745;
+  --color-error: #e63946;
+  --color-warning: #f4a261;
+
+  /* Fundo geral */
+  --background: var(--color-white);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ===== Dark Theme ===== */
+.dark {
+  /* Texto */
+  --foreground: #ededed;
+  --text-secondary: #c4c4c4;
+
+  /* Neutros escuros */
+  --color-white: #1e1e1e; /* para card fundo */
+  --color-gray-light: #2c2c2c;
+  --color-gray-medium: #444444;
+
+  /* Fundo geral */
+  --background: #121212;
+
+  /* Primária e secundária mantêm */
+  --color-primary: #146c94;
+  --color-primary-hover: #1d7dac;
+  --color-secondary: #d4af37;
+  --color-secondary-hover: #e0b84a;
 }
 
+/* ===== Corpo ===== */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Inter", "Poppins", sans-serif;
+  transition: background 0.3s, color 0.3s;
 }
