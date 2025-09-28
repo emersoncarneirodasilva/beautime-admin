@@ -23,7 +23,7 @@ export default function Navbar({
               alt="Beautime Logo"
               width={30}
               height={30}
-              className="rounded-full"
+              className="rounded-full invisible md:visible"
               priority
             />
             {salonName && (

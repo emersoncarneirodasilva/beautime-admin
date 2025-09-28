@@ -33,9 +33,6 @@
 
   /* Fundo geral */
   --background: var(--color-white);
-
-  /* Menu / Navbar */
-  --menu-background: #f5f5f5; /* cor clara de menu */
 }
 
 /* ===== Dark Theme ===== */
@@ -84,4 +81,18 @@ h6 {
 }
 .text-primary {
   color: var(--text-white-fixed);
+}
+
+/* ===== Animações ===== */
+@keyframes slide-in {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out forwards;
 }

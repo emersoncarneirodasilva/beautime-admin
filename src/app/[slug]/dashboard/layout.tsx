@@ -24,11 +24,13 @@ export default async function DashboardLayout({
   const admin = await getUserFromToken();
   const adminName = admin ? getFirstName(admin.name) : null;
 
+  const { slug } = await params;
+
   return (
     <SalonProvider salon={salon}>
       <Navbar salonName={salon.name} adminName={adminName} />
-      <Sidebar params={params} />
-      <main className="ml-64 p-6">{children}</main>
+      <Sidebar slug={slug} />
+      <main className="p-6 md:ml-60 transition-all">{children}</main>
     </SalonProvider>
   );
 }
