@@ -145,17 +145,16 @@ export default async function DashboardPage({ searchParams }: DashboardProps) {
   return (
     <div className="max-w-7xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-2">Visão Geral</h1>
-      <p className="text-gray-600 mb-6">
-        Bem-vindo(a) <span className="font-semibold">{adminName}</span> ao
-        painel de administração do{" "}
-        <span className="font-semibold">{salon.name}</span>.
+      <p className="text-[var(--text-secondary)] mb-6">
+        Bem-vindo(a) <span className="font-bold">{adminName}</span> ao painel de
+        administração do <span className="font-bold">{salon.name}</span>.
       </p>
 
       {/* Período */}
       <PeriodSelector />
 
       {/* Cards de Estatísticas Gerais */}
-      <div className="bg-white rounded-xl shadow p-6 mb-6">
+      <div className="bg-[var(--color-white)] rounded-xl shadow p-6 mb-6">
         <GeneralStatsCards
           users={totalUsers}
           admins={totalAdmins}
@@ -166,7 +165,7 @@ export default async function DashboardPage({ searchParams }: DashboardProps) {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Gráfico de Agendamentos */}
-        <div className="bg-white rounded-xl shadow p-6 mb-6 h-[380px]">
+        <div className="bg-[var(--color-white)] rounded-xl shadow p-6 mb-6 h-[380px]">
           <AppointmentsChart
             active={filteredActive.length}
             completed={filteredCompleted.length}
@@ -176,7 +175,7 @@ export default async function DashboardPage({ searchParams }: DashboardProps) {
         </div>
 
         {/* Gráfico de Faturamento */}
-        <div className="bg-white rounded-xl shadow p-6 h-[380px]">
+        <div className="bg-[var(--color-white)] rounded-xl shadow p-6 h-[380px]">
           <RevenueChart
             completedRevenue={completedRevenue}
             expectedRevenue={expectedRevenue}

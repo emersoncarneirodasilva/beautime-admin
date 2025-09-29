@@ -9,6 +9,7 @@ import {
   ChartOptions,
   ChartData,
 } from "chart.js";
+import { useEffect, useState } from "react";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -25,6 +26,24 @@ export default function AppointmentsChart({
   canceled,
   periodLabel,
 }: AppointmentsChartProps) {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDarkMode(document.documentElement.classList.contains("dark"));
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const titleColor = isDarkMode ? "#c4c4c4" : "#374151";
+  const legendColor = isDarkMode ? "#c4c4c4" : "#6b7280";
+
   const data: ChartData<"doughnut", number[], string> = {
     labels: ["Ativos", "Concluídos", "Cancelados"],
     datasets: [
@@ -49,20 +68,19 @@ export default function AppointmentsChart({
         display: true,
         text: `Agendamentos (${periodLabel})`,
         font: { size: 18, weight: "bold" },
-        color: "#374151",
+        color: titleColor,
         padding: { top: 10, bottom: 20 },
       },
       legend: {
         position: "bottom",
         labels: {
-          color: "#6b7280",
+          color: legendColor,
           usePointStyle: true, // <--- faz os retângulos virarem círculos
           pointStyle: "circle", // opcional, por padrão é circle
           padding: 20, // aumenta o espaçamento se quiser
         },
       },
       tooltip: {
-        backgroundColor: "#1f2937",
         titleColor: "#f9fafb",
         bodyColor: "#f9fafb",
         padding: 10,

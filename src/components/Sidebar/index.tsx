@@ -103,7 +103,7 @@ export default function Sidebar({ slug }: SidebarProps) {
       </button>
 
       {/* Sidebar Desktop */}
-      <aside className="hidden md:flex fixed left-0 top-16 h-[calc(100vh-60px)] w-60 bg-[var(--color-gray-light)] text-[var(--foreground)] flex-col shadow-lg transition-colors">
+      <aside className="hidden md:flex fixed left-0 top-16 h-[calc(100vh-50px)] w-50 bg-[var(--color-gray-light)] text-[var(--foreground)] flex-col shadow-lg transition-colors">
         <nav className="flex-1 flex flex-col gap-1 p-2 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500">
           {menuItems.map((block, idx) => (
             <div key={idx} className="mt-4">

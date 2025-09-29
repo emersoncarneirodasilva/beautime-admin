@@ -31,12 +31,23 @@
   --color-error: #e63946;
   --color-warning: #f4a261;
 
+  /* Botões de ação */
+  --color-action: #2563eb;
+  --color-action-hover: #1d4ed8;
+  --text-on-action: #ffffff;
+
   /* Fundo geral */
   --background: var(--color-white);
 }
 
 /* ===== Dark Theme ===== */
 .dark {
+  /* Primária e secundária mantêm */
+  --color-primary: #146c94;
+  --color-primary-hover: #1d7dac;
+  --color-secondary: #d4af37;
+  --color-secondary-hover: #e0b84a;
+
   /* Texto */
   --foreground: #ededed;
   --text-secondary: #c4c4c4;
@@ -47,14 +58,13 @@
   --color-gray-light: #2c2c2c;
   --color-gray-medium: #444444;
 
+  /* Botões de ação */
+  --color-action: #3b82f6;
+  --color-action-hover: #60a5fa;
+  --text-on-action: #ffffff;
+
   /* Fundo geral */
   --background: #121212;
-
-  /* Primária e secundária mantêm */
-  --color-primary: #146c94;
-  --color-primary-hover: #1d7dac;
-  --color-secondary: #d4af37;
-  --color-secondary-hover: #e0b84a;
 }
 
 /* ===== Corpo ===== */

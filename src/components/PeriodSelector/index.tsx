@@ -7,7 +7,7 @@ export default function PeriodSelector() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [isPending, startTransition] = useTransition(); // <-- useTransition
+  const [isPending, startTransition] = useTransition();
   const [periodType, setPeriodType] = useState<"WEEK" | "MONTH" | "YEAR">(
     (searchParams.get("periodType") as "WEEK" | "MONTH" | "YEAR") || "MONTH"
   );
@@ -18,6 +18,15 @@ export default function PeriodSelector() {
         "0"
       )}`
   );
+
+  const labelStyle = `border border-[var(--color-gray-medium)] dark:border-[var(--color-gray-light)] 
+             px-2 py-1 rounded 
+             bg-[var(--color-gray-light)] dark:bg-[var(--color-gray-medium)] 
+             text-[var(--foreground)]`;
+
+  const buttonStyle = `bg-[var(--color-action)] text-[var(--text-on-action)] 
+             px-4 py-1 rounded hover:bg-[var(--color-action-hover)] 
+             cursor-pointer flex items-center gap-2 transition-colors`;
 
   // Atualiza valor padrão quando muda o tipo
   useEffect(() => {
@@ -54,8 +63,8 @@ export default function PeriodSelector() {
   }
 
   return (
-    <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
-      {/* Radios */}
+    <div className="flex flex-col md:flex-row items-center gap-4 mb-6">
+      {/* Tipo de período */}
       <div className="flex gap-4">
         <label>
           <input
@@ -95,7 +104,7 @@ export default function PeriodSelector() {
           type="week"
           value={periodValue}
           onChange={(e) => setPeriodValue(e.target.value)}
-          className="border px-2 py-1 rounded bg-white text-black"
+          className={labelStyle}
           disabled={isPending}
         />
       )}
@@ -104,7 +113,7 @@ export default function PeriodSelector() {
           type="month"
           value={periodValue}
           onChange={(e) => setPeriodValue(e.target.value)}
-          className="border px-2 py-1 rounded bg-white text-black"
+          className={labelStyle}
           disabled={isPending}
         />
       )}
@@ -113,14 +122,14 @@ export default function PeriodSelector() {
           type="number"
           value={periodValue}
           onChange={(e) => setPeriodValue(e.target.value)}
-          className="border px-2 py-1 rounded bg-white text-black"
+          className={labelStyle}
           disabled={isPending}
         />
       )}
 
       <button
         onClick={applyFilter}
-        className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 cursor-pointer flex items-center gap-2"
+        className={buttonStyle}
         disabled={isPending}
       >
         {isPending ? (

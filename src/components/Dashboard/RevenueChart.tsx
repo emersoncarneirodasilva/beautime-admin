@@ -12,6 +12,7 @@ import {
   ChartOptions,
   ChartData,
 } from "chart.js";
+import { useEffect, useState } from "react";
 
 ChartJS.register(
   CategoryScale,
@@ -33,6 +34,24 @@ export default function RevenueChart({
   expectedRevenue,
   periodLabel,
 }: RevenueChartProps) {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDarkMode(document.documentElement.classList.contains("dark"));
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const titleColor = isDarkMode ? "#c4c4c4" : "#374151";
+  const legendColor = isDarkMode ? "#c4c4c4" : "#6b7280";
+
   const data: ChartData<"bar", number[], string> = {
     labels: ["Faturamento"],
     datasets: [
@@ -57,14 +76,16 @@ export default function RevenueChart({
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { position: "bottom", labels: { color: "#6b7280" } },
+      legend: { position: "bottom", labels: { color: titleColor } },
       title: {
         display: true,
         text: `Faturamento (${periodLabel})`,
         font: { size: 18, weight: "bold" },
-        color: "#374151",
+        color: legendColor,
       },
       tooltip: {
+        titleColor: "#f9fafb",
+        bodyColor: "#f9fafb",
         callbacks: {
           label: (tooltipItem) => {
             const value = tooltipItem.raw || 0;

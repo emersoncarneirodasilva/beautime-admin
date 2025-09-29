@@ -45,17 +45,17 @@ export default function GeneralStatsCards({
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
       {stats.map(({ key, label, icon: Icon, color }) => (
         <div
           key={key}
-          className="flex items-center gap-4 bg-white rounded-xl shadow p-5 hover:shadow-md transition"
+          className="flex items-center gap-4 bg-[var(--color-white)] rounded-xl shadow p-5 hover:shadow-md transition"
         >
-          <div className={`${color} p-3 rounded-lg text-white`}>
+          <div className={`${color} p-3 rounded-lg text-[var(--color-white)]`}>
             <Icon size={28} />
           </div>
           <div>
-            <p className="text-sm text-gray-500">{label}</p>
+            <p className="text-sm text-[var(--text-secondary)]">{label}</p>
             <p className="text-2xl font-bold text-gray-600/90">{values[key]}</p>
           </div>
         </div>

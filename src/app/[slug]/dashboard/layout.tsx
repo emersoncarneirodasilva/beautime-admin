@@ -30,7 +30,7 @@ export default async function DashboardLayout({
     <SalonProvider salon={salon}>
       <Navbar salonName={salon.name} adminName={adminName} />
       <Sidebar slug={slug} />
-      <main className="p-6 md:ml-60 transition-all">{children}</main>
+      <main className="p-6 md:ml-50 transition-all">{children}</main>
     </SalonProvider>
   );
 }

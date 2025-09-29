@@ -1,5 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import LogoutButton from "@/components/Auth/LogoutButton";
+import { Moon, Sun } from "lucide-react";
+import { useState } from "react";
 
 export default function Navbar({
   salonName,
@@ -9,6 +13,17 @@ export default function Navbar({
   adminName?: string | null;
 }) {
   const navbarHeight = 64; // Altura fixa da navbar em pixels
+
+  const [isDark, setIsDark] = useState(false);
+
+  const toggleTheme = () => {
+    setIsDark(!isDark);
+    if (!isDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  };
 
   return (
     <>
@@ -37,6 +52,12 @@ export default function Navbar({
             <span className="text-md">
               Olá{adminName ? `, ${adminName}` : ""}
             </span>
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded hover:text-[var(--color-secondary)] hover:scale-[1.02] transition"
+            >
+              {isDark ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
             <LogoutButton />
           </div>
         </div>
