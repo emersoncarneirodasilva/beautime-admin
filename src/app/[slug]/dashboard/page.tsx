@@ -25,6 +25,20 @@ import {
 import RevenueChart from "@/components/Dashboard/RevenueChart";
 import AppointmentsChart from "@/components/Dashboard/AppointmentsChart";
 import GeneralStatsCards from "@/components/Dashboard/GeneralStatsCards";
+import { Metadata } from "next";
+
+// Função assíncrona para gerar metadata dinâmico
+export async function generateMetadata(): Promise<Metadata> {
+  const token = await verifyAdminAuth();
+  if (!token) return { title: "Acesso negado" };
+
+  const salon = await fetchSalonByAdmin(token);
+
+  return {
+    title: `Beautime Admin - ${salon.name} (Painel)`,
+    description: `Informações gerais do ${salon.name} no painel de administração do Beautime`,
+  };
+}
 
 interface DashboardProps {
   searchParams?: Promise<{

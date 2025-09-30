@@ -1,6 +1,12 @@
 import Image from "next/image";
-import { handleLogin } from "./actions/handleLogin";
 import ThemeToggle from "@/components/Theme/ThemeToggle";
+import { handleLogin } from "./actions/handleLogin";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Beautime Admin - Login",
+  description: "Painel de administração do aplicativo Beautime",
+};
 
 export default function LoginPage() {
   return (
