@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Image from "next/image";
 import fetchUserById from "@/libs/api/fetchUserById";
 import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
@@ -7,6 +6,7 @@ import AccessDenied from "@/components/Auth/AccessDenied";
 import { CalendarDays, User } from "lucide-react";
 import { verifyAdmin } from "@/libs/auth/verifyAdmin";
 import { Metadata } from "next";
+import EditButton from "@/components/Buttons/EditButton";
 
 // Função assíncrona para gerar metadata dinâmico
 export async function generateMetadata(): Promise<Metadata> {
@@ -16,7 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const salon = await fetchSalonByAdmin(token);
 
   return {
-    title: `Beautime Admin - ${salon.name} (Salão)`,
+    title: `Beautime Admin - ${salon.name} - Salão`,
     description: `Informações do salão ${salon.name} no painel de administração do Beautime`,
   };
 }
@@ -50,18 +50,7 @@ export default async function SalonPage({
 
         {/* Botão de Editar */}
         {user.id === creator.id && (
-          <Link href={`/${slug}/dashboard/salon/edit`}>
-            <button
-              type="button"
-              className="
-                bg-[var(--color-action)] text-[var(--text-on-action)] 
-                px-4 py-2 rounded hover:bg-[var(--color-action-hover)] 
-                cursor-pointer flex items-center gap-2 transition-colors
-              "
-            >
-              Editar Salão
-            </button>
-          </Link>
+          <EditButton href={`/${slug}/dashboard/salon/edit`} />
         )}
       </div>
 

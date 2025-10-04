@@ -1,10 +1,11 @@
-import AccessDenied from "@/components/Auth/AccessDenied";
+import { Metadata } from "next";
+import Link from "next/link";
 import { updateSalon } from "./actions/updateSalon";
 import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
-import Link from "next/link";
-import { Save } from "lucide-react";
-import { Metadata } from "next";
+import AccessDenied from "@/components/Auth/AccessDenied";
+import LogoInput from "@/components/Salon/LogoInput";
+import SubmitButton from "@/components/Buttons/SubmitButton";
 
 // Função assíncrona para gerar metadata dinâmico
 export async function generateMetadata(): Promise<Metadata> {
@@ -14,7 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const salon = await fetchSalonByAdmin(token);
 
   return {
-    title: `Beautime Admin - ${salon.name} (Editar Salão)`,
+    title: `Beautime Admin - ${salon.name} - Editar Salão`,
     description: `Editar informações do salão ${salon.name} no painel de administração do Beautime`,
   };
 }
@@ -44,6 +45,7 @@ export default async function EditSalonPage({
 
       {/* Formulário */}
       <form
+        id="edit-salon-form"
         action={updateSalon}
         className="space-y-8 bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] rounded-2xl shadow-md p-8 transition-colors"
       >
@@ -67,20 +69,10 @@ export default async function EditSalonPage({
             />
           </div>
 
-          <div>
-            <label
-              htmlFor="logoUrl"
-              className="block font-medium mb-2 text-[var(--foreground)]"
-            >
-              Logo (URL)
-            </label>
-            <input
-              type="url"
-              name="logoUrl"
-              defaultValue={salon.logoUrl}
-              className="w-full px-4 py-3 rounded-xl border border-[var(--color-gray-medium)] focus:ring-2 focus:ring-[var(--color-action)] focus:outline-none transition"
-            />
-          </div>
+          <LogoInput
+            name="logo"
+            defaultLogoUrl={salon.logoUrl || "/images/default-logo.png"}
+          />
         </div>
 
         {/* Descrição */}
@@ -102,13 +94,7 @@ export default async function EditSalonPage({
 
         {/* Botão Salvar */}
         <div className="flex justify-end">
-          <button
-            type="submit"
-            className="flex items-center gap-2 px-6 py-3 bg-[var(--color-action)] text-[var(--text-on-action)] rounded-md shadow-md hover:bg-[var(--color-action-hover)] transition-all font-semibold cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
-          >
-            <Save size={18} />
-            Salvar Alterações
-          </button>
+          <SubmitButton formId="edit-salon-form" />
         </div>
       </form>
 

@@ -35,7 +35,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const salon = await fetchSalonByAdmin(token);
 
   return {
-    title: `Beautime Admin - ${salon.name} (Painel)`,
+    title: `Beautime Admin - ${salon.name} - Painel`,
     description: `Informações gerais do ${salon.name} no painel de administração do Beautime`,
   };
 }
