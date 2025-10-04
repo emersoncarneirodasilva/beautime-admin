@@ -41,8 +41,8 @@ export default function AppointmentsChart({
     return () => observer.disconnect();
   }, []);
 
-  const titleColor = isDarkMode ? "#c4c4c4" : "#374151";
-  const legendColor = isDarkMode ? "#c4c4c4" : "#6b7280";
+  const titleColor = isDarkMode ? "#c4c4c4" : "#5b6674";
+  const legendColor = isDarkMode ? "#c4c4c4" : "#5b6674";
 
   const data: ChartData<"doughnut", number[], string> = {
     labels: ["Ativos", "Concluídos", "Cancelados"],

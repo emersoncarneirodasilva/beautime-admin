@@ -1,36 +1,45 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import LogoutButton from "@/components/Auth/LogoutButton";
 import { Moon, Sun } from "lucide-react";
-import { useState } from "react";
 
-export default function Navbar({
-  salonName,
-  adminName,
-}: {
+interface NavbarProps {
   salonName: string;
   adminName?: string | null;
-}) {
-  const navbarHeight = 64; // Altura fixa da navbar em pixels
+}
 
+export default function Navbar({ salonName, adminName }: NavbarProps) {
+  const navbarHeight = 64;
   const [isDark, setIsDark] = useState(false);
 
-  const toggleTheme = () => {
-    setIsDark(!isDark);
-    if (!isDark) {
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") {
+      setIsDark(true);
       document.documentElement.classList.add("dark");
     } else {
+      setIsDark(false);
       document.documentElement.classList.remove("dark");
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = !isDark;
+    setIsDark(newTheme);
+    if (newTheme) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
     }
   };
 
   return (
     <>
-      <nav
-        className={`fixed top-0 left-0 right-0 h-16 bg-primary text-primary 
-                    shadow-md z-50 transition-colors`}
-      >
+      <nav className="fixed top-0 left-0 right-0 h-16 bg-primary text-primary shadow-md z-50 transition-colors">
         <div className="h-full flex items-center justify-between px-4 sm:px-6 md:px-8">
           <div className="flex items-center gap-3">
             <Image
@@ -63,7 +72,6 @@ export default function Navbar({
         </div>
       </nav>
 
-      {/* Placeholder para empurrar conteúdo */}
       <div style={{ height: navbarHeight }} />
     </>
   );

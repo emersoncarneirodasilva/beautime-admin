@@ -49,8 +49,8 @@ export default function RevenueChart({
     return () => observer.disconnect();
   }, []);
 
-  const titleColor = isDarkMode ? "#c4c4c4" : "#374151";
-  const legendColor = isDarkMode ? "#c4c4c4" : "#6b7280";
+  const titleColor = isDarkMode ? "#c4c4c4" : "#5b6674";
+  const legendColor = isDarkMode ? "#c4c4c4" : "#5b6674";
 
   const data: ChartData<"bar", number[], string> = {
     labels: ["Faturamento"],
@@ -76,12 +76,16 @@ export default function RevenueChart({
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { position: "bottom", labels: { color: titleColor } },
       title: {
         display: true,
         text: `Faturamento (${periodLabel})`,
         font: { size: 18, weight: "bold" },
         color: legendColor,
+        padding: { top: 10, bottom: 20 },
+      },
+      legend: {
+        position: "bottom",
+        labels: { color: titleColor, padding: 20 },
       },
       tooltip: {
         titleColor: "#f9fafb",
