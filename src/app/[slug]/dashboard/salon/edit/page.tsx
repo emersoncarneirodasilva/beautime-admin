@@ -1,13 +1,13 @@
 import { Metadata } from "next";
-import Link from "next/link";
 import { updateSalon } from "./actions/updateSalon";
 import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
 import AccessDenied from "@/components/Auth/AccessDenied";
 import LogoInput from "@/components/Salon/LogoInput";
 import SubmitButton from "@/components/Buttons/SubmitButton";
+import BackLink from "@/components/Buttons/BackLink";
 
-// Função assíncrona para gerar metadata dinâmico
+// Metadata dinâmico
 export async function generateMetadata(): Promise<Metadata> {
   const token = await verifyAdminAuth();
   if (!token) return { title: "Acesso negado" };
@@ -16,7 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     title: `Beautime Admin - ${salon.name} - Editar Salão`,
-    description: `Editar informações do salão ${salon.name} no painel de administração do Beautime`,
+    description: `Edite as informações do salão ${salon.name}.`,
   };
 }
 
@@ -37,11 +37,16 @@ export default async function EditSalonPage({
   const salon = await fetchSalonByAdmin(token);
 
   return (
-    <div className="max-w-3xl mx-auto p-6 md:p-10">
-      {/* Título */}
-      <h1 className="text-3xl font-bold mb-8 text-[var(--foreground)] font-poppins">
-        Editar Salão
-      </h1>
+    <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-8">
+      {/* Header */}
+      <header>
+        <h1 className="text-3xl font-bold mb-8 text-[var(--foreground)] font-poppins">
+          Editar Salão
+        </h1>
+        <p className="text-[var(--text-secondary)]">
+          Atualize as informações do seu salão.
+        </p>
+      </header>
 
       {/* Formulário */}
       <form
@@ -52,7 +57,7 @@ export default async function EditSalonPage({
         <input type="hidden" name="slug" value={slug} />
 
         {/* Grid Nome e Logo */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-10 lg:gap-30 items-center">
           <div>
             <label
               htmlFor="name"
@@ -98,13 +103,8 @@ export default async function EditSalonPage({
         </div>
       </form>
 
-      {/* Link voltar */}
-      <Link
-        href={`/${slug}/dashboard/salon`}
-        className="text-sm text-[var(--color-primary)] hover:underline transition-colors block mt-6"
-      >
-        ← Voltar
-      </Link>
-    </div>
+      {/* Footer */}
+      <BackLink slug={slug} to="dashboard/salon" />
+    </section>
   );
 }

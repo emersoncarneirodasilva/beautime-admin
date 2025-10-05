@@ -27,7 +27,7 @@ import AppointmentsChart from "@/components/Dashboard/AppointmentsChart";
 import GeneralStatsCards from "@/components/Dashboard/GeneralStatsCards";
 import { Metadata } from "next";
 
-// Função assíncrona para gerar metadata dinâmico
+// Metadata
 export async function generateMetadata(): Promise<Metadata> {
   const token = await verifyAdminAuth();
   if (!token) return { title: "Acesso negado" };
@@ -36,7 +36,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     title: `Beautime Admin - ${salon.name} - Painel`,
-    description: `Informações gerais do ${salon.name} no painel de administração do Beautime`,
+    description: `Visão geral e estatísticas do salão ${salon.name}.`,
   };
 }
 
@@ -49,14 +49,12 @@ interface DashboardProps {
 
 export default async function DashboardPage({ searchParams }: DashboardProps) {
   const token = await verifyAdminAuth();
-
   const admin = await getUserFromToken();
-
   const salon: SalonType | null = await fetchSalonByAdmin(token);
 
   if (!token || !admin || !salon) return <AccessDenied />;
 
-  // Fetch dos dados
+  // Dados
   const usersData: { users: UserType[]; total: number } = await fetchUsers({
     token,
     page: 1,
@@ -69,18 +67,13 @@ export default async function DashboardPage({ searchParams }: DashboardProps) {
   const professionalsData: {
     professionals: ProfessionalType[];
     total: number;
-  } = await fetchProfessionals({
-    token,
-    page: 1,
-    limit: 100,
-  });
+  } = await fetchProfessionals({ token, page: 1, limit: 100 });
 
   const appointmentsData: AppointmentResponse = await fetchAppointments({
     page: 1,
     limit: 100,
   });
 
-  // Histórico concluído e cancelado
   const completedData: {
     appointmentsHistory: AppointmentHistoryType[];
     total: number;
@@ -101,21 +94,16 @@ export default async function DashboardPage({ searchParams }: DashboardProps) {
     status: "CANCELED",
   });
 
-  const totalUsers: number = usersData.users.filter(
-    (u) => u.role === "USER"
-  ).length;
-
-  const totalAdmins: number = usersData.users.filter(
+  const totalUsers = usersData.users.filter((u) => u.role === "USER").length;
+  const totalAdmins = usersData.users.filter(
     (u) => u.role === "ADMIN" || u.role === "OWNER"
   ).length;
+  const adminName = getFirstName(admin.name);
 
-  const adminName: string = getFirstName(admin.name);
-
-  // Período padrão: mensal (mês atual)
+  // Período
   const queryParams = searchParams ? await searchParams : {};
   const periodType: "WEEK" | "MONTH" | "YEAR" =
     (queryParams.periodType as "WEEK" | "MONTH" | "YEAR") || "MONTH";
-
   const periodValue: string =
     queryParams.periodValue ||
     `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(
@@ -123,21 +111,18 @@ export default async function DashboardPage({ searchParams }: DashboardProps) {
       "0"
     )}`;
 
-  // Filtrar agendamentos
   const filteredCompleted = filterByPeriod(
     completedData.appointmentsHistory,
     periodType,
     periodValue,
     "movedAt"
   );
-
   const filteredCanceled = filterByPeriod(
     canceledData.appointmentsHistory,
     periodType,
     periodValue,
     "movedAt"
   );
-
   const filteredActive = filterByPeriod(
     appointmentsData.appointments,
     periodType,
@@ -145,7 +130,6 @@ export default async function DashboardPage({ searchParams }: DashboardProps) {
     "scheduledAt"
   );
 
-  // Faturamento
   const completedRevenue = calculateCompletedRevenue(filteredCompleted);
   const expectedRevenue = calculateExpectedRevenue(filteredActive);
 
@@ -157,29 +141,34 @@ export default async function DashboardPage({ searchParams }: DashboardProps) {
       : "Anual";
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-2">Visão Geral</h1>
-      <p className="text-[var(--text-secondary)] mb-6">
-        Bem-vindo(a) <span className="font-bold">{adminName}</span> ao painel de
-        administração do <span className="font-bold">{salon.name}</span>.
-      </p>
+    <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-8">
+      {/* Header */}
+      <header>
+        <h1 className="text-3xl font-bold mb-6">Visão Geral</h1>
+        <p className="text-[var(--text-secondary)]">
+          Bem-vindo(a) <span className="font-bold">{adminName}</span> ao painel
+          de administração do <span className="font-bold">{salon.name}</span>.
+        </p>
+      </header>
 
       {/* Período */}
-      <PeriodSelector />
+      <section>
+        <PeriodSelector />
+      </section>
 
-      {/* Cards de Estatísticas Gerais */}
-      <div className="bg-[var(--color-white)] rounded-xl shadow p-6 mb-6">
+      {/* Estatísticas Gerais */}
+      <section className="bg-[var(--color-white)] rounded-xl shadow p-6">
         <GeneralStatsCards
           users={totalUsers}
           admins={totalAdmins}
           services={servicesData.total}
           professionals={professionalsData.total}
         />
-      </div>
+      </section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Gráfico de Agendamentos */}
-        <div className="bg-[var(--color-white)] rounded-xl shadow p-6 mb-6 h-[380px]">
+      {/* Gráficos */}
+      <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="bg-[var(--color-white)] rounded-xl shadow p-6 h-[380px]">
           <AppointmentsChart
             active={filteredActive.length}
             completed={filteredCompleted.length}
@@ -187,8 +176,6 @@ export default async function DashboardPage({ searchParams }: DashboardProps) {
             periodLabel={periodLabel}
           />
         </div>
-
-        {/* Gráfico de Faturamento */}
         <div className="bg-[var(--color-white)] rounded-xl shadow p-6 h-[380px]">
           <RevenueChart
             completedRevenue={completedRevenue}
@@ -196,7 +183,7 @@ export default async function DashboardPage({ searchParams }: DashboardProps) {
             periodLabel={periodLabel}
           />
         </div>
-      </div>
-    </div>
+      </section>
+    </section>
   );
 }

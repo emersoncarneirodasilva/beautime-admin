@@ -6,18 +6,17 @@ import AccessDenied from "@/components/Auth/AccessDenied";
 import { CalendarDays, User } from "lucide-react";
 import { verifyAdmin } from "@/libs/auth/verifyAdmin";
 import { Metadata } from "next";
-import EditButton from "@/components/Buttons/EditButton";
+import ActionButton from "@/components/Buttons/ActionButton";
 
-// Função assíncrona para gerar metadata dinâmico
+// Metadata dinâmico
 export async function generateMetadata(): Promise<Metadata> {
   const token = await verifyAdminAuth();
   if (!token) return { title: "Acesso negado" };
 
   const salon = await fetchSalonByAdmin(token);
-
   return {
     title: `Beautime Admin - ${salon.name} - Salão`,
-    description: `Informações do salão ${salon.name} no painel de administração do Beautime`,
+    description: `Informações gerais do salão ${salon.name}.`,
   };
 }
 
@@ -34,7 +33,6 @@ export default async function SalonPage({
   if (!token) return <AccessDenied />;
 
   const { slug } = await params;
-
   const salon = await fetchSalonByAdmin(token);
   const creator = await fetchUserById(salon.createdBy, token);
   const user = await verifyAdmin();
@@ -42,27 +40,21 @@ export default async function SalonPage({
   if (!user || !salon || salon.slug !== slug) return <AccessDenied />;
 
   return (
-    <div className="max-w-5xl mx-auto p-6 md:p-10">
-      {/* Header com título + ação */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-        {/* Título */}
+    <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-8">
+      {/* Header */}
+      <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <h1 className="text-3xl font-bold">Informações do Salão</h1>
-
-        {/* Botão de Editar */}
         {user.id === creator.id && (
-          <EditButton href={`/${slug}/dashboard/salon/edit`} />
+          <ActionButton
+            href={`/${slug}/dashboard/salon/edit`}
+            text="Editar Salão"
+          />
         )}
-      </div>
+      </header>
 
       {/* Card principal */}
-      <div
-        className="
-          rounded-2xl shadow-lg p-6 md:p-8 
-          bg-[var(--color-white)] dark:bg-[var(--color-gray-light)]
-          space-y-8 transition-colors
-        "
-      >
-        {/* Logo + Nome */}
+      <article className="rounded-2xl shadow-lg p-6 md:p-8 bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] space-y-8 transition-colors">
+        {/* Logo e nome */}
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
           <div className="w-28 h-28 rounded-full overflow-hidden border border-gray-300 dark:border-gray-600 shadow-md relative flex-shrink-0">
             <Image
@@ -82,15 +74,15 @@ export default async function SalonPage({
         </div>
 
         {/* Descrição */}
-        <div>
+        <section>
           <h3 className="text-lg font-medium mb-2">Descrição</h3>
           <p className="text-[var(--text-secondary)] leading-relaxed">
             {salon.description}
           </p>
-        </div>
+        </section>
 
-        {/* Infos em grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
+        {/* Informações em grid */}
+        <section className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
           <div className="flex items-center gap-2">
             <User size={16} className="text-[var(--color-action)]" />
             <span>
@@ -111,8 +103,8 @@ export default async function SalonPage({
               {new Date(salon.updatedAt).toLocaleDateString("pt-BR")}
             </span>
           </div>
-        </div>
-      </div>
-    </div>
+        </section>
+      </article>
+    </section>
   );
 }

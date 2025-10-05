@@ -29,7 +29,7 @@ export default function SubmitButton({ formId }: SubmitButtonProps) {
         ${
           loading
             ? "bg-gray-400 cursor-not-allowed"
-            : "bg-[var(--color-action)] text-[var(--text-on-action)] hover:bg-[var(--color-action-hover)]"
+            : "bg-[var(--color-action)] text-[var(--text-on-action)] hover:bg-[var(--color-action-hover)] duration-200"
         }
       `}
     >

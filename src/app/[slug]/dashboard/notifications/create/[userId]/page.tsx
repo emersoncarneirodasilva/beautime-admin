@@ -1,10 +1,25 @@
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
 import { fetchAppointmentsByUserId } from "@/libs/api/fetchAppointmentsByUserId";
-
 import AccessDenied from "@/components/Auth/AccessDenied";
-import Link from "next/link";
 import fetchUserById from "@/libs/api/fetchUserById";
 import { createNotification } from "./actions/createNotification";
+import BackLink from "@/components/Buttons/BackLink";
+import CreateButton from "@/components/Buttons/CreateButton";
+import { Metadata } from "next";
+import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
+
+// Metadata
+export async function generateMetadata(): Promise<Metadata> {
+  const token = await verifyAdminAuth();
+  if (!token) return { title: "Acesso negado" };
+
+  const salon = await fetchSalonByAdmin(token);
+
+  return {
+    title: `Beautime Admin - ${salon.name} - Criar Notificação`,
+    description: `Criação de notificação para o usuário associado ao salão ${salon.name}.`,
+  };
+}
 
 const statusMap: Record<string, string> = {
   PENDING: "Pendente",
@@ -30,39 +45,52 @@ export default async function CreateNotificationPage({
   const appointments = await fetchAppointmentsByUserId(userId);
 
   return (
-    <main className="p-6 max-w-3xl mx-auto">
-      <Link
-        href={`/${slug}/dashboard/users/${userId}`}
-        className="text-blue-600 hover:underline"
+    <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-8">
+      {/* Header */}
+      <header className="space-y-2">
+        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-8">
+          Criar Notificação
+        </h1>
+        <p className="text-[var(--text-secondary)]">
+          Selecione o agendamento e digite a mensagem da notificação.
+        </p>
+      </header>
+
+      {/* Card do formulário */}
+      <form
+        id="create-notification-form"
+        action={createNotification}
+        className="space-y-6 bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] rounded-2xl shadow-md p-8 transition-colors"
       >
-        ← Voltar para usuário
-      </Link>
-
-      <h1 className="text-2xl font-bold my-6">Criar Notificação</h1>
-
-      <form action={createNotification} className="space-y-4">
         <input type="hidden" name="slug" value={slug} />
         <input type="hidden" name="userId" value={userId} />
 
-        <div>
-          <label className="block font-semibold">Cliente</label>
-          <p className="text-gray-300">{user.name}</p>
+        {/* Cliente */}
+        <div className="flex flex-col gap-2">
+          <label className="font-medium text-[var(--foreground)]">
+            Cliente
+          </label>
+          <p className="text-[var(--text-secondary)]">{user.name}</p>
         </div>
 
-        <div>
-          <label className="block mb-1 font-semibold" htmlFor="appointmentId">
+        {/* Agendamento */}
+        <div className="flex flex-col gap-2">
+          <label
+            htmlFor="appointmentId"
+            className="font-medium text-[var(--foreground)]"
+          >
             Agendamento
           </label>
           <select
             name="appointmentId"
             id="appointmentId"
             required
-            className="w-full p-2 bg-black border rounded"
+            className="w-full p-3 rounded-xl border border-[var(--color-gray-medium)] text-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-action)] bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] transition"
           >
             <option value="">Selecione um agendamento</option>
             {appointments.map((a) => {
               const date = new Date(a.scheduledAt);
-              const datePart = date.toLocaleDateString("pt-BR"); // ex: 04/06/2025
+              const datePart = date.toLocaleDateString("pt-BR");
               const timePart = date.toLocaleTimeString("pt-BR", {
                 hour: "2-digit",
                 minute: "2-digit",
@@ -80,8 +108,12 @@ export default async function CreateNotificationPage({
           </select>
         </div>
 
-        <div>
-          <label className="block mb-1 font-semibold" htmlFor="message">
+        {/* Mensagem */}
+        <div className="flex flex-col gap-2">
+          <label
+            htmlFor="message"
+            className="font-medium text-[var(--foreground)]"
+          >
             Mensagem
           </label>
           <textarea
@@ -89,18 +121,25 @@ export default async function CreateNotificationPage({
             id="message"
             required
             rows={4}
-            className="w-full p-2 bg-black border rounded"
             placeholder="Digite a mensagem da notificação"
+            className="w-full p-3 rounded-xl border border-[var(--color-gray-medium)] focus:outline-none focus:ring-2 focus:ring-[var(--color-action)] bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] placeholder-[var(--text-secondary)] transition"
           />
         </div>
 
-        <button
-          type="submit"
-          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded hover:cursor-pointer"
-        >
-          Criar Notificação
-        </button>
+        {/* Botão */}
+        <div className="flex justify-end mt-10">
+          <CreateButton
+            formId="create-notification-form"
+            label="Criar Notificação"
+            iconType="notification"
+          />
+        </div>
       </form>
-    </main>
+
+      {/* Rodapé: BackLink */}
+      <footer className="mt-6">
+        <BackLink slug={slug} to={`dashboard/users/${userId}`} />
+      </footer>
+    </section>
   );
 }

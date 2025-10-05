@@ -4,6 +4,21 @@ import AccessDenied from "@/components/Auth/AccessDenied";
 import ErrorSection from "@/components/Error/ErrorSection";
 import UserDetails from "@/components/User/UserDetails";
 import { UserType } from "@/types";
+import { Metadata } from "next";
+import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
+
+// Metadata
+export async function generateMetadata(): Promise<Metadata> {
+  const token = await verifyAdminAuth();
+  if (!token) return { title: "Acesso negado" };
+
+  const salon = await fetchSalonByAdmin(token);
+
+  return {
+    title: `Beautime Admin - ${salon.name} - Usuário`,
+    description: `Detalhes do usuário associado ao salão ${salon.name}.`,
+  };
+}
 
 interface Params {
   slug: string;

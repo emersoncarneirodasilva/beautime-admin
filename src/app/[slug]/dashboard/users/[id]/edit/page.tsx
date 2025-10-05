@@ -4,6 +4,23 @@ import AccessDenied from "@/components/Auth/AccessDenied";
 import { UserType } from "@/types";
 import ErrorSection from "@/components/Error/ErrorSection";
 import { updateUser } from "./actions/updateUser";
+import BackLink from "@/components/Buttons/BackLink";
+import SubmitButton from "@/components/Buttons/SubmitButton";
+import { Metadata } from "next";
+import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
+
+// Metadata
+export async function generateMetadata(): Promise<Metadata> {
+  const token = await verifyAdminAuth();
+  if (!token) return { title: "Acesso negado" };
+
+  const salon = await fetchSalonByAdmin(token);
+
+  return {
+    title: `Beautime Admin - ${salon.name} - Editar Usuário`,
+    description: `Edição das informações do usuário associado ao salão ${salon.name}.`,
+  };
+}
 
 interface Params {
   slug: string;
@@ -36,54 +53,71 @@ export default async function EditUserPage({
   }
 
   return (
-    <div className="min-h-screen bg-zinc-900 flex items-center justify-center p-4">
+    <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-8">
+      {/* Cabeçalho */}
+      <header className="space-y-2">
+        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-8">
+          Editar Usuário
+        </h1>
+        <p className="text-[var(--text-secondary)]">
+          Atualize as informações do usuário selecionado.
+        </p>
+      </header>
+
+      {/* Formulário */}
       <form
+        id="edit-user-form"
         action={updateUser}
-        className="bg-zinc-800 shadow-lg rounded-2xl p-8 w-full max-w-md space-y-6 text-white"
+        className="space-y-6 bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] rounded-2xl shadow-md p-8 transition-colors"
       >
         <input type="hidden" name="token" value={token} />
         <input type="hidden" name="slug" value={slug} />
         <input type="hidden" name="id" value={user.id} />
 
-        <h2 className="text-2xl font-bold text-center text-white">
-          Editar Usuário
-        </h2>
-
-        <div className="flex flex-col gap-2">
-          <label htmlFor="name" className="text-sm text-zinc-300">
-            Nome:
+        {/* Nome */}
+        <div className="flex flex-col gap-4">
+          <label
+            htmlFor="name"
+            className="block font-medium text-[var(--foreground)]"
+          >
+            Nome
           </label>
           <input
             type="text"
             id="name"
             name="name"
             defaultValue={user.name ?? ""}
-            className="p-2 bg-zinc-700 border border-zinc-600 rounded-md text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Digite o nome"
+            required
+            className="w-full px-4 py-3 rounded-xl border border-[var(--color-gray-medium)] focus:ring-2 focus:ring-[var(--color-action)] focus:outline-none transition"
           />
         </div>
 
-        <div className="flex flex-col gap-2">
-          <label htmlFor="phone" className="text-sm text-zinc-300">
-            Telefone:
+        {/* Telefone */}
+        <div className="flex flex-col gap-4">
+          <label
+            htmlFor="phone"
+            className="block font-medium text-[var(--foreground)]"
+          >
+            Telefone
           </label>
           <input
-            type="text"
+            type="number"
             id="phone"
             name="phone"
             defaultValue={user.phone ?? ""}
-            className="p-2 bg-zinc-700 border border-zinc-600 rounded-md text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Digite o telefone"
+            required
+            className="w-full px-4 py-3 rounded-xl border border-[var(--color-gray-medium)] focus:ring-2 focus:ring-[var(--color-action)] focus:outline-none transition"
           />
         </div>
 
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 hover:cursor-pointer transition"
-        >
-          Atualizar
-        </button>
+        {/* Botão de atualização */}
+        <div className="flex justify-end mt-10">
+          <SubmitButton formId="edit-user-form" />
+        </div>
       </form>
-    </div>
+
+      {/* Link de volta */}
+      <BackLink slug={slug} to={`dashboard/users/${user.id}`} />
+    </section>
   );
 }
