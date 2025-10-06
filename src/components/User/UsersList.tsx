@@ -24,7 +24,7 @@ export default function UsersList({ users, slug }: Props) {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {users.map((user) => {
         const roleLabel =
           salon.createdBy === user.id
@@ -34,34 +34,24 @@ export default function UsersList({ users, slug }: Props) {
             : "Usuário";
 
         return (
-          <div
+          <li
             key={user.id}
-            className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 p-5 rounded-xl border transition-all hover:shadow-md"
-            style={{
-              backgroundColor: "var(--color-white)",
-              borderColor: "var(--color-gray-medium)",
-              color: "var(--foreground)",
-              boxShadow:
-                "0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.05)",
-            }}
+            className="flex flex-col p-5 rounded-xl border border-[var(--color-gray-light)] transition-all hover:shadow-md bg-[var(--color-white)] dark:bg-[var(--color-gray-light)]"
           >
-            <div className="flex flex-col text-sm sm:text-base">
+            <div className="flex flex-col gap-2">
               <p
-                className="font-semibold text-lg mb-1"
+                className="font-semibold text-lg"
                 style={{ fontFamily: "var(--font-poppins)" }}
               >
                 {user.name}
               </p>
               <p
-                className="text-sm mb-1 break-all"
+                className="text-sm break-all"
                 style={{ color: "var(--text-secondary)" }}
               >
                 {user.email}
               </p>
-              <p
-                className="text-sm italic"
-                style={{ color: "var(--text-secondary)" }}
-              >
+              <p className="text-sm italic">
                 Cargo:{" "}
                 <span
                   style={{
@@ -79,29 +69,17 @@ export default function UsersList({ users, slug }: Props) {
               </p>
             </div>
 
-            <div className="flex justify-start sm:justify-end">
+            <div className="mt-4">
               <Link
                 href={`/${slug}/dashboard/users/${user.id}`}
-                className="px-4 py-2 rounded-lg text-sm font-medium transition-colors w-full sm:w-auto text-center"
-                style={{
-                  backgroundColor: "var(--color-primary)",
-                  color: "var(--text-on-action)",
-                }}
-                onMouseEnter={(e) =>
-                  ((e.target as HTMLElement).style.backgroundColor =
-                    "var(--color-primary-hover)")
-                }
-                onMouseLeave={(e) =>
-                  ((e.target as HTMLElement).style.backgroundColor =
-                    "var(--color-primary)")
-                }
+                className="text-[var(--color-primary)] font-medium hover:underline text-sm"
               >
-                Ver Detalhes
+                Ver detalhes →
               </Link>
             </div>
-          </div>
+          </li>
         );
       })}
-    </div>
+    </ul>
   );
 }

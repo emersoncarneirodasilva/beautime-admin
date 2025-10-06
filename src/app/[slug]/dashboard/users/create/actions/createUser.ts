@@ -19,15 +19,11 @@ export async function createUser(formData: FormData): Promise<void> {
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
 
-  if (!token) {
-    throw new Error("Token não encontrado.");
-  }
+  if (!token) redirect("/login");
 
   const salon = await fetchSalonByAdmin(token);
 
-  if (!salon) {
-    throw new Error("Salão não encontrado.");
-  }
+  if (!salon) redirect("/login");
 
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
     method: "POST",
@@ -47,7 +43,15 @@ export async function createUser(formData: FormData): Promise<void> {
   if (!res.ok) {
     const errorData = await res.json();
     console.error("Erro ao criar usuário:", errorData);
-    throw new Error("Erro ao criar usuário.");
+
+    let errorMessage = "erro-criacao"; // valor default
+
+    // Verifica se o servidor retornou uma mensagem de erro
+    if (errorData?.message?.includes("email")) {
+      errorMessage = "email-ja-cadastrado";
+    }
+
+    redirect(`/${salon.slug}/dashboard/users/create?error=${errorMessage}`);
   }
 
   redirect(`/${slug}/dashboard/users`);

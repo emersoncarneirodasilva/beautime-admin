@@ -1,28 +1,15 @@
 "use server";
 
 import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
-import { isValidUrl } from "@/utils/isValidUrl";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export async function createProfessional(formData: FormData) {
-  const slug = formData.get("name") as string;
-
   const name = formData.get("name") as string;
   const email = formData.get("email") as string;
   const phone = (formData.get("phone") as string) || null;
   const bio = (formData.get("bio") as string) || null;
-  let avatarUrl = (formData.get("avatarUrl") as string) || null;
-
-  // ✅ Apenas valida a URL se estiver preenchida
-  if (avatarUrl && avatarUrl.trim() !== "" && !isValidUrl(avatarUrl)) {
-    throw new Error("A URL do avatar é inválida.");
-  }
-
-  // ✅ Se for string vazia, transforma em null
-  if (avatarUrl?.trim() === "") {
-    avatarUrl = null;
-  }
+  const avatarFile = formData.get("avatar") as File | null;
 
   if (!name || !email) {
     throw new Error("Nome e email são obrigatórios.");
@@ -31,41 +18,45 @@ export async function createProfessional(formData: FormData) {
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
 
-  if (!token) throw new Error("Token não encontrado.");
+  if (!token) redirect("/login");
 
   const salon = await fetchSalonByAdmin(token);
-  if (!salon) throw new Error("Salão não encontrado.");
+
+  if (!salon) redirect("/login");
+
+  // Criar novo FormData para enviar à API
+  const apiFormData = new FormData();
+  apiFormData.append("name", name);
+  apiFormData.append("email", email);
+  if (phone) apiFormData.append("phone", phone);
+  if (bio) apiFormData.append("bio", bio);
+  if (avatarFile && avatarFile.size > 0)
+    apiFormData.append("avatar", avatarFile);
+  apiFormData.append("salonId", salon.id);
 
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/professionals`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({
-      name,
-      email,
-      phone,
-      bio,
-      avatarUrl,
-      salonId: salon.id,
-    }),
+    body: apiFormData, // envio como multipart/form-data
   });
 
   if (!res.ok) {
     const errorData = await res.json().catch(() => ({}));
     console.error("Erro ao criar profissional:", errorData);
 
-    if (
-      res.status === 400 ||
-      res.status === 409 ||
-      errorData.message?.includes("email")
-    ) {
-      throw new Error(errorData.message || "E-mail já cadastrado.");
+    let errorMessage = "erro-criacao"; // valor default
+
+    // Verifica se o servidor retornou uma mensagem de erro
+    if (errorData?.message?.includes("email")) {
+      errorMessage = "email-ja-cadastrado";
     }
 
-    throw new Error("Erro ao criar profissional.");
+    redirect(
+      `/${salon.slug}/dashboard/professionals/create?error=${errorMessage}`
+    );
   }
 
-  redirect(`/${slug}/dashboard/professionals`);
+  redirect(`/${salon.slug}/dashboard/professionals`);
 }

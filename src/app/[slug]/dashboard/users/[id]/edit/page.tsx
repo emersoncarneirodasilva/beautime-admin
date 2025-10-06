@@ -27,6 +27,11 @@ interface Params {
   id: string;
 }
 
+const labelClasses = "block font-medium text-[var(--foreground)]";
+
+const inputClasses =
+  "w-full px-4 py-3 rounded-xl border border-[var(--color-gray-medium)] focus:ring-2 focus:ring-[var(--color-action)] focus:outline-none transition";
+
 export default async function EditUserPage({
   params,
 }: {
@@ -76,10 +81,7 @@ export default async function EditUserPage({
 
         {/* Nome */}
         <div className="flex flex-col gap-4">
-          <label
-            htmlFor="name"
-            className="block font-medium text-[var(--foreground)]"
-          >
+          <label htmlFor="name" className={labelClasses}>
             Nome
           </label>
           <input
@@ -88,16 +90,13 @@ export default async function EditUserPage({
             name="name"
             defaultValue={user.name ?? ""}
             required
-            className="w-full px-4 py-3 rounded-xl border border-[var(--color-gray-medium)] focus:ring-2 focus:ring-[var(--color-action)] focus:outline-none transition"
+            className={inputClasses}
           />
         </div>
 
         {/* Telefone */}
         <div className="flex flex-col gap-4">
-          <label
-            htmlFor="phone"
-            className="block font-medium text-[var(--foreground)]"
-          >
+          <label htmlFor="phone" className={labelClasses}>
             Telefone
           </label>
           <input
@@ -106,7 +105,7 @@ export default async function EditUserPage({
             name="phone"
             defaultValue={user.phone ?? ""}
             required
-            className="w-full px-4 py-3 rounded-xl border border-[var(--color-gray-medium)] focus:ring-2 focus:ring-[var(--color-action)] focus:outline-none transition"
+            className={inputClasses}
           />
         </div>
 

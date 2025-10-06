@@ -1,10 +1,25 @@
-import Link from "next/link";
+import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
+import { fetchProfessionals } from "@/libs/api/fetchProfessionals";
+import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
 import AccessDenied from "@/components/Auth/AccessDenied";
 import ErrorSection from "@/components/Error/ErrorSection";
-import ProfessionalAvatar from "@/components/Professional/ProfessionalAvatar";
-import { fetchProfessionals } from "@/libs/api/fetchProfessionals";
-import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
+import ActionButton from "@/components/Buttons/ActionButton";
+import Pagination from "@/components/Pagination";
+import Image from "next/image";
 import { ProfessionalsDTO } from "@/types";
+import { Metadata } from "next";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const token = await verifyAdminAuth();
+  if (!token) return { title: "Acesso negado" };
+
+  const salon = await fetchSalonByAdmin(token);
+
+  return {
+    title: `Beautime Admin - ${salon.name} - Profissionais`,
+    description: `Lista de profissionais associados ao salão ${salon.name}.`,
+  };
+}
 
 interface Params {
   slug: string;
@@ -21,133 +36,138 @@ export default async function ProfessionalsPage({
   searchParams,
 }: {
   params: Promise<Params>;
-  searchParams: Promise<SearchParams>;
+  searchParams?: Promise<SearchParams>;
 }) {
   const token = await verifyAdminAuth();
   if (!token) return <AccessDenied />;
 
   const { slug } = await params;
+  const query = await searchParams;
 
-  const searchQueryParams = await searchParams;
+  const page = Number(query?.page || 1);
+  const limit = Number(query?.limit || 10);
+  const search = query?.search || "";
 
-  const page = Number(searchQueryParams?.page || 1);
-  const limit = Number(searchQueryParams?.limit || 10);
-  const search = searchQueryParams?.search || "";
+  let professionalsData;
 
-  let data;
   try {
-    data = await fetchProfessionals({ token, page, limit, search });
+    professionalsData = await fetchProfessionals({
+      token,
+      page,
+      limit,
+      search,
+    });
   } catch (error) {
     return (
       <ErrorSection
         title="Erro ao carregar profissionais"
         message={(error as Error).message}
         linkHref={`/${slug}/dashboard`}
-        linkText="Voltar ao painel principal"
+        linkText="Voltar ao painel"
       />
     );
   }
 
-  const { professionals, totalPages } = data;
-
   return (
-    <div className="max-w-5xl mx-auto p-6">
-      {/* Top bar */}
-      <div className="flex justify-between items-center mb-6">
-        <Link
-          href={`/${slug}/dashboard`}
-          className="text-blue-600 hover:underline"
-        >
-          ← Voltar ao painel
-        </Link>
-        <Link
-          href={`/${slug}/dashboard/professionals/create`}
-          className="text-white bg-green-600 px-4 py-2 rounded hover:bg-green-700 transition"
-        >
-          Criar Profissional
-        </Link>
-      </div>
-
-      {/* Título centralizado */}
-      <h1 className="text-3xl font-bold text-center mb-8">Profissionais</h1>
+    <section className="max-w-6xl mx-auto px-4 sm:px-6 md:px-10 py-10 space-y-8">
+      {/* Header */}
+      <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
+        <h1 className="text-2xl sm:text-3xl font-bold text-center sm:text-left">
+          Profissionais
+        </h1>
+        <div className="flex justify-center sm:justify-end">
+          <ActionButton
+            href={`/${slug}/dashboard/professionals/create`}
+            text="Criar Profissional"
+          />
+        </div>
+      </header>
 
       {/* Filtros */}
-      <form className="flex flex-col sm:flex-row sm:items-center gap-4 mb-8">
-        <input
-          type="text"
-          name="search"
-          placeholder="Buscar por nome..."
-          defaultValue={search}
-          className="bg-black text-white border px-4 py-2 rounded w-full sm:w-auto"
-        />
-        <select
-          name="limit"
-          defaultValue={String(limit)}
-          className="bg-black text-white border px-4 py-2 rounded w-full sm:w-auto"
+      <section>
+        <form
+          method="GET"
+          className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-10"
         >
-          <option value="5">5 por página</option>
-          <option value="10">10 por página</option>
-          <option value="20">20 por página</option>
-        </select>
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 hover:cursor-pointer transition w-full sm:w-auto"
-        >
-          Filtrar
-        </button>
-      </form>
+          <input
+            type="text"
+            name="search"
+            defaultValue={search}
+            placeholder="Buscar profissionais..."
+            className="flex-grow border border-[var(--color-gray-medium)] rounded-lg px-4 py-2.5 bg-[var(--color-white)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition"
+          />
 
-      {professionals.length === 0 ? (
-        <p className="text-center text-gray-500">
-          Nenhum profissional encontrado para os filtros aplicados.
-        </p>
-      ) : (
-        <ul className="space-y-4">
-          {professionals.map((professional: ProfessionalsDTO) => (
-            <li key={professional.id} className="border p-4 rounded shadow-sm">
-              <div className="flex items-center justify-between gap-4">
-                <ProfessionalAvatar
-                  src={professional.avatarUrl}
-                  alt={`Avatar de ${professional.name}`}
-                  width={64}
-                  height={64}
-                  className="w-16 h-16 rounded object-cover"
-                />
-                <div className="flex-1">
-                  <h2 className="text-lg font-semibold">{professional.name}</h2>
-                  <p className="text-sm text-gray-500">{professional.email}</p>
-                </div>
-                <Link
-                  href={`/${slug}/dashboard/professionals/${professional.id}`}
-                  className="text-blue-600 hover:underline text-sm"
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+            <select
+              name="limit"
+              defaultValue={limit.toString()}
+              className="border border-[var(--color-gray-medium)] rounded-lg px-3 py-2.5 bg-[var(--color-white)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition"
+            >
+              <option value="5">5 / página</option>
+              <option value="10">10 / página</option>
+              <option value="20">20 / página</option>
+            </select>
+
+            <button
+              type="submit"
+              className="bg-[var(--color-action)] text-[var(--text-on-action)] px-6 py-2.5 rounded-lg font-medium hover:bg-[var(--color-action-hover)] transition cursor-pointer w-full sm:w-auto"
+            >
+              Buscar
+            </button>
+          </div>
+        </form>
+      </section>
+
+      {/* Lista de profissionais */}
+      <section>
+        {professionalsData.professionals.length === 0 ? (
+          <p className="text-center text-gray-500">
+            Nenhum profissional encontrado para os filtros aplicados.
+          </p>
+        ) : (
+          <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            {professionalsData.professionals.map(
+              (professional: ProfessionalsDTO) => (
+                <li
+                  key={professional.id}
+                  className="border border-[var(--color-gray-light)] rounded-xl p-5 flex flex-col sm:flex-row items-center sm:items-start gap-4 hover:shadow-md transition bg-[var(--color-white)] dark:bg-[var(--color-gray-light)]"
                 >
-                  Ver detalhes
-                </Link>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
+                  <Image
+                    src={professional.avatarUrl || "/images/default-avatar.png"}
+                    alt={`Avatar de ${professional.name}`}
+                    width={80}
+                    height={80}
+                    className="w-20 h-20 rounded-full object-cover border"
+                  />
+                  <div className="flex flex-col text-center sm:text-left">
+                    <h2 className="text-lg font-semibold">
+                      {professional.name}
+                    </h2>
+                    <p className="text-sm text-gray-500 break-all">
+                      {professional.email}
+                    </p>
+                    <a
+                      href={`/${slug}/dashboard/professionals/${professional.id}`}
+                      className="text-[var(--color-primary)] text-sm font-medium hover:underline mt-1"
+                    >
+                      Ver detalhes →
+                    </a>
+                  </div>
+                </li>
+              )
+            )}
+          </ul>
+        )}
+      </section>
 
       {/* Paginação */}
-      <div className="flex justify-between mt-8">
-        <Link
-          href={`?page=${page - 1}&limit=${limit}&search=${search}`}
-          className={`px-4 py-2 rounded bg-gray-500 hover:bg-gray-600 text-white ${
-            page <= 1 ? "opacity-50 pointer-events-none" : ""
-          }`}
-        >
-          Anterior
-        </Link>
-        <Link
-          href={`?page=${page + 1}&limit=${limit}&search=${search}`}
-          className={`px-4 py-2 rounded bg-gray-500 hover:bg-gray-600 text-white ${
-            page >= totalPages ? "opacity-50 pointer-events-none" : ""
-          }`}
-        >
-          Próxima
-        </Link>
-      </div>
-    </div>
+      <Pagination
+        currentPage={page}
+        totalPages={professionalsData.totalPages}
+        hrefBuilder={(p) =>
+          `?page=${p}&limit=${limit}&search=${encodeURIComponent(search)}`
+        }
+      />
+    </section>
   );
 }

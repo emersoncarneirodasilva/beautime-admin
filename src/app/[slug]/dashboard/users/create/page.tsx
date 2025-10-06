@@ -4,6 +4,7 @@ import BackLink from "@/components/Buttons/BackLink";
 import { Metadata } from "next";
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
 import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
+import ErrorToast from "@/components/Error/ErrorToast";
 
 // Metadata
 export async function generateMetadata(): Promise<Metadata> {
@@ -31,6 +32,8 @@ export default async function CreateUserPage({
 
   return (
     <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-8">
+      <ErrorToast />
+
       <header>
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-8">
           Criar Usuário
@@ -93,10 +96,12 @@ export default async function CreateUserPage({
               Telefone
             </label>
             <input
-              type="number"
+              type="tel"
               id="phone"
               name="phone"
               required
+              pattern="\d*"
+              inputMode="numeric"
               className="w-full px-4 py-3 rounded-xl border border-[var(--color-gray-medium)] focus:ring-2 focus:ring-[var(--color-action)] focus:outline-none transition appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             />
           </div>

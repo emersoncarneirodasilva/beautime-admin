@@ -70,10 +70,10 @@ export default function UserDetails({ user, token, slug }: Props) {
             },
           ].map((item) => (
             <div key={item.label}>
-              <p className="text-[var(--text-secondary)] font-semibold mb-1">
+              <p className="text-[var(--foreground)] font-semibold mb-1">
                 {item.label}
               </p>
-              <p className="text-[var(--foreground)] font-medium">
+              <p className="text-[var(--text-secondary)] font-medium">
                 {item.value}
               </p>
             </div>
