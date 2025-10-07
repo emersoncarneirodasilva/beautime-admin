@@ -25,17 +25,21 @@ export default function UserDetails({ user, token, slug }: Props) {
 
   const [actionError, setActionError] = useState<string | null>(null);
 
+  const [loadingDelete, setLoadingDelete] = useState(false);
+
   const handleDelete = async () => {
-    const confirm = window.confirm(
+    const confirmDelete = window.confirm(
       "Tem certeza que deseja excluir este usuário?"
     );
-    if (!confirm) return;
+    if (!confirmDelete) return;
 
     try {
+      setLoadingDelete(true);
       await deleteUser(user.id, token);
       router.push(`/${slug}/dashboard/users`);
     } catch (error) {
       setActionError((error as Error).message);
+      setLoadingDelete(false); // volta ao normal caso dê erro
     }
   };
 
@@ -53,7 +57,6 @@ export default function UserDetails({ user, token, slug }: Props) {
 
       {/* Card */}
       <div className="bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] rounded-2xl shadow-lg p-8 transition-colors duration-300 hover:shadow-xl space-y-6">
-        {/* Informações */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-base">
           {[
             { label: "Nome", value: user.name },
@@ -81,7 +84,6 @@ export default function UserDetails({ user, token, slug }: Props) {
         </div>
 
         {/* Ações */}
-        {/* Ações */}
         <div className="pt-6 space-y-4 border-t border-gray-200 dark:border-gray-700">
           {isOwner && user.id !== loggedUserId ? (
             <>
@@ -108,7 +110,7 @@ export default function UserDetails({ user, token, slug }: Props) {
                       Atualizar
                     </span>
                   }
-                  className="text-[var(--text-on-action)] bg-[var(--color-action)] hover:bg-[var(--color-action-hover)] shadow-sm"
+                  className="shadow-sm"
                 />
 
                 <ActionButton
@@ -124,10 +126,15 @@ export default function UserDetails({ user, token, slug }: Props) {
 
                 <button
                   onClick={handleDelete}
-                  className="px-5 py-2.5 rounded-lg font-medium flex items-center gap-2 text-[var(--text-on-action)] bg-[var(--color-error)] hover:bg-[#c53030] transition-all duration-200 shadow-sm cursor-pointer"
+                  disabled={loadingDelete}
+                  className={`px-5 py-2.5 rounded-lg font-medium flex items-center gap-2 text-[var(--text-on-action)] cursor-pointer ${
+                    loadingDelete
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-[var(--color-error)] hover:bg-[#c53030]"
+                  } transition-all duration-200 shadow-sm`}
                 >
                   <Trash2 className="w-4 h-4" />
-                  Excluir
+                  {loadingDelete ? "Excluindo..." : "Excluir"}
                 </button>
               </div>
             </>

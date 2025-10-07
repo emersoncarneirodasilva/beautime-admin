@@ -1,18 +1,42 @@
-import Link from "next/link";
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
-import AccessDenied from "@/components/Auth/AccessDenied";
-import ProfessionalAvatar from "@/components/Professional/ProfessionalAvatar";
 import { fetchProfessionalById } from "@/libs/api/fetchProfessionalById";
 import { fetchServicesByProfessional } from "@/libs/api/fetchServicesByProfessional";
-import ErrorSection from "@/components/Error/ErrorSection";
-import DeleteProfessionalButton from "@/components/Professional/DeleteProfessionalButton";
 import { fetchAvailabilityByProfessional } from "@/libs/api/fetchAvailabilityByProfessional";
+import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
+import AccessDenied from "@/components/Auth/AccessDenied";
+import ErrorSection from "@/components/Error/ErrorSection";
+import BackLink from "@/components/Buttons/BackLink";
 import { translateWeekday } from "@/utils/translateWeekday";
 import { Availability, ProfessionalDetail } from "@/types";
+import Image from "next/image";
+import Link from "next/link";
+import { Metadata } from "next";
+import ActionButton from "@/components/Buttons/ActionButton";
+import { Pencil, Trash2 } from "lucide-react";
+import { deleteProfessional } from "./actions/deleteProfessional";
+import DeleteButton from "@/components/Buttons/DeleteButton";
 
 interface Params {
   slug: string;
   id: string;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<Params>;
+}): Promise<Metadata> {
+  const token = await verifyAdminAuth();
+  if (!token) return { title: "Acesso negado" };
+
+  const { id } = await params;
+  const professional = await fetchProfessionalById(id, token);
+  const salon = await fetchSalonByAdmin(token);
+
+  return {
+    title: `Beautime Admin - ${salon.name} - ${professional.name}`,
+    description: `Detalhes e gerenciamento do profissional ${professional.name} no salão ${salon.name}.`,
+  };
 }
 
 export default async function ProfessionalPage({
@@ -23,11 +47,9 @@ export default async function ProfessionalPage({
   const token = await verifyAdminAuth();
   if (!token) return <AccessDenied />;
 
-  const { slug } = await params;
-  const { id } = await params;
+  const { slug, id } = await params;
 
   let professional: ProfessionalDetail;
-
   try {
     professional = await fetchProfessionalById(id, token);
   } catch (error) {
@@ -42,101 +64,155 @@ export default async function ProfessionalPage({
   }
 
   const services = await fetchServicesByProfessional(id, token);
-
   const availability: Availability[] = await fetchAvailabilityByProfessional(
     id,
     token
   );
 
   return (
-    <main className="relative flex flex-col items-center justify-center min-h-screen p-6">
-      <Link
-        href={`/${slug}/dashboard/professionals`}
-        className="absolute top-4 left-4 text-blue-600 hover:underline hover:cursor-pointer"
-      >
-        ← Voltar
-      </Link>
-
-      <h1 className="text-3xl font-bold mb-4 text-center">
-        {professional.name}
-      </h1>
-
-      <div className="rounded-full overflow-hidden border-4 border-purple-400 w-[150px] h-[150px] mb-6">
-        <ProfessionalAvatar
-          src={professional.avatarUrl}
-          alt={professional.name}
-          width={150}
-          height={150}
-        />
-      </div>
-
-      <div className="w-full max-w-xl text-left space-y-4">
-        <p>
-          <strong>Bio:</strong> {professional.bio}
+    <section className="max-w-6xl mx-auto px-4 sm:px-6 md:px-10 py-10 space-y-10">
+      {/* Header */}
+      <header className="mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-8">
+          Dados do Profissional
+        </h1>
+        <p className="text-[var(--text-secondary)]">
+          Gerencie as informações, serviços e disponibilidade deste
+          profissional.
         </p>
-        <p>
-          <strong>Email:</strong> {professional.email}
-        </p>
-        <p>
-          <strong>Phone:</strong> {professional.phone}
-        </p>
+      </header>
 
-        <div>
-          <h2 className="mt-8 text-xl font-semibold">Serviços Oferecidos:</h2>
-          <ul className="list-disc list-inside space-y-1">
-            {services
-              .filter((s) => s.service?.name)
-              .map((s) => (
-                <li key={s.service.id}>
-                  <Link
-                    href={`/${slug}/dashboard/services/${s.service.id}`}
-                    className="text-blue-600 hover:underline hover:text-blue-800 transition"
-                  >
-                    {s.service.name}
-                  </Link>
-                </li>
-              ))}
-          </ul>
-
-          <div className="mt-8">
-            <h2 className="text-xl font-semibold mb-2">Disponibilidade</h2>
-
-            {availability.length === 0 ? (
-              <p className="text-gray-600">
-                Nenhuma disponibilidade cadastrada.
-              </p>
-            ) : (
-              <ul className="list-disc list-inside space-y-1 max-w-xl">
-                {availability.map((slot) => (
-                  <li key={slot.id}>
-                    {translateWeekday(slot.weekday)} — {slot.startTime} às{" "}
-                    {slot.endTime}
-                  </li>
-                ))}
-              </ul>
-            )}
-
-            <Link
-              href={`/${slug}/dashboard/professionals/${id}/availability`}
-              className="inline-block mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-            >
-              Gerenciar disponibilidade
-            </Link>
+      {/* Card principal */}
+      <div className="bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] rounded-2xl shadow-lg p-8 md:p-12 flex flex-col gap-8 transition-all duration-300 hover:shadow-2xl">
+        {/* Avatar + Nome */}
+        <div className="flex flex-col items-center text-center gap-4">
+          <div className="relative w-44 h-44 rounded-full overflow-hidden border-5 border-[var(--color-primary)] shadow-md hover:scale-[1.02] transition-transform duration-300">
+            <Image
+              src={professional.avatarUrl || "/images/default-avatar.png"}
+              alt={professional.name}
+              fill
+              className="object-cover"
+              sizes="176px"
+            />
           </div>
+          <h2 className="text-3xl md:text-4xl font-bold">
+            {professional.name}
+          </h2>
+          <span className="text-[var(--text-secondary)] text-sm">
+            Profissional do salão
+          </span>
+        </div>
 
-          <div className="mt-6 flex items-center gap-4">
-            <Link
-              href={`/${slug}/dashboard/professionals/${professional.id}/edit`}
-            >
-              <button className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 hover:cursor-pointer transition">
-                Editar Profissional
-              </button>
-            </Link>
-
-            <DeleteProfessionalButton id={professional.id} slug={slug} />
+        {/* Info Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-[var(--color-gray-light)] dark:bg-[var(--color-white)] p-4 rounded-xl shadow-inner">
+            <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
+              <i className="lucide lucide-user text-[var(--color-secondary)]"></i>{" "}
+              Bio
+            </h3>
+            <p>{professional.bio || "Não informada"}</p>
+          </div>
+          <div className="bg-[var(--color-gray-light)] dark:bg-[var(--color-white)] p-4 rounded-xl shadow-inner">
+            <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
+              <i className="lucide lucide-mail text-[var(--color-secondary)]"></i>{" "}
+              Contato
+            </h3>
+            <p>Email: {professional.email}</p>
+            <p>Telefone: {professional.phone || "Não informado"}</p>
           </div>
         </div>
+
+        {/* Serviços */}
+        <div>
+          <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+            <i className="lucide lucide-scissors text-[var(--color-secondary)]"></i>{" "}
+            Serviços
+          </h3>
+          {services.length === 0 ? (
+            <p className="text-[var(--text-secondary)]">
+              Nenhum serviço vinculado.
+            </p>
+          ) : (
+            <div className="flex flex-wrap gap-3">
+              {services.map((s) => (
+                <Link
+                  key={s.service.id}
+                  href={`/${slug}/dashboard/services/${s.service.id}`}
+                  className="px-3 py-1 rounded-full bg-[var(--color-primary)] text-[var(--text-on-action)] hover:bg-[var(--color-primary-hover)] transition text-sm"
+                >
+                  {s.service.name}
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Disponibilidade */}
+        <div>
+          <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+            <i className="lucide lucide-calendar text-[var(--color-secondary)]"></i>{" "}
+            Disponibilidade
+          </h3>
+          {availability.length === 0 ? (
+            <p className="text-[var(--text-secondary)]">
+              Nenhuma disponibilidade cadastrada.
+            </p>
+          ) : (
+            <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+              {availability.map((slot) => (
+                <li
+                  key={slot.id}
+                  className="px-2 py-1 bg-[var(--color-gray-light)] dark:bg-[var(--color-white)] rounded-lg text-center text-sm"
+                >
+                  {translateWeekday(slot.weekday)} <br /> {slot.startTime} às{" "}
+                  {slot.endTime}
+                </li>
+              ))}
+            </ul>
+          )}
+
+          <ActionButton
+            href={`/${slug}/dashboard/professionals/${id}/availability`}
+            text="Gerenciar disponibilidade"
+            className="mt-4 bg-sky-600 hover:bg-sky-700"
+          />
+        </div>
+
+        {/* Ações */}
+        <div className="mt-6 flex flex-col sm:flex-row justify-start gap-4">
+          <ActionButton
+            href={`/${slug}/dashboard/professionals/${id}/edit`}
+            text={
+              <span className="flex items-center gap-2">
+                <Pencil className="w-4 h-4" />
+                Atualizar
+              </span>
+            }
+            className="w-fit"
+          />
+
+          <form action={deleteProfessional} id="delete-professional-form">
+            <input type="hidden" name="slug" value={slug} />
+            <input type="hidden" name="id" value={id} />
+
+            <DeleteButton
+              formId="delete-professional-form"
+              text={
+                <span className="flex items-center gap-2">
+                  <Trash2 className="w-4 h-4" />
+                  Excluir
+                </span>
+              }
+              confirmMessage="Tem certeza que deseja excluir profissional?"
+            />
+          </form>
+        </div>
       </div>
-    </main>
+
+      {/* Link Voltar (inferior esquerdo) */}
+      <div className="flex justify-start -mt-8">
+        <BackLink slug={slug} to="dashboard/professionals" label="Voltar" />
+      </div>
+    </section>
   );
 }

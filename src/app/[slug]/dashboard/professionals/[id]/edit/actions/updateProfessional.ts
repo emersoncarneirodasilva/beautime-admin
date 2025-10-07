@@ -24,10 +24,11 @@ export async function updateProfessional(formData: FormData) {
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
 
-  if (!token) throw new Error("Token não encontrado.");
+  if (!token) redirect("/login");
 
   const salon = await fetchSalonByAdmin(token);
-  if (!salon) throw new Error("Salão não encontrado.");
+
+  if (!salon) redirect("/login");
 
   await updateProfessionalRequest(
     id,

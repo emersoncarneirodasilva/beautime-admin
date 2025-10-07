@@ -7,22 +7,29 @@ import { UserType } from "@/types";
 import { Metadata } from "next";
 import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
 
+interface Params {
+  slug: string;
+  id: string;
+}
+
 // Metadata
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<Params>;
+}): Promise<Metadata> {
   const token = await verifyAdminAuth();
+  const { id } = await params;
   if (!token) return { title: "Acesso negado" };
 
   const salon = await fetchSalonByAdmin(token);
 
+  const user = await fetchUserById(id, token);
+
   return {
-    title: `Beautime Admin - ${salon.name} - Usuário`,
+    title: `Beautime Admin - ${salon.name} - ${user.name}`,
     description: `Detalhes do usuário associado ao salão ${salon.name}.`,
   };
-}
-
-interface Params {
-  slug: string;
-  id: string;
 }
 
 export default async function UserPage({
