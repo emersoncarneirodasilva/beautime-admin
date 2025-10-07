@@ -9,16 +9,28 @@ import SubmitButton from "@/components/Buttons/SubmitButton";
 import { Metadata } from "next";
 import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
 
+interface Params {
+  slug: string;
+  id: string;
+}
+
 // Metadata
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<Params>;
+}): Promise<Metadata> {
   const token = await verifyAdminAuth();
+  const { id } = await params;
   if (!token) return { title: "Acesso negado" };
 
   const salon = await fetchSalonByAdmin(token);
 
+  const user = await fetchUserById(id, token);
+
   return {
-    title: `Beautime Admin - ${salon.name} - Editar Usuário`,
-    description: `Edição das informações do usuário associado ao salão ${salon.name}.`,
+    title: `Beautime Admin - ${salon.name} - Editar ${user.name}`,
+    description: `Gerencie e atualize as informações do usuário ${user.name} associado ao salão ${salon.name}.`,
   };
 }
 
@@ -89,7 +101,6 @@ export default async function EditUserPage({
             id="name"
             name="name"
             defaultValue={user.name ?? ""}
-            required
             className={inputClasses}
           />
         </div>
@@ -100,11 +111,12 @@ export default async function EditUserPage({
             Telefone
           </label>
           <input
-            type="number"
+            type="tel"
             id="phone"
             name="phone"
+            pattern="\d*"
+            inputMode="numeric"
             defaultValue={user.phone ?? ""}
-            required
             className={inputClasses}
           />
         </div>

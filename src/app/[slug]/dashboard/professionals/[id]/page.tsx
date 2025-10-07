@@ -117,8 +117,14 @@ export default async function ProfessionalPage({
               <i className="lucide lucide-mail text-[var(--color-secondary)]"></i>{" "}
               Contato
             </h3>
-            <p>Email: {professional.email}</p>
-            <p>Telefone: {professional.phone || "Não informado"}</p>
+            <div className="w-full break-words">
+              <span className="font-medium">Email:</span>{" "}
+              {professional.email || "Não informado"}
+            </div>
+            <div className="w-full break-words mt-1">
+              <span className="font-medium">Telefone:</span>{" "}
+              {professional.phone || "Não informado"}
+            </div>
           </div>
         </div>
 

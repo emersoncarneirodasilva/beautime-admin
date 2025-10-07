@@ -70,7 +70,6 @@ export default async function EditSalonPage({
               name="name"
               defaultValue={salon.name}
               className="w-full px-4 py-3 rounded-xl border border-[var(--color-gray-medium)] focus:ring-2 focus:ring-[var(--color-action)] focus:outline-none transition"
-              required
             />
           </div>
 
@@ -93,7 +92,6 @@ export default async function EditSalonPage({
             rows={5}
             defaultValue={salon.description}
             className="w-full px-4 py-3 rounded-xl border border-[var(--color-gray-medium)] focus:ring-2 focus:ring-[var(--color-action)] focus:outline-none transition resize-none"
-            required
           />
         </div>
 

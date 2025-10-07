@@ -15,6 +15,11 @@ export default function SubmitButton({ formId }: SubmitButtonProps) {
 
     if (!form) return;
 
+    // Verifica se o form é válido antes de submeter
+    if (!form.reportValidity()) {
+      return;
+    }
+
     setLoading(true); // feedback visual
 
     form.requestSubmit(); // dispara o submit normal do Server Component

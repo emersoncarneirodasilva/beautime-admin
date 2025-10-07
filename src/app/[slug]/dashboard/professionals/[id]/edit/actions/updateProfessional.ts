@@ -1,40 +1,48 @@
 "use server";
 
-import { cookies } from "next/headers";
-import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
+import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
 import { redirect } from "next/navigation";
-import { updateProfessionalRequest } from "@/libs/api/updateProfessional";
 
 export async function updateProfessional(formData: FormData) {
+  const token = await verifyAdminAuth();
+
   const slug = formData.get("slug") as string;
   const id = formData.get("id") as string;
+  const name = (formData.get("name") as string)?.trim() || null;
+  const email = (formData.get("email") as string)?.trim() || null;
+  const phone = (formData.get("phone") as string)?.trim() || null;
+  const bio = (formData.get("bio") as string)?.trim() || null;
+  const avatar = formData.get("avatar") as File | null;
 
-  const name = formData.get("name") as string;
-  const email = formData.get("email") as string;
-  const phone = (formData.get("phone") as string) || null;
-  const bio = (formData.get("bio") as string) || null;
-  let avatarUrl = (formData.get("avatarUrl") as string) || null;
+  // 🔹 Monta o corpo como multipart/form-data
+  const body = new FormData();
+  if (name !== null) body.append("name", name);
+  if (email !== null) body.append("email", email);
+  if (phone !== null) body.append("phone", phone);
+  if (bio !== null) body.append("bio", bio);
 
-  if (avatarUrl?.trim() === "") avatarUrl = null;
-
-  if (!id || !name || !email) {
-    throw new Error("Campos obrigatórios ausentes.");
+  // Só envia avatar se o usuário realmente selecionou um arquivo
+  if (avatar && avatar.size > 0) {
+    body.append("avatar", avatar);
   }
 
-  const cookieStore = await cookies();
-  const token = cookieStore.get("token")?.value;
-
-  if (!token) redirect("/login");
-
-  const salon = await fetchSalonByAdmin(token);
-
-  if (!salon) redirect("/login");
-
-  await updateProfessionalRequest(
-    id,
-    { name, email, phone, bio, avatarUrl },
-    token
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/professionals/${id}`,
+    {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        // ❌ não defina Content-Type manualmente
+      },
+      body,
+    }
   );
+
+  if (!res.ok) {
+    const errorResponse = await res.json().catch(() => ({}));
+    console.error("Erro ao atualizar profissional:", errorResponse);
+    throw new Error(errorResponse.message || "Erro ao atualizar profissional.");
+  }
 
   redirect(`/${slug}/dashboard/professionals/${id}`);
 }

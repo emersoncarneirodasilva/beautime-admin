@@ -7,18 +7,17 @@ export async function updateSalon(formData: FormData) {
   const token = await verifyAdminAuth();
 
   const slug = formData.get("slug") as string;
-  const name = (formData.get("name") as string) || "";
-  const description = (formData.get("description") as string) || "";
+  const name = (formData.get("name") as string)?.trim();
+  const description = (formData.get("description") as string)?.trim();
   const logo = formData.get("logo") as File | null;
 
   // Criar FormData para enviar via multipart/form-data
   const body = new FormData();
-  body.append("name", name);
-  body.append("description", description);
-  // Só adiciona logo se o usuário realmente selecionou uma imagem
-  if (logo && logo.size > 0) {
-    body.append("logo", logo);
-  }
+
+  // Só adiciona se houver valor
+  if (name) body.append("name", name);
+  if (description) body.append("description", description);
+  if (logo && logo.size > 0) body.append("logo", logo);
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/admins/me/salons`,
