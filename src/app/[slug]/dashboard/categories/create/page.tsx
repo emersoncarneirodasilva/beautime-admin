@@ -1,8 +1,24 @@
+import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
+import AccessDenied from "@/components/Auth/AccessDenied";
 import { createCategory } from "./actions/createCategory";
-import Link from "next/link";
+import BackLink from "@/components/Buttons/BackLink";
+import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
+import CreateButton from "@/components/Buttons/CreateButton";
 
 interface Params {
   slug: string;
+}
+
+export async function generateMetadata() {
+  const token = await verifyAdminAuth();
+  if (!token) return { title: "Acesso negado" };
+
+  const salon = await fetchSalonByAdmin(token);
+
+  return {
+    title: `Beautime Admin - ${salon.name} - Criar Categoria`,
+    description: `Crie uma nova categoria para o salão ${salon.name}.`,
+  };
 }
 
 export default async function CreateCategoryPage({
@@ -10,48 +26,62 @@ export default async function CreateCategoryPage({
 }: {
   params: Promise<Params>;
 }) {
+  const token = await verifyAdminAuth();
+  if (!token) return <AccessDenied />;
+
   const { slug } = await params;
 
-  return (
-    <div className="max-w-xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">Nova Categoria</h1>
+  const labelClasses = "block font-medium text-[var(--foreground)] mb-4";
+  const inputClasses =
+    "w-full px-4 py-3 rounded-xl bg-[var(--color-gray-light)] border border-[var(--color-gray-medium)] focus:ring-2 focus:ring-[var(--color-action)] focus:outline-none transition";
 
-      <form action={createCategory} className="space-y-4">
+  return (
+    <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-8">
+      {/* Header */}
+      <header className="space-y-2">
+        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-8">
+          Criar Categoria
+        </h1>
+        <p className="text-[var(--text-secondary)] text-base">
+          Crie uma nova categoria para o salão
+        </p>
+      </header>
+
+      {/* Form */}
+      <form
+        id="create-category-form"
+        action={createCategory}
+        className="bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] rounded-2xl shadow-lg p-8 transition-colors duration-300 hover:shadow-xl space-y-6"
+      >
         <input type="hidden" name="slug" value={slug} />
 
         <div>
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
+          <label htmlFor="name" className={labelClasses}>
             Nome da Categoria
           </label>
           <input
-            type="text"
             id="name"
             name="name"
-            required
+            type="text"
             placeholder="Ex: Tratamentos Faciais"
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
+            required
+            className={inputClasses}
           />
         </div>
 
-        <div className="flex items-center justify-between mt-6">
-          <Link
-            href={`/${slug}/dashboard/categories`}
-            className="text-blue-600 hover:underline"
-          >
-            ← Voltar
-          </Link>
-
-          <button
-            type="submit"
-            className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 hover:cursor-pointer transition"
-          >
-            Criar Categoria
-          </button>
+        <div className="flex justify-end mt-4">
+          <CreateButton
+            formId="create-category-form"
+            iconType="category"
+            label="Criar Categoria"
+          />
         </div>
       </form>
-    </div>
+
+      {/* BackLink */}
+      <footer className="mt-6">
+        <BackLink slug={slug} to="dashboard/categories" />
+      </footer>
+    </section>
   );
 }

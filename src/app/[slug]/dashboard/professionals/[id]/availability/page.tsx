@@ -1,8 +1,7 @@
-import Link from "next/link";
 import AccessDenied from "@/components/Auth/AccessDenied";
 import ErrorSection from "@/components/Error/ErrorSection";
 import { Availability } from "@/types";
-import { handleDeleteAvailability } from "./actions/deleteAvailability";
+import { handleDeleteAvailability } from "./actions/handleDeleteAvailability";
 import { translateWeekday } from "@/utils/translateWeekday";
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
 import { fetchAvailabilityByProfessional } from "@/libs/api/fetchAvailabilityByProfessional";
@@ -12,6 +11,7 @@ import { fetchProfessionalById } from "@/libs/api/fetchProfessionalById";
 import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
 import ActionButton from "@/components/Buttons/ActionButton";
 import DeleteButton from "@/components/Buttons/DeleteButton";
+import EditButton from "@/components/Buttons/EditButton";
 
 interface Params {
   slug: string;
@@ -108,12 +108,10 @@ export default async function AvailabilityPage({
 
               {/* Ações */}
               <div className="flex gap-2 flex-wrap lg:flex-nowrap w-full lg:w-auto">
-                <Link
+                <EditButton
                   href={`/${slug}/dashboard/professionals/${id}/availability/${slot.id}/edit`}
                   className="px-3 py-1.5 h-fit bg-[var(--color-secondary)] hover:bg-[var(--color-secondary-hover)] text-[var(--text-on-action)] rounded-md text-sm transition w-full lg:w-auto text-center"
-                >
-                  Editar
-                </Link>
+                />
 
                 <form
                   id={`availability-form-delete-${slot.id}`}

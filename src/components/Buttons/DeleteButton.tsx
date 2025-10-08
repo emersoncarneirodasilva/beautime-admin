@@ -40,7 +40,7 @@ export default function DeleteButton({
       className={`${
         loading
           ? "bg-gray-400 cursor-not-allowed text-white"
-          : "bg-[var(--color-error)] hover:bg-[#c53030] text-[var(--text-on-action)]"
+          : "bg-[var(--color-error)] hover:bg-[#c53030] text-[var(--text-on-action)] transition-all"
       } ${className}`}
     >
       {loading ? "Excluindo..." : text}
