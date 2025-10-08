@@ -210,6 +210,9 @@ export default async function ProfessionalPage({
                 </span>
               }
               confirmMessage="Tem certeza que deseja excluir profissional?"
+              className={
+                "px-5 py-2.5 rounded-lg font-medium flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer"
+              }
             />
           </form>
         </div>

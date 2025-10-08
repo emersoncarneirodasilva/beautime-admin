@@ -37,7 +37,7 @@ export default function DeleteButton({
       type="button"
       onClick={handleClick}
       disabled={loading}
-      className={`px-5 py-2.5 rounded-lg font-medium flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer ${
+      className={`${
         loading
           ? "bg-gray-400 cursor-not-allowed text-white"
           : "bg-[var(--color-error)] hover:bg-[#c53030] text-[var(--text-on-action)]"

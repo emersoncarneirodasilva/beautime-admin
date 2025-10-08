@@ -6,10 +6,34 @@ import { handleDeleteAvailability } from "./actions/deleteAvailability";
 import { translateWeekday } from "@/utils/translateWeekday";
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
 import { fetchAvailabilityByProfessional } from "@/libs/api/fetchAvailabilityByProfessional";
+import BackLink from "@/components/Buttons/BackLink";
+import { Metadata } from "next";
+import { fetchProfessionalById } from "@/libs/api/fetchProfessionalById";
+import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
+import ActionButton from "@/components/Buttons/ActionButton";
+import DeleteButton from "@/components/Buttons/DeleteButton";
 
 interface Params {
   slug: string;
   id: string;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<Params>;
+}): Promise<Metadata> {
+  const token = await verifyAdminAuth();
+  if (!token) return { title: "Acesso negado" };
+
+  const { id } = await params;
+  const professional = await fetchProfessionalById(id, token);
+  const salon = await fetchSalonByAdmin(token);
+
+  return {
+    title: `Beautime Admin - ${salon.name} - Disponibilidade de ${professional.name}`,
+    description: `Gerencie as disponibilidades do profissional ${professional.name} no salão ${salon.name}.`,
+  };
 }
 
 export default async function AvailabilityPage({
@@ -23,9 +47,11 @@ export default async function AvailabilityPage({
   const { slug, id } = await params;
 
   let availability: Availability[];
-
+  let professionalName = "";
   try {
     availability = await fetchAvailabilityByProfessional(id, token);
+    const professional = await fetchProfessionalById(id, token);
+    professionalName = professional.name;
   } catch (error) {
     return (
       <ErrorSection
@@ -38,48 +64,71 @@ export default async function AvailabilityPage({
   }
 
   return (
-    <main className="p-6 max-w-2xl mx-auto">
-      <Link
-        href={`/${slug}/dashboard/professionals/${id}`}
-        className="text-blue-600 hover:underline"
-      >
-        ← Voltar ao profissional
-      </Link>
+    <section className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-10 space-y-8">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="w-full sm:w-auto">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-8">
+            Disponibilidade
+          </h1>
+          <p className="text-[var(--text-secondary)] mt-1 text-sm sm:text-base">
+            Gerencie as disponibilidades do profissional{" "}
+            <strong>{professionalName}</strong>
+          </p>
+        </div>
 
-      <h1 className="text-2xl font-bold mt-4 mb-6">Disponibilidade</h1>
+        <div className="flex-shrink-0 w-fit sm:w-auto">
+          <ActionButton
+            href={`/${slug}/dashboard/professionals/${id}/availability/create`}
+            text="Criar disponibilidade"
+            className="w-full sm:w-auto"
+          />
+        </div>
+      </div>
 
+      {/* Lista de disponibilidades */}
       {availability.length === 0 ? (
-        <p className="text-gray-600">Nenhuma disponibilidade cadastrada.</p>
+        <div className="text-center p-6 bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] rounded-xl shadow-sm">
+          <p className="text-[var(--text-secondary)] text-sm sm:text-base">
+            Nenhuma disponibilidade cadastrada.
+          </p>
+        </div>
       ) : (
-        <ul className="space-y-4">
+        <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {availability.map((slot) => (
             <li
               key={slot.id}
-              className="border p-4 rounded-md flex justify-between items-center"
+              className="bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] rounded-xl shadow-sm p-4 flex flex-col lg:flex-row justify-between gap-2 transition hover:shadow-md"
             >
-              <div>
-                <strong>{translateWeekday(slot.weekday)}</strong>:{" "}
+              {/* Horário */}
+              <div className="text-[var(--foreground)] font-medium text-sm sm:text-base mb-2 lg:mb-0">
+                <strong>{translateWeekday(slot.weekday)}</strong> <br />
                 {slot.startTime} às {slot.endTime}
               </div>
-              <div className="flex items-center space-x-2">
-                <button className="text-sm px-3 py-1 bg-yellow-400 rounded hover:bg-yellow-500 hover:cursor-pointer transition">
-                  <Link
-                    href={`/${slug}/dashboard/professionals/${id}/availability/${slot.id}/edit`}
-                  >
-                    Editar
-                  </Link>
-                </button>
-                <form action={handleDeleteAvailability}>
+
+              {/* Ações */}
+              <div className="flex gap-2 flex-wrap lg:flex-nowrap w-full lg:w-auto">
+                <Link
+                  href={`/${slug}/dashboard/professionals/${id}/availability/${slot.id}/edit`}
+                  className="px-3 py-1.5 h-fit bg-[var(--color-secondary)] hover:bg-[var(--color-secondary-hover)] text-[var(--text-on-action)] rounded-md text-sm transition w-full lg:w-auto text-center"
+                >
+                  Editar
+                </Link>
+
+                <form
+                  id={`availability-form-delete-${slot.id}`}
+                  action={handleDeleteAvailability}
+                  className="w-full lg:w-auto"
+                >
                   <input type="hidden" name="slug" value={slug} />
                   <input type="hidden" name="availabilityId" value={slot.id} />
                   <input type="hidden" name="professionalId" value={id} />
 
-                  <button
-                    type="submit"
-                    className="text-sm px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 hover:cursor-pointer transition"
-                  >
-                    Excluir
-                  </button>
+                  <DeleteButton
+                    formId={`availability-form-delete-${slot.id}`}
+                    confirmMessage="Deseja realmente excluir esse horário?"
+                    className="px-3 py-1.5 bg-[var(--color-error)] text-[var(--text-on-action)] rounded-md text-sm hover:bg-red-700 transition w-full lg:w-auto cursor-pointer"
+                  />
                 </form>
               </div>
             </li>
@@ -87,14 +136,10 @@ export default async function AvailabilityPage({
         </ul>
       )}
 
-      <div className="mt-6">
-        <Link
-          href={`/${slug}/dashboard/professionals/${id}/availability/create`}
-          className="inline-block mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-        >
-          Criar disponibilidade
-        </Link>
+      {/* Botão Voltar */}
+      <div className="mt-6 flex justify-start w-full sm:w-auto">
+        <BackLink slug={slug} to="dashboard/professionals" label="Voltar" />
       </div>
-    </main>
+    </section>
   );
 }

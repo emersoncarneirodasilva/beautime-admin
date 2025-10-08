@@ -9,6 +9,8 @@ import {
   ImagePlus,
   BellPlus,
   CalendarPlus,
+  ClockPlus,
+  Plus,
 } from "lucide-react";
 
 interface CreateButtonProps {
@@ -20,6 +22,7 @@ interface CreateButtonProps {
     | "service"
     | "category"
     | "schedule"
+    | "availability"
     | "image"
     | "notification";
 }
@@ -60,8 +63,10 @@ export default function CreateButton({
         return <ImagePlus size={18} />;
       case "notification":
         return <BellPlus size={18} />;
+      case "availability":
+        return <ClockPlus size={18} />;
       default:
-        return <UserPlus size={18} />;
+        return <Plus size={18} />;
     }
   };
 

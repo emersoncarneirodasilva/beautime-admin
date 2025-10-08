@@ -1,11 +1,33 @@
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
 import AccessDenied from "@/components/Auth/AccessDenied";
-import Link from "next/link";
 import { handleCreateAvailability } from "./actions/createAvailability";
+import BackLink from "@/components/Buttons/BackLink";
+import CreateButton from "@/components/Buttons/CreateButton";
+import { Metadata } from "next";
+import { fetchProfessionalById } from "@/libs/api/fetchProfessionalById";
+import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
 
 interface Params {
   slug: string;
   id: string;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<Params>;
+}): Promise<Metadata> {
+  const token = await verifyAdminAuth();
+  if (!token) return { title: "Acesso negado" };
+
+  const { id } = await params;
+  const professional = await fetchProfessionalById(id, token);
+  const salon = await fetchSalonByAdmin(token);
+
+  return {
+    title: `Beautime Admin - ${salon.name} - Criar disponibilidade de ${professional.name}`,
+    description: `Crie uma nova disponibilidade para o profissional ${professional.name} no salão ${salon.name}.`,
+  };
 }
 
 export default async function CreateAvailabilityPage({
@@ -18,24 +40,38 @@ export default async function CreateAvailabilityPage({
 
   const { slug, id } = await params;
 
+  const labelClasses = "block font-medium text-[var(--foreground)] mb-2";
+
+  const inputClasses =
+    "w-full px-4 py-3 rounded-xl bg-[var(--color-gray-light)] border border-[var(--color-gray-medium)] focus:ring-2 focus:ring-[var(--color-action)] focus:outline-none transition";
+
   return (
-    <main className="p-6 max-w-xl mx-auto">
-      <Link
-        href={`/${slug}/dashboard/professionals/${id}/availability`}
-        className="text-blue-600 hover:underline"
+    <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-8">
+      {/* Header */}
+      <header className="space-y-2">
+        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-8">
+          Nova Disponibilidade
+        </h1>
+        <p className="text-[var(--text-secondary)] text-base">
+          Crie uma nova disponibilidade para o profissional.
+        </p>
+      </header>
+
+      {/* Form */}
+      <form
+        id="create-availability-form"
+        action={handleCreateAvailability}
+        className="bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] rounded-2xl shadow-lg p-8 space-y-6"
       >
-        ← Voltar
-      </Link>
-
-      <h1 className="text-2xl font-bold mt-4 mb-6">Nova disponibilidade</h1>
-
-      <form action={handleCreateAvailability} className="space-y-4">
         <input type="hidden" name="slug" value={slug} />
         <input type="hidden" name="professionalId" value={id} />
 
-        <div className="flex flex-col">
-          <label className="font-medium">Dia da semana</label>
-          <select name="weekday" className="p-2 border rounded bg-black">
+        {/* Dia da semana */}
+        <div>
+          <label htmlFor="weekday" className={labelClasses}>
+            Dia da semana
+          </label>
+          <select id="weekday" name="weekday" className={inputClasses}>
             <option value="0">Domingo</option>
             <option value="1">Segunda</option>
             <option value="2">Terça</option>
@@ -46,33 +82,51 @@ export default async function CreateAvailabilityPage({
           </select>
         </div>
 
-        <div className="flex flex-col">
-          <label className="font-medium">Início</label>
+        {/* Hora de início */}
+        <div>
+          <label htmlFor="startTime" className={labelClasses}>
+            Início
+          </label>
           <input
+            id="startTime"
             type="time"
             name="startTime"
             required
-            className="p-2 border rounded"
+            className={inputClasses}
           />
         </div>
 
-        <div className="flex flex-col">
-          <label className="font-medium">Término</label>
+        {/* Hora de término */}
+        <div>
+          <label htmlFor="endTime" className={labelClasses}>
+            Término
+          </label>
           <input
+            id="endTime"
             type="time"
             name="endTime"
             required
-            className="p-2 border rounded"
+            className={inputClasses}
           />
         </div>
 
-        <button
-          type="submit"
-          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 hover:cursor-pointer transition"
-        >
-          Criar disponibilidade
-        </button>
+        {/* Submit */}
+        <div className="flex justify-end mt-4">
+          <CreateButton
+            formId="create-availability-form"
+            label="Criar Horário"
+            iconType="availability"
+          />
+        </div>
       </form>
-    </main>
+
+      {/* Voltar */}
+      <footer className="mt-6">
+        <BackLink
+          slug={slug}
+          to={`dashboard/professionals/${id}/availability`}
+        />
+      </footer>
+    </section>
   );
 }
