@@ -1,6 +1,7 @@
 "use server";
 
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
+import { sanitizeFile } from "@/utils/sanitizeFile";
 import { redirect } from "next/navigation";
 
 export async function updateSalon(formData: FormData) {
@@ -17,7 +18,10 @@ export async function updateSalon(formData: FormData) {
   // Só adiciona se houver valor
   if (name) body.append("name", name);
   if (description) body.append("description", description);
-  if (logo && logo.size > 0) body.append("logo", logo);
+  if (logo && logo.size > 0) {
+    const safeLogo = sanitizeFile(logo);
+    body.append("logo", safeLogo);
+  }
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/admins/me/salons`,

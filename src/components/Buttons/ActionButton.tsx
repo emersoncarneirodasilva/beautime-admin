@@ -1,11 +1,12 @@
 "use client";
+
 import { useState, ReactNode } from "react";
 import { useRouter } from "next/navigation";
 
 interface ActionButtonProps {
   href: string;
   text: string | ReactNode;
-  className?: string; // para customização extra se necessário
+  className?: string;
 }
 
 export default function ActionButton({

@@ -86,8 +86,10 @@ export default async function EditProfessionalPage({
 
         {/* Upload de Imagem */}
         <AvatarUpload
-          currentAvatar={professional.avatarUrl}
-          name={professional.name}
+          fieldName="avatar"
+          title="Imagem do Profissional"
+          currentFile={professional.avatarUrl}
+          altText={professional.name}
         />
 
         {/* Nome */}

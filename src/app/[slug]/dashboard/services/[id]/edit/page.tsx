@@ -5,7 +5,9 @@ import { Category, Service } from "@/types";
 import AccessDenied from "@/components/Auth/AccessDenied";
 import ErrorSection from "@/components/Error/ErrorSection";
 import { updateService } from "./actions/updateService";
-import Link from "next/link";
+import BackLink from "@/components/Buttons/BackLink";
+import SubmitButton from "@/components/Buttons/SubmitButton";
+import AvatarUpload from "@/components/Images/AvatarUpload";
 
 interface Params {
   slug: string;
@@ -52,84 +54,112 @@ export default async function EditServicePage({
     );
   }
 
-  return (
-    <div className="max-w-2xl mx-auto mt-4 p-6 bg-white rounded shadow">
-      <h1 className="text-2xl font-bold mb-6 text-gray-800">Editar Serviço</h1>
+  const labelClasses = "block font-medium text-[var(--foreground)] mb-4";
+  const inputClasses =
+    "w-full px-4 py-3 rounded-xl border border-[var(--color-gray-medium)] bg-[var(--color-gray-light)] focus:ring-2 focus:ring-[var(--color-action)] focus:outline-none transition";
 
-      <form action={updateService} className="space-y-4">
+  return (
+    <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-8">
+      {/* Header */}
+      <header className="space-y-2">
+        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-8">
+          Editar Serviço
+        </h1>
+        <p className="text-[var(--text-secondary)] text-base">
+          Atualize as informações do serviço abaixo. As alterações serão salvas
+          imediatamente após o envio.
+        </p>
+      </header>
+
+      {/* Form */}
+      <form
+        id="update-service-form"
+        action={updateService}
+        className="bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] rounded-2xl shadow-lg p-8 space-y-6 transition-colors duration-300 hover:shadow-xl"
+      >
         <input type="hidden" name="slug" value={slug} />
         <input type="hidden" name="id" value={service.id} />
 
+        {/* Upload de Imagem */}
+        <AvatarUpload
+          fieldName="image"
+          title="Imagem do Serviço"
+          currentFile={service.imageUrl}
+          altText={service.name}
+        />
+
+        {/* Nome */}
         <div>
-          <label className="block text-sm font-medium text-gray-800 mb-1">
+          <label htmlFor="name" className={labelClasses}>
             Nome
           </label>
           <input
+            id="name"
             name="name"
             defaultValue={service.name}
-            className="w-full border px-3 py-2 rounded bg-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className={inputClasses}
             required
           />
         </div>
+
+        {/* Descrição */}
         <div>
-          <label className="block text-sm font-medium text-gray-800 mb-1">
+          <label htmlFor="description" className={labelClasses}>
             Descrição
           </label>
           <textarea
+            id="description"
             name="description"
-            defaultValue={service.description}
-            className="w-full border px-3 py-2 rounded bg-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
             rows={4}
+            defaultValue={service.description}
+            className={inputClasses}
             required
           />
         </div>
-        <div className="flex gap-4">
-          <div className="flex-1">
-            <label className="block text-sm font-medium text-gray-800 mb-1">
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Preço */}
+          <div>
+            <label htmlFor="price" className={labelClasses}>
               Preço
             </label>
             <input
+              id="price"
               name="price"
               type="number"
               step="0.01"
               defaultValue={service.price}
-              className="w-full border px-3 py-2 rounded bg-gray-500 appearance-none focus:outline-none focus:ring-2 focus:ring-purple-500 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              className={inputClasses}
               required
             />
           </div>
 
-          <div className="flex-1">
-            <label className="block text-sm font-medium text-gray-800 mb-1">
+          {/* Duração */}
+          <div>
+            <label htmlFor="duration" className={labelClasses}>
               Duração (min)
             </label>
             <input
+              id="duration"
               name="duration"
               type="number"
               defaultValue={service.duration}
-              className="w-full border px-3 py-2 rounded bg-gray-500 appearance-none focus:outline-none focus:ring-2 focus:ring-purple-500 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              className={inputClasses}
               required
             />
           </div>
         </div>
+
+        {/* Categoria */}
         <div>
-          <label className="block text-sm font-medium text-gray-800 mb-1">
-            Imagem (URL)
-          </label>
-          <input
-            name="imageUrl"
-            type="url"
-            defaultValue={service.imageUrl ?? ""}
-            className="w-full border px-3 py-2 rounded bg-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-800 mb-1">
+          <label htmlFor="categoryId" className={labelClasses}>
             Categoria
           </label>
           <select
+            id="categoryId"
             name="categoryId"
             defaultValue={service.categoryId}
-            className="w-full border px-3 py-2 rounded bg-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className={inputClasses}
             required
           >
             {categories.map((category) => (
@@ -139,22 +169,17 @@ export default async function EditServicePage({
             ))}
           </select>
         </div>
-        <div className="flex justify-between mt-6">
-          <button
-            type="submit"
-            className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 hover:cursor-pointer transition duration-200"
-          >
-            Salvar Alterações
-          </button>
 
-          <Link
-            href={`/${slug}/dashboard/services/${id}`}
-            className="text-blue-600 px-4 py-2 hover:underline"
-          >
-            Cancelar
-          </Link>
+        {/* Botão salvar */}
+        <div className="flex justify-end mt-6">
+          <SubmitButton formId="update-service-form" />
         </div>
       </form>
-    </div>
+
+      {/* BackLink fora do card */}
+      <div className="flex justify-start -mt-6">
+        <BackLink slug={slug} to={`dashboard/services/${service.id}`} />
+      </div>
+    </section>
   );
 }

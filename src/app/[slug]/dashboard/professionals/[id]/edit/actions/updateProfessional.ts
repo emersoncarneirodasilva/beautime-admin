@@ -1,6 +1,7 @@
 "use server";
 
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
+import { sanitizeFile } from "@/utils/sanitizeFile";
 import { redirect } from "next/navigation";
 
 export async function updateProfessional(formData: FormData) {
@@ -23,7 +24,8 @@ export async function updateProfessional(formData: FormData) {
 
   // Só envia avatar se o usuário realmente selecionou um arquivo
   if (avatar && avatar.size > 0) {
-    body.append("avatar", avatar);
+    const safeAvatar = sanitizeFile(avatar);
+    body.append("avatar", safeAvatar);
   }
 
   const res = await fetch(

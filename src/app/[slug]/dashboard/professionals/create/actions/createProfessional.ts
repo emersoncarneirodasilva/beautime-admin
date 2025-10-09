@@ -1,6 +1,7 @@
 "use server";
 
 import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
+import { sanitizeFile } from "@/utils/sanitizeFile";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -28,11 +29,13 @@ export async function createProfessional(formData: FormData) {
   const apiFormData = new FormData();
   apiFormData.append("name", name);
   apiFormData.append("email", email);
+  apiFormData.append("salonId", salon.id);
   if (phone) apiFormData.append("phone", phone);
   if (bio) apiFormData.append("bio", bio);
-  if (avatarFile && avatarFile.size > 0)
-    apiFormData.append("avatar", avatarFile);
-  apiFormData.append("salonId", salon.id);
+  if (avatarFile && avatarFile.size > 0) {
+    const safeAvatarFile = sanitizeFile(avatarFile);
+    apiFormData.append("avatar", safeAvatarFile);
+  }
 
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/professionals`, {
     method: "POST",
