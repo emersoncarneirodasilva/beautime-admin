@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
 import { fetchProfessionals } from "@/libs/api/fetchProfessionals";
 import { fetchServices } from "@/libs/api/fetchServices";
@@ -6,13 +7,34 @@ import { Service, ServicePreview } from "@/types";
 import AccessDenied from "@/components/Auth/AccessDenied";
 import { linkServiceToProfessional } from "./actions/linkServiceToProfessional";
 import { unlinkServiceFromProfessional } from "./actions/unlinkServiceFromProfessional";
-import ProfessionalAvatar from "@/components/Professional/ProfessionalAvatar";
+import Image from "next/image";
+import Pagination from "@/components/Pagination";
+import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
 import Link from "next/link";
+import RemoveServiceLink from "@/components/Buttons/RemoveServiceLink";
+import AddServiceButton from "@/components/Buttons/AddServiceButton";
+import { fetchWithRetry } from "@/utils/fetchWithRetry";
+
+// Metadata
+export async function generateMetadata(): Promise<Metadata> {
+  const token = await verifyAdminAuth();
+  if (!token) return { title: "Acesso negado" };
+
+  const salon = await fetchSalonByAdmin(token).catch(() => null);
+
+  return {
+    title: salon
+      ? `Beautime Admin - ${salon.name} - Vincular Serviços`
+      : "Beautime Admin",
+    description: salon
+      ? `Gerencie os vínculos entre serviços e profissionais do salão ${salon.name}.`
+      : "Gerencie os vínculos entre serviços e profissionais.",
+  };
+}
 
 interface Params {
   slug: string;
 }
-
 interface SearchParams {
   page?: string;
   limit?: string;
@@ -30,14 +52,13 @@ export default async function ServicesOnProfessionalsPage({
   if (!token) return <AccessDenied />;
 
   const { slug } = await params;
-
   const searchQuery = await searchParams;
 
   const page = Number(searchQuery?.page ?? "1");
   const limit = Number(searchQuery?.limit ?? "10");
   const search = searchQuery?.search ?? "";
 
-  // Busca profissionais paginados e filtrados
+  // Busca profissionais
   const { professionals, totalPages, currentPage } = await fetchProfessionals({
     token,
     page,
@@ -45,116 +66,151 @@ export default async function ServicesOnProfessionalsPage({
     search,
   });
 
-  // Busca todos os serviços disponíveis (sem paginação)
-  const { services: allServices } = await fetchServices(token, 1, 100);
-
-  // Para cada profissional, busca os serviços vinculados
-  const professionalsWithServices = await Promise.all(
-    professionals.map(async (professional: { id: string }) => {
-      const services = await fetchServicesByProfessional(
-        professional.id,
-        token
-      );
-      return { ...professional, services };
-    })
+  // Busca todos os serviços
+  const { services: allServices } = await fetchServices(token, 1, 100).catch(
+    () => ({ services: [] })
   );
 
-  return (
-    <div className="max-w-6xl mx-auto p-6 my-4 rounded bg-gray-300 min-h-screen">
-      <div className="mb-4">
-        <Link
-          href={`/${slug}/dashboard`}
-          className="inline-block text-blue-600 hover:underline hover:cursor-pointer"
-        >
-          ← Voltar
-        </Link>
-      </div>
-      <h1 className="text-2xl font-bold mb-6 text-gray-900">
-        Vincular Serviços aos Profissionais
-      </h1>
+  // Chunking para não sobrecarregar fetch
+  const chunkSize = 5;
+  const professionalsWithServices: ((typeof professionals)[0] & {
+    services: ServicePreview[];
+  })[] = [];
 
-      {/* Formulário de busca */}
-      <form method="GET" className="flex gap-3 mb-6">
+  for (let i = 0; i < professionals.length; i += chunkSize) {
+    const chunk = professionals.slice(i, i + chunkSize);
+
+    const results = await Promise.all(
+      chunk.map(async (professional: { id: string }) => {
+        try {
+          const services = await fetchWithRetry(() =>
+            fetchServicesByProfessional(professional.id, token)
+          );
+          return { ...professional, services };
+        } catch (err) {
+          console.error(
+            `Erro ao buscar serviços do profissional ${professional.id}`,
+            err
+          );
+          return { ...professional, services: [] };
+        }
+      })
+    );
+
+    professionalsWithServices.push(...results);
+  }
+
+  return (
+    <section className="max-w-6xl mx-auto p-4 sm:p-6 my-4 min-h-screen text-[var(--foreground)]">
+      {/* Header */}
+      <header className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
+        <h1 className="text-2xl sm:text-3xl font-bold">
+          Vincular Serviços aos Profissionais
+        </h1>
+      </header>
+
+      {/* Search form */}
+      <form
+        method="GET"
+        className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-10"
+      >
         <input
           type="text"
           name="search"
           defaultValue={search}
-          placeholder="Buscar profissional..."
-          className="flex-grow border border-black text-black rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Buscar profissionais..."
+          className="flex-grow border border-[var(--color-gray-medium)] rounded-lg px-4 py-2.5 bg-[var(--color-white)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition"
         />
-        <select
-          name="limit"
-          defaultValue={limit.toString()}
-          className="border border-black text-black rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="5">5 por página</option>
-          <option value="10">10 por página</option>
-          <option value="20">20 por página</option>
-        </select>
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 hover:cursor-pointer transition"
-        >
-          Buscar
-        </button>
+        <div className="flex gap-3 mt-2 sm:mt-0">
+          <select
+            name="limit"
+            defaultValue={limit.toString()}
+            className="border border-[var(--color-gray-medium)] rounded-lg px-3 py-2.5 bg-[var(--color-white)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition"
+          >
+            <option value="5">5 / página</option>
+            <option value="10">10 / página</option>
+            <option value="20">20 / página</option>
+          </select>
+          <button
+            type="submit"
+            className="bg-[var(--color-action)] text-[var(--text-on-action)] px-6 py-2.5 rounded-lg font-medium hover:bg-[var(--color-action-hover)] transition cursor-pointer"
+          >
+            Buscar
+          </button>
+        </div>
       </form>
 
-      <div className="space-y-8">
+      {/* Professionals list */}
+      <section className="space-y-8">
         {professionalsWithServices.map((professional) => (
-          <div
+          <article
             key={professional.id}
-            className="bg-white rounded-lg shadow p-4 space-y-4"
+            className="bg-[var(--color-white)] rounded-xl shadow p-4 sm:p-6 space-y-4"
           >
-            <div className="flex items-center gap-4">
-              <div className="rounded-full overflow-hidden border-4 border-purple-400 w-[70px] h-[70px] mb-6">
-                <ProfessionalAvatar
-                  src={professional.avatarUrl}
-                  alt={professional.name}
-                  width={150}
-                  height={150}
-                />
+            {/* Header profissional */}
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 border-b border-[var(--color-gray-medium)] pb-4">
+              <div className="relative w-20 h-20 rounded-full overflow-hidden border-4 border-[var(--color-primary)] shadow flex-shrink-0 transition-transform duration-300 hover:scale-[1.05]">
+                <Link
+                  href={`/${slug}/dashboard/professionals/${professional.id}`}
+                  aria-label={`Ver perfil de ${professional.name}`}
+                >
+                  <Image
+                    src={professional.avatarUrl || "/images/default-avatar.png"}
+                    alt={`Foto de ${professional.name}`}
+                    fill
+                    className="object-cover"
+                  />
+                </Link>
               </div>
-              <div>
-                <h2 className="font-semibold text-lg text-gray-800">
+              <div className="flex-1 text-center sm:text-left space-y-1">
+                <h2 className="font-semibold text-lg text-[var(--foreground)]">
                   {professional.name}
                 </h2>
-                <p className="text-sm text-gray-500">{professional.email}</p>
+                <p className="text-sm text-[var(--text-secondary)]">
+                  {professional.email}
+                </p>
               </div>
             </div>
 
-            <ul className="ml-6 list-disc text-sm text-gray-700 space-y-1">
+            {/* Serviços vinculados */}
+            <ul className="ml-0 sm:ml-6 list-disc text-sm text-[var(--foreground)] space-y-1">
               {professional.services.length > 0 ? (
                 professional.services.map((service: ServicePreview) => (
                   <li
-                    key={service.id} // id da associação profissional-serviço
+                    key={service.id}
                     className="flex justify-between items-center"
                   >
                     <span>{service.service.name}</span>
-                    <form action={unlinkServiceFromProfessional}>
+                    <form
+                      id={`unlink-form-${service.id}`}
+                      action={unlinkServiceFromProfessional}
+                    >
                       <input type="hidden" name="slug" value={slug} />
                       <input
                         type="hidden"
                         name="associationId"
                         value={service.id}
                       />
-
-                      <button
-                        type="submit"
-                        className="text-red-500 text-xs hover:underline hover:cursor-pointer ml-2"
-                      >
-                        Remover
-                      </button>
+                      <RemoveServiceLink
+                        formId={`unlink-form-${service.id}`}
+                        className="text-[var(--color-error)] text-xs hover:underline ml-2"
+                      />
                     </form>
                   </li>
                 ))
               ) : (
-                <li className="italic text-gray-400">
+                <li className="italic text-[var(--text-secondary)]">
                   Nenhum serviço vinculado
                 </li>
               )}
             </ul>
 
-            <form action={linkServiceToProfessional} className="flex gap-2">
+            {/* Form de vínculo */}
+            <form
+              id={`link-form-${professional.id}`}
+              action={linkServiceToProfessional}
+              className="flex flex-col sm:flex-row gap-2 pt-4"
+            >
               <input type="hidden" name="slug" value={slug} />
               <input
                 type="hidden"
@@ -164,13 +220,13 @@ export default async function ServicesOnProfessionalsPage({
 
               <select
                 name="serviceId"
-                className="flex-1 border rounded px-2 py-1 text-sm text-gray-700"
+                className="flex-1 border rounded px-2 py-1 text-sm bg-[var(--color-gray-light)] text-[var(--foreground)]"
                 defaultValue=""
+                required
               >
                 <option value="" disabled>
                   Selecione serviço
                 </option>
-
                 {allServices.map((service: Service) => {
                   const isLinked = professional.services.some(
                     (linked: { service: { id: string } }) =>
@@ -181,9 +237,6 @@ export default async function ServicesOnProfessionalsPage({
                       key={service.id}
                       value={service.id}
                       disabled={isLinked}
-                      className={
-                        isLinked ? "bg-gray-200 text-gray-400" : "bg-gray-400"
-                      }
                     >
                       {service.name}
                     </option>
@@ -191,51 +244,25 @@ export default async function ServicesOnProfessionalsPage({
                 })}
               </select>
 
-              <button
-                type="submit"
-                className="bg-purple-600 text-white px-4 py-1 rounded text-sm hover:bg-purple-700 hover:cursor-pointer transition"
-              >
-                Vincular
-              </button>
+              <AddServiceButton
+                formId={`link-form-${professional.id}`}
+                className="bg-[var(--color-action)] text-[var(--text-on-action)] px-4 py-1 rounded text-sm hover:bg-[var(--color-action-hover)]"
+              />
             </form>
-          </div>
+          </article>
         ))}
-      </div>
+      </section>
 
       {/* Paginação */}
-      <div className="flex justify-between items-center mt-8">
-        <Link
-          href={`?page=${
-            currentPage - 1
-          }&limit=${limit}&search=${encodeURIComponent(search)}`}
-          className={`px-4 py-2 rounded ${
-            currentPage <= 1
-              ? "bg-gray-300 cursor-not-allowed text-gray-500"
-              : "bg-blue-600 text-white hover:bg-blue-700"
-          }`}
-          aria-disabled={currentPage <= 1}
-        >
-          Anterior
-        </Link>
-
-        <span className="text-gray-700">
-          Página {currentPage} de {totalPages}
-        </span>
-
-        <Link
-          href={`?page=${
-            currentPage + 1
-          }&limit=${limit}&search=${encodeURIComponent(search)}`}
-          className={`px-4 py-2 rounded ${
-            currentPage >= totalPages
-              ? "bg-gray-300 cursor-not-allowed text-gray-500"
-              : "bg-blue-600 text-white hover:bg-blue-700"
-          }`}
-          aria-disabled={currentPage >= totalPages}
-        >
-          Próxima
-        </Link>
-      </div>
-    </div>
+      <footer className="mt-10">
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          hrefBuilder={(p) =>
+            `?page=${p}&limit=${limit}&search=${encodeURIComponent(search)}`
+          }
+        />
+      </footer>
+    </section>
   );
 }

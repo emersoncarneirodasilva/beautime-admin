@@ -87,7 +87,7 @@ export default async function ServicePage({
       <div className="bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] rounded-2xl shadow-lg p-8 md:p-12 flex flex-col gap-6 transition-all duration-300 hover:shadow-2xl">
         {/* Imagem redonda */}
         {service.imageUrl && (
-          <div className="relative w-32 sm:w-44 h-32 sm:h-44 mx-auto rounded-full overflow-hidden border-4 border-[var(--color-primary)] shadow-md mb-4">
+          <div className="relative w-32 sm:w-44 h-32 sm:h-44 mx-auto rounded-full overflow-hidden border-5 border-[var(--color-primary)] shadow-md mb-4">
             <Image
               src={service.imageUrl}
               alt={service.name}
