@@ -89,6 +89,7 @@ export default async function CategoriesPage({
 
       {/* Formulário de Busca */}
       <form
+        id="category-form"
         className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-10"
         method="GET"
       >
@@ -113,7 +114,7 @@ export default async function CategoriesPage({
             type="submit"
             className="bg-[var(--color-action)] text-[var(--text-on-action)] px-6 py-2.5 rounded-lg font-medium hover:bg-[var(--color-action-hover)] transition cursor-pointer w-full sm:w-auto"
           >
-            Buscar
+            Filtrar
           </button>
         </div>
       </form>
@@ -136,8 +137,9 @@ export default async function CategoriesPage({
 
               <div className="flex gap-2 w-full">
                 <EditButton
+                  formId="category-form"
                   href={`/${slug}/dashboard/categories/${category.id}/edit`}
-                  className="flex-1 flex items-center justify-center bg-[var(--color-secondary)] hover:bg-[var(--color-secondary-hover)] text-[var(--text-on-action)] rounded-md text-sm font-medium transition h-9"
+                  className="flex-1 flex items-center justify-center bg-[var(--color-secondary)] hover:bg-[var(--color-secondary-hover)] text-[var(--text-on-action)] rounded-md text-sm font-medium transition h-9 cursor-pointer"
                 />
 
                 <form

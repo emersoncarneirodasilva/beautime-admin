@@ -135,7 +135,7 @@ export default async function ServicesOnProfessionalsPage({
             type="submit"
             className="bg-[var(--color-action)] text-[var(--text-on-action)] px-6 py-2.5 rounded-lg font-medium hover:bg-[var(--color-action-hover)] transition cursor-pointer"
           >
-            Buscar
+            Filtrar
           </button>
         </div>
       </form>

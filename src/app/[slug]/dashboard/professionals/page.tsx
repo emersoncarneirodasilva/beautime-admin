@@ -112,7 +112,7 @@ export default async function ProfessionalsPage({
               type="submit"
               className="bg-[var(--color-action)] text-[var(--text-on-action)] px-6 py-2.5 rounded-lg font-medium hover:bg-[var(--color-action-hover)] transition cursor-pointer w-full sm:w-auto"
             >
-              Buscar
+              Filtrar
             </button>
           </div>
         </form>

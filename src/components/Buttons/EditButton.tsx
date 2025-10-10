@@ -1,8 +1,10 @@
 "use client";
 
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 interface EditButtonProps {
+  formId: string;
   href: string;
   text?: string | React.ReactNode;
   className?: string;
@@ -11,11 +13,28 @@ interface EditButtonProps {
 export default function EditButton({
   href,
   text = "Editar",
-  className = "",
+  className,
+  formId,
 }: EditButtonProps) {
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const handleClick = () => {
+    setLoading(true);
+    router.push(href);
+  };
+
   return (
-    <Link href={href} className={className}>
-      {text}
-    </Link>
+    <button
+      type="button"
+      form={formId}
+      onClick={handleClick}
+      disabled={loading}
+      className={`${className ?? ""} ${
+        loading ? "opacity-70 cursor-not-allowed" : ""
+      }`}
+    >
+      {loading ? "Carregando..." : text}
+    </button>
   );
 }
