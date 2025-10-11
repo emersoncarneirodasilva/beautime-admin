@@ -4,7 +4,8 @@ import BackLink from "@/components/Buttons/BackLink";
 import { Metadata } from "next";
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
 import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
-import ErrorToast from "@/components/Error/ErrorToast";
+import AccessDenied from "@/components/Auth/AccessDenied";
+import ErrorToastFromParams from "@/components/Error/ErrorToastFromParams";
 
 // Metadata
 export async function generateMetadata(): Promise<Metadata> {
@@ -28,11 +29,14 @@ export default async function CreateProfessionalPage({
 }: {
   params: Promise<Params>;
 }) {
+  const token = await verifyAdminAuth();
+  if (!token) return <AccessDenied />;
+
   const { slug } = await params;
 
   return (
     <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-8">
-      <ErrorToast />
+      <ErrorToastFromParams />
 
       <header>
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-8">

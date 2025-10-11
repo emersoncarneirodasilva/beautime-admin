@@ -5,6 +5,10 @@ import { redirect } from "next/navigation";
 import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
 import { updateCategoryApi } from "@/libs/api/updateCategoryApi";
 
+interface BackendError {
+  message?: string;
+}
+
 export async function updateCategory(formData: FormData) {
   const slug = formData.get("slug") as string;
   const id = formData.get("id") as string;
@@ -22,7 +26,15 @@ export async function updateCategory(formData: FormData) {
   const salon = await fetchSalonByAdmin(token);
   if (!salon) throw new Error("Salão não encontrado.");
 
-  await updateCategoryApi(id, name, token);
+  try {
+    await updateCategoryApi(id, name, token);
+  } catch (error: unknown) {
+    const err = error as BackendError;
+    const message = encodeURIComponent(
+      err.message || "Erro ao atualizar categoria"
+    );
+    redirect(`/${slug}/dashboard/categories/${id}/edit?error=${message}`);
+  }
 
   redirect(`/${slug}/dashboard/categories`);
 }

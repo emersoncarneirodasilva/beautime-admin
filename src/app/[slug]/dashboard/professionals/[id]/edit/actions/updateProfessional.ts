@@ -41,10 +41,19 @@ export async function updateProfessional(formData: FormData) {
   );
 
   if (!res.ok) {
-    const errorResponse = await res.json().catch(() => ({}));
-    console.error("Erro ao atualizar profissional:", errorResponse);
-    throw new Error(errorResponse.message || "Erro ao atualizar profissional.");
+    const errorData = await res.json().catch(() => ({}));
+    const backendMessage =
+      errorData?.message || "Erro ao atualizar profissional";
+    console.error("Erro ao atualizar profissional:", backendMessage);
+
+    // redireciona para a página de edição com a mensagem de erro
+    redirect(
+      `/${slug}/dashboard/professionals/${id}/edit?error=${encodeURIComponent(
+        backendMessage
+      )}`
+    );
   }
 
+  // Redireciona para a página do profissional
   redirect(`/${slug}/dashboard/professionals/${id}`);
 }

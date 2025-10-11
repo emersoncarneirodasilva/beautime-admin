@@ -8,6 +8,7 @@ import SubmitButton from "@/components/Buttons/SubmitButton";
 import BackLink from "@/components/Buttons/BackLink";
 import { Metadata } from "next";
 import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
+import { StatusBadge } from "@/components/Appointment/StatusBadge"; // ✅ Importa o componente
 
 interface Params {
   slug: string;
@@ -36,27 +37,6 @@ export async function generateMetadata({
 const labelClasses = "block font-medium text-[var(--foreground)]";
 const inputClasses =
   "w-full px-4 py-3 rounded-xl border bg-[var(--color-gray-light)] border-[var(--color-gray-medium)] focus:ring-2 focus:ring-[var(--color-action)] focus:outline-none transition";
-
-// Função para gerar badge colorido
-const getStatusBadge = (status: string, type: "appointment" | "payment") => {
-  const base =
-    "px-2.5 py-1 rounded-full text-xs font-medium uppercase tracking-wide";
-  const colors: Record<string, string> =
-    type === "appointment"
-      ? {
-          CONFIRMED: "bg-green-100 text-green-700",
-          PENDING: "bg-yellow-100 text-yellow-700",
-          CANCELED: "bg-red-100 text-red-700",
-          COMPLETED: "bg-blue-100 text-blue-700",
-        }
-      : {
-          PAID: "bg-green-100 text-green-700",
-          PARTIALLY_PAID: "bg-yellow-100 text-yellow-700",
-          REFUNDED: "bg-blue-100 text-blue-700",
-          PENDING: "bg-gray-200 text-gray-700",
-        };
-  return `${base} ${colors[status] || "bg-gray-200 text-gray-700"}`;
-};
 
 export default async function EditAppointmentPage({
   params,
@@ -107,14 +87,8 @@ export default async function EditAppointmentPage({
 
         {/* Statuses com badges coloridas */}
         <div className="flex gap-4 mb-4">
-          <span className={getStatusBadge(appointment.status, "appointment")}>
-            {appointment.status}
-          </span>
-          <span
-            className={getStatusBadge(appointment.payment.status, "payment")}
-          >
-            {appointment.payment.status}
-          </span>
+          <StatusBadge value={appointment.status} type="appointment" />
+          <StatusBadge value={appointment.payment.status} type="payment" />
         </div>
 
         {/* Status do agendamento */}

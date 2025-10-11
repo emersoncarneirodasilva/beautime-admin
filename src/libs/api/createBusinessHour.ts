@@ -16,8 +16,9 @@ export async function createBusinessHour({
   });
 
   if (!res.ok) {
-    const error = await res.text();
-    console.error("Erro ao criar horário:", error);
-    throw new Error("Falha ao criar horário.");
+    const { message } = await res.json().catch(() => ({
+      message: "Erro desconhecido.",
+    }));
+    throw new Error(message);
   }
 }

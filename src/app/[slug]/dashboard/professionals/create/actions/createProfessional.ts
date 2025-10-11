@@ -13,16 +13,18 @@ export async function createProfessional(formData: FormData) {
   const avatarFile = formData.get("avatar") as File | null;
 
   if (!name || !email) {
-    throw new Error("Nome e email são obrigatórios.");
+    redirect(
+      `/dashboard/professionals/create?error=${encodeURIComponent(
+        "Nome e email são obrigatórios."
+      )}`
+    );
   }
 
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
-
   if (!token) redirect("/login");
 
   const salon = await fetchSalonByAdmin(token);
-
   if (!salon) redirect("/login");
 
   // Criar novo FormData para enviar à API
@@ -49,15 +51,12 @@ export async function createProfessional(formData: FormData) {
     const errorData = await res.json().catch(() => ({}));
     console.error("Erro ao criar profissional:", errorData);
 
-    let errorMessage = "erro-criacao"; // valor default
-
-    // Verifica se o servidor retornou uma mensagem de erro
-    if (errorData?.message?.includes("email")) {
-      errorMessage = "email-ja-cadastrado";
-    }
-
+    // Pega a mensagem do backend diretamente
+    const backendMessage = errorData?.message || "Erro desconhecido";
     redirect(
-      `/${salon.slug}/dashboard/professionals/create?error=${errorMessage}`
+      `/${salon.slug}/dashboard/professionals/create?error=${encodeURIComponent(
+        backendMessage
+      )}`
     );
   }
 

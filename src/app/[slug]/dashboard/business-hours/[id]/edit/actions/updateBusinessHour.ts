@@ -1,6 +1,5 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { updateBusinessHour } from "@/libs/api/updateBusinessHour";
 
 export async function handleUpdateBusinessHour(formData: FormData) {
@@ -10,7 +9,5 @@ export async function handleUpdateBusinessHour(formData: FormData) {
   const startTime = formData.get("startTime") as string;
   const endTime = formData.get("endTime") as string;
 
-  await updateBusinessHour({ id, token, startTime, endTime });
-
-  redirect(`/${slug}/dashboard/business-hours`);
+  await updateBusinessHour({ slug, id, token, startTime, endTime });
 }

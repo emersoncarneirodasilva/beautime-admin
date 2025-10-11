@@ -4,6 +4,7 @@ import { createCategory } from "./actions/createCategory";
 import BackLink from "@/components/Buttons/BackLink";
 import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
 import CreateButton from "@/components/Buttons/CreateButton";
+import ErrorToastFromParams from "@/components/Error/ErrorToastFromParams";
 
 interface Params {
   slug: string;
@@ -37,6 +38,8 @@ export default async function CreateCategoryPage({
 
   return (
     <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-8">
+      <ErrorToastFromParams />
+
       {/* Header */}
       <header className="space-y-2">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-8">

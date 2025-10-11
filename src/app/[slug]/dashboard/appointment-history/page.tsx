@@ -59,6 +59,7 @@ export default async function AppointmentHistoryPage({
     appointmentsHistory: AppointmentHistoryType[];
     total: number;
   };
+
   let servicesData: {
     services: { id: string; name: string; price: number; duration: number }[];
   };

@@ -19,6 +19,6 @@ export async function createCategoryApi({
   if (!res.ok) {
     const errorData = await res.json().catch(() => ({}));
     console.error("Erro ao criar categoria:", errorData);
-    throw new Error("Erro ao criar categoria.");
+    throw new Error(errorData?.message || "Erro ao criar categoria");
   }
 }

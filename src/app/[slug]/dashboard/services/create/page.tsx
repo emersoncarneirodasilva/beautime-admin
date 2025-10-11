@@ -5,8 +5,8 @@ import { Metadata } from "next";
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
 import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
 import { fetchCategories } from "@/libs/api/fetchCategories";
-import ErrorToast from "@/components/Error/ErrorToast";
 import { Category } from "@/types";
+import AccessDenied from "@/components/Auth/AccessDenied";
 
 // Metadata
 export async function generateMetadata(): Promise<Metadata> {
@@ -36,7 +36,7 @@ export default async function CreateServicePage({
   params: Promise<Params>;
 }) {
   const token = await verifyAdminAuth();
-  if (!token) return <ErrorToast />;
+  if (!token) return <AccessDenied />;
 
   const { slug } = await params;
 
@@ -50,8 +50,6 @@ export default async function CreateServicePage({
 
   return (
     <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-8">
-      <ErrorToast />
-
       <header>
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-8">
           Criar Serviço

@@ -6,14 +6,17 @@ import { redirect } from "next/navigation";
 
 export async function createUser(formData: FormData): Promise<void> {
   const slug = formData.get("slug") as string;
-
   const name = formData.get("name") as string;
   const email = formData.get("email") as string;
   const phone = formData.get("phone") as string;
   const password = formData.get("password") as string;
 
   if (!name || !email || !phone || !password) {
-    throw new Error("Todos os campos são obrigatórios.");
+    redirect(
+      `/${slug}/dashboard/users/create?error=${encodeURIComponent(
+        "Todos os campos são obrigatórios."
+      )}`
+    );
   }
 
   const cookieStore = await cookies();
@@ -22,7 +25,6 @@ export async function createUser(formData: FormData): Promise<void> {
   if (!token) redirect("/login");
 
   const salon = await fetchSalonByAdmin(token);
-
   if (!salon) redirect("/login");
 
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
@@ -44,14 +46,13 @@ export async function createUser(formData: FormData): Promise<void> {
     const errorData = await res.json();
     console.error("Erro ao criar usuário:", errorData);
 
-    let errorMessage = "erro-criacao"; // valor default
-
-    // Verifica se o servidor retornou uma mensagem de erro
-    if (errorData?.message?.includes("email")) {
-      errorMessage = "email-ja-cadastrado";
-    }
-
-    redirect(`/${salon.slug}/dashboard/users/create?error=${errorMessage}`);
+    // Passa a mensagem do backend direto para o toast
+    const backendMessage = errorData?.message || "Erro desconhecido";
+    redirect(
+      `/${slug}/dashboard/users/create?error=${encodeURIComponent(
+        backendMessage
+      )}`
+    );
   }
 
   redirect(`/${slug}/dashboard/users`);

@@ -3,9 +3,38 @@ import { WEEKDAYS } from "@/utils/constants";
 import AccessDenied from "@/components/Auth/AccessDenied";
 import { fetchBusinessHourById } from "@/libs/api/fetchBusinessHourById";
 import { handleUpdateBusinessHour } from "./actions/updateBusinessHour";
-import Link from "next/link";
+import BackLink from "@/components/Buttons/BackLink";
+import SubmitButton from "@/components/Buttons/SubmitButton";
+import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
+import { Metadata } from "next";
+import ErrorToastFromParams from "@/components/Error/ErrorToastFromParams";
 
-type Params = { slug: string; id: string };
+interface Params {
+  slug: string;
+  id: string;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<Params>;
+}): Promise<Metadata> {
+  const token = await verifyAdminAuth();
+  if (!token) return { title: "Acesso negado" };
+
+  const { id } = await params;
+  const hour = await fetchBusinessHourById(id, token);
+  const salon = await fetchSalonByAdmin(token);
+
+  return {
+    title: `Beautime Admin - ${salon.name} - Editar Horário (${
+      WEEKDAYS[hour.weekday]
+    })`,
+    description: `Edite o horário de funcionamento de ${
+      WEEKDAYS[hour.weekday]
+    } no salão ${salon.name}.`,
+  };
+}
 
 export default async function EditBusinessHourPage({
   params,
@@ -15,62 +44,74 @@ export default async function EditBusinessHourPage({
   const token = await verifyAdminAuth();
   if (!token) return <AccessDenied />;
 
-  const { slug } = await params;
-  const { id } = await params;
-
+  const { slug, id } = await params;
   const hour = await fetchBusinessHourById(id, token);
 
+  const labelClasses = "block font-medium text-[var(--foreground)] mb-2";
+  const inputClasses =
+    "w-full px-4 py-3 rounded-xl bg-[var(--color-gray-light)] border border-[var(--color-gray-medium)] focus:ring-2 focus:ring-[var(--color-primary)] focus:outline-none transition";
+
   return (
-    <form
-      action={handleUpdateBusinessHour}
-      className="max-w-md mx-auto mt-10 space-y-6"
-    >
-      <h1 className="text-2xl font-bold">
-        Editar horário de {WEEKDAYS[hour.weekday]}
-      </h1>
+    <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-8">
+      <ErrorToastFromParams />
 
-      {/* Enviar ID via formData */}
-      <input type="hidden" name="id" value={hour.id} />
-      <input type="hidden" name="slug" value={slug} />
-      <input type="hidden" name="token" value={token} />
+      <header className="space-y-2">
+        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-8">
+          Editar horário
+        </h1>
+        <p className="text-[var(--text-secondary)]">
+          Altere o horário de{" "}
+          <span className="font-bold">{WEEKDAYS[hour.weekday]}</span> conforme
+          necessário.
+        </p>
+      </header>
 
-      <div>
-        <label className="block text-sm font-medium mb-1">Início</label>
-        <input
-          type="time"
-          name="startTime"
-          defaultValue={hour.startTime}
-          required
-          className="border rounded w-full px-3 py-2"
-        />
-      </div>
+      <form
+        id="edit-businessHour-form"
+        action={handleUpdateBusinessHour}
+        className="space-y-6 bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] rounded-2xl shadow-lg p-8 transition-colors"
+      >
+        <input type="hidden" name="token" value={token} />
+        <input type="hidden" name="slug" value={slug} />
+        <input type="hidden" name="id" value={hour.id} />
 
-      <div>
-        <label className="block text-sm font-medium mb-1">Fim</label>
-        <input
-          type="time"
-          name="endTime"
-          defaultValue={hour.endTime}
-          required
-          className="border rounded w-full px-3 py-2"
-        />
-      </div>
+        {/* Início */}
+        <div>
+          <label htmlFor="startTime" className={labelClasses}>
+            Início
+          </label>
+          <input
+            id="startTime"
+            type="time"
+            name="startTime"
+            defaultValue={hour.startTime}
+            required
+            className={inputClasses}
+          />
+        </div>
 
-      <div className="flex items-end justify-between">
-        <Link
-          href={`/${slug}/dashboard/business-hours`}
-          className="text-blue-600 hover:underline hover:cursor-pointer inline-block"
-        >
-          ← Voltar
-        </Link>
+        {/* Fim */}
+        <div>
+          <label htmlFor="endTime" className={labelClasses}>
+            Término
+          </label>
+          <input
+            id="endTime"
+            type="time"
+            name="endTime"
+            defaultValue={hour.endTime}
+            required
+            className={inputClasses}
+          />
+        </div>
 
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 hover:cursor-pointer transition"
-        >
-          Salvar
-        </button>
-      </div>
-    </form>
+        {/* Submit */}
+        <div className="flex justify-end mt-4">
+          <SubmitButton formId="edit-businessHour-form" />
+        </div>
+      </form>
+
+      <BackLink slug={slug} to="dashboard/business-hours" />
+    </section>
   );
 }

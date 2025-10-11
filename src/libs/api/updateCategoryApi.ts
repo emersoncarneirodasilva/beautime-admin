@@ -18,6 +18,6 @@ export async function updateCategoryApi(
   if (!res.ok) {
     const errorData = await res.json().catch(() => ({}));
     console.error("Erro ao atualizar categoria:", errorData);
-    throw new Error("Erro ao atualizar categoria.");
+    throw new Error(errorData?.message || "Erro ao atualizar categoria.");
   }
 }

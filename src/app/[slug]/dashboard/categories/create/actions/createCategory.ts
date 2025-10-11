@@ -5,32 +5,44 @@ import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
 import { redirect } from "next/navigation";
 import { createCategoryApi } from "@/libs/api/createCategory";
 
+interface BackendError {
+  message?: string;
+}
+
 export async function createCategory(formData: FormData) {
   const slug = formData.get("slug") as string;
   const name = formData.get("name")?.toString().trim();
 
   if (!name) {
-    throw new Error("O nome da categoria é obrigatório.");
+    redirect(
+      `/${slug}/dashboard/categories/create?error=${encodeURIComponent(
+        "O nome da categoria é obrigatório."
+      )}`
+    );
   }
 
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
 
-  if (!token) {
-    throw new Error("Token não encontrado.");
-  }
+  if (!token) redirect("/login");
 
   const salon = await fetchSalonByAdmin(token);
 
-  if (!salon) {
-    throw new Error("Salão não encontrado.");
-  }
+  if (!salon) redirect("/login");
 
-  await createCategoryApi({
-    name,
-    salonId: salon.id,
-    token,
-  });
+  try {
+    await createCategoryApi({
+      name,
+      salonId: salon.id,
+      token,
+    });
+  } catch (error) {
+    const err = error as BackendError;
+    const message = encodeURIComponent(
+      err.message || "Erro ao criar categoria"
+    );
+    redirect(`/${slug}/dashboard/categories/create?error=${message}`);
+  }
 
   redirect(`/${slug}/dashboard/categories`);
 }

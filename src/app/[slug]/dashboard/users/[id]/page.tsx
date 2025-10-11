@@ -20,6 +20,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const token = await verifyAdminAuth();
   const { id } = await params;
+
   if (!token) return { title: "Acesso negado" };
 
   const salon = await fetchSalonByAdmin(token);

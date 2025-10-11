@@ -109,9 +109,9 @@ export default async function AvailabilityPage({
               {/* Ações */}
               <div className="flex gap-2 flex-wrap lg:flex-nowrap w-full lg:w-auto">
                 <EditButton
-                  formId=""
+                  formId={`availability-form-delete-${slot.id}`}
                   href={`/${slug}/dashboard/professionals/${id}/availability/${slot.id}/edit`}
-                  className="px-3 py-1.5 h-fit bg-[var(--color-secondary)] hover:bg-[var(--color-secondary-hover)] text-[var(--text-on-action)] rounded-md text-sm transition w-full lg:w-auto text-center"
+                  className="px-3 py-1.5 h-fit bg-[var(--color-secondary)] hover:bg-[var(--color-secondary-hover)] text-[var(--text-on-action)] rounded-md text-sm transition w-full lg:w-auto text-center cursor-pointer"
                 />
 
                 <form

@@ -7,6 +7,7 @@ import { Metadata } from "next";
 import BackLink from "@/components/Buttons/BackLink";
 import SubmitButton from "@/components/Buttons/SubmitButton";
 import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
+import ErrorToastFromParams from "@/components/Error/ErrorToastFromParams";
 
 interface Params {
   slug: string;
@@ -69,6 +70,8 @@ export default async function EditCategoryPage({
 
   return (
     <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-8">
+      <ErrorToastFromParams />
+
       <header className="space-y-2">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-8">
           Editar Categoria
