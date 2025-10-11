@@ -7,6 +7,7 @@ import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
 import { fetchCategories } from "@/libs/api/fetchCategories";
 import { Category } from "@/types";
 import AccessDenied from "@/components/Auth/AccessDenied";
+import ErrorToastFromParams from "@/components/Error/ErrorToastFromParams";
 
 // Metadata
 export async function generateMetadata(): Promise<Metadata> {
@@ -50,6 +51,8 @@ export default async function CreateServicePage({
 
   return (
     <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-8">
+      <ErrorToastFromParams />
+
       <header>
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-8">
           Criar Serviço

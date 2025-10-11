@@ -41,9 +41,17 @@ export async function updateService(formData: FormData) {
   });
 
   if (!res.ok) {
-    const errorResponse = await res.json().catch(() => ({}));
-    console.error("Erro ao atualizar serviço:", errorResponse);
-    throw new Error(errorResponse.message || "Erro ao atualizar serviço.");
+    const errorData: { message?: string } = await res.json().catch(() => ({}));
+    const message =
+      errorData?.message || "Erro ao atualizar serviço. Tente novamente.";
+
+    console.error("Erro ao atualizar serviço:", errorData);
+
+    redirect(
+      `/${slug}/dashboard/services/${id}/edit?error=${encodeURIComponent(
+        message
+      )}`
+    );
   }
 
   redirect(`/${slug}/dashboard/services/${id}`);

@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
-import { sanitizeFile } from "@/utils/sanitizeFile"; // função genérica que criamos
+import { sanitizeFile } from "@/utils/sanitizeFile";
 
 export async function createService(formData: FormData) {
   const token = formData.get("token") as string;
@@ -15,13 +15,29 @@ export async function createService(formData: FormData) {
   const imageFile = formData.get("image") as File | null;
 
   if (!name || !description || !price || !duration || !categoryId) {
-    throw new Error("Preencha todos os campos obrigatórios.");
+    redirect(
+      `/${slug}/dashboard/services/create?error=${encodeURIComponent(
+        "Preencha todos os campos obrigatórios."
+      )}`
+    );
   }
 
-  if (!token) throw new Error("Token não encontrado.");
+  if (!token) {
+    redirect(
+      `/${slug}/dashboard/services/create?error=${encodeURIComponent(
+        "Token não encontrado."
+      )}`
+    );
+  }
 
   const salon = await fetchSalonByAdmin(token);
-  if (!salon) throw new Error("Salão não encontrado.");
+  if (!salon) {
+    redirect(
+      `/${slug}/dashboard/services/create?error=${encodeURIComponent(
+        "Salão não encontrado."
+      )}`
+    );
+  }
 
   // Monta o FormData para envio multipart
   const body = new FormData();
@@ -46,9 +62,15 @@ export async function createService(formData: FormData) {
   });
 
   if (!res.ok) {
-    const errorData = await res.json().catch(() => ({}));
+    const errorData: { message?: string } = await res.json().catch(() => ({}));
+    const message =
+      errorData?.message || "Erro ao criar serviço. Tente novamente.";
+
     console.error("Erro ao criar serviço:", errorData);
-    throw new Error(errorData.message || "Erro ao criar serviço.");
+
+    redirect(
+      `/${slug}/dashboard/services/create?error=${encodeURIComponent(message)}`
+    );
   }
 
   redirect(`/${slug}/dashboard/services`);

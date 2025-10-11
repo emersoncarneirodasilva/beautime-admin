@@ -156,7 +156,7 @@ export default async function AppointmentsPage({
               className="border border-[var(--color-gray-medium)] rounded-xl p-6 bg-[var(--color-white)] shadow-sm hover:shadow-md transition-shadow"
             >
               {/* Cabeçalho */}
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 pb-4 border-b border-[var(--color-gray-light)]">
+              <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3 pb-4 border-b border-[var(--color-gray-light)]">
                 <div>
                   <p className="text-lg font-semibold text-[var(--foreground)]">
                     {appointment.user.name}
