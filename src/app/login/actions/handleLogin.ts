@@ -13,9 +13,17 @@ export async function handleLogin(formData: FormData) {
     throw new Error("E-mail ou senha inválidos.");
   }
 
+  // Chama a API de login
   const data = await postLogin(email, password);
-  const token = data.token.token;
 
+  // Corrigido: data.token já é a string do JWT
+  const token = data.token;
+
+  if (!token) {
+    throw new Error("Token inválido!");
+  }
+
+  // Armazena o token em cookie httpOnly
   const cookieStore = await cookies();
   cookieStore.set("token", token, {
     httpOnly: true,
@@ -24,11 +32,13 @@ export async function handleLogin(formData: FormData) {
     path: "/",
   });
 
+  // Busca informações do salão associado ao admin
   const salon = await fetchSalonByAdmin(token);
 
   if (!salon?.slug) {
     throw new Error("Salão não encontrado.");
   }
 
+  // Redireciona para o dashboard do salão
   redirect(`/${salon.slug}/dashboard/`);
 }
