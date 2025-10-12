@@ -1,10 +1,27 @@
-import Link from "next/link";
+import { Metadata } from "next";
 import AccessDenied from "@/components/Auth/AccessDenied";
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
-import { fetchSalonImages } from "@/libs/api/fetchSalonImages";
+import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
 import { fetchProfessionals } from "@/libs/api/fetchProfessionals";
+import { fetchProfessionalImages } from "@/libs/api/fetchProfessionalImages";
 import { Section } from "@/components/Images/ImageGallerySection";
 import { ImageType } from "@/types";
+import ErrorSection from "@/components/Error/ErrorSection";
+import BackLink from "@/components/Buttons/BackLink";
+import ActionButton from "@/components/Buttons/ActionButton";
+
+/* Metadata */
+export async function generateMetadata(): Promise<Metadata> {
+  const token = await verifyAdminAuth();
+  if (!token) return { title: "Acesso negado" };
+
+  const salon = await fetchSalonByAdmin(token);
+
+  return {
+    title: `Beautime Admin - ${salon.name} - Galeria de Imagens dos Profissionais`,
+    description: `Gerencie as imagens dos profissionais do salão ${salon.name}.`,
+  };
+}
 
 interface Params {
   slug: string;
@@ -28,130 +45,109 @@ export default async function GalleryProfessionalImagesPage({
 
   const { slug } = await params;
   const query = await searchParams;
-
-  const page = Number(query?.page || 1);
-  const limit = Number(query?.limit || 10);
   const search = query?.search || "";
+  const page = Number(query?.page || 1);
 
-  // Buscar imagens e profissionais
-  const [{ images, totalPages, currentPage }] = await Promise.all([
-    fetchSalonImages({
+  // 1️⃣ Buscar profissionais com filtro de busca
+  let professionalsData;
+  try {
+    professionalsData = await fetchProfessionals({
       token,
-      type: "professional",
-      page,
-      limit,
       search,
-    }),
-    fetchProfessionals({ token, page: 1, limit: 100 }),
-  ]);
+      page,
+      limit: 100,
+    });
+  } catch {
+    return (
+      <ErrorSection
+        title="Erro ao carregar profissionais"
+        message="Não foi possível carregar a lista de profissionais."
+      />
+    );
+  }
 
-  // Agrupar imagens pelo campo `type` (ex: "Imagens da Amanda Rodrigues Nunes")
-  const groupedByType = images.reduce(
-    (acc: Record<string, ImageType[]>, img) => {
-      const groupKey = img.type || "Sem Categoria";
-      if (!acc[groupKey]) acc[groupKey] = [];
-      acc[groupKey].push(img);
-      return acc;
-    },
-    {}
-  );
+  const professionals = professionalsData?.professionals || [];
+
+  if (professionals.length === 0) {
+    return (
+      <p className="text-center text-gray-500">
+        Nenhum profissional encontrado.
+      </p>
+    );
+  }
+
+  // 2️⃣ Buscar imagens de cada profissional e agrupar pelo nome
+  const imagesData: Record<string, ImageType[]> = {};
+
+  for (const prof of professionals) {
+    try {
+      const images = await fetchProfessionalImages(prof.id, token);
+      if (images.length > 0) {
+        imagesData[prof.name] = images;
+      }
+    } catch {
+      console.warn(`Falha ao carregar imagens do profissional ${prof.name}`);
+    }
+  }
 
   return (
-    <section className="p-4 space-y-6 max-w-6xl mx-auto">
-      <div className="flex justify-between items-center">
-        <Link
-          href={`/${slug}/dashboard/images`}
-          className="text-blue-600 hover:underline"
-        >
-          ← Voltar para galeria
-        </Link>
-      </div>
-
-      <h1 className="text-2xl font-semibold text-center">
-        👤 Imagens dos Profissionais
-      </h1>
+    <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-8">
+      {/* Header */}
+      <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+          <h1 className="text-3xl font-bold text-[var(--foreground)]">
+            Imagens dos Profissionais
+          </h1>
+        </div>
+        <ActionButton
+          href={`/${slug}/dashboard/images/upload`}
+          text="Nova Imagem"
+          className="self-start sm:self-auto"
+        />
+      </header>
 
       {/* Busca */}
-      <form method="GET" className="max-w-md mx-auto mb-4 flex gap-2">
-        <input
-          type="search"
-          name="search"
-          defaultValue={search}
-          placeholder="Buscar por tipo de imagem..."
-          className="flex-grow border border-gray-300 rounded px-4 py-2"
-        />
-        <select
-          name="limit"
-          defaultValue={String(limit)}
-          className="p-2 rounded border border-gray-300 bg-black"
+      <section>
+        <form
+          className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-10"
+          method="GET"
         >
-          <option value="5">5 por página</option>
-          <option value="10">10 por página</option>
-          <option value="20">20 por página</option>
-        </select>
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 rounded hover:bg-blue-700 hover:cursor-pointer transition"
-        >
-          Buscar
-        </button>
-      </form>
+          <input
+            type="search"
+            name="search"
+            defaultValue={search}
+            placeholder="Buscar por nome do profissional..."
+            className="flex-grow border border-[var(--color-gray-medium)] rounded-lg px-4 py-2.5 bg-[var(--color-white)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition"
+          />
+          <button
+            type="submit"
+            className="bg-[var(--color-action)] text-[var(--text-on-action)] px-6 py-2.5 rounded-lg font-medium hover:bg-[var(--color-action-hover)] transition w-full sm:w-auto cursor-pointer"
+          >
+            Filtrar
+          </button>
+        </form>
+      </section>
 
-      {/* Se não encontrar imagens */}
-      {images.length === 0 ? (
-        <p className="text-center text-gray-400 mt-12">
-          Nenhuma imagem encontrada.
+      {/* Lista de imagens agrupadas */}
+      {Object.keys(imagesData).length === 0 ? (
+        <p className="text-center text-gray-500">
+          Nenhuma imagem encontrada para os profissionais.
         </p>
       ) : (
-        // Mapear grupos por campo `type`
-        Object.entries(groupedByType).map(([groupTitle, imgs]) => (
+        Object.entries(imagesData).map(([profName, imgs]) => (
           <Section
-            key={groupTitle}
-            title={groupTitle}
+            key={profName}
+            title={profName}
             images={imgs}
             token={token}
           />
         ))
       )}
 
-      {/* Paginação */}
-      {totalPages > 1 && (
-        <nav className="flex justify-center gap-4 mt-6" aria-label="Paginação">
-          <Link
-            href={`/${slug}/dashboard/images/professional?page=${
-              currentPage - 1
-            }&limit=${limit}&search=${encodeURIComponent(search)}`}
-            className={`px-4 py-2 rounded ${
-              currentPage === 1
-                ? "bg-gray-600 cursor-not-allowed text-gray-400"
-                : "bg-blue-600 text-white hover:bg-blue-700"
-            }`}
-            aria-disabled={currentPage === 1}
-            tabIndex={currentPage === 1 ? -1 : 0}
-          >
-            Anterior
-          </Link>
-
-          <span className="text-gray-300 flex items-center">
-            Página {currentPage} de {totalPages}
-          </span>
-
-          <Link
-            href={`/${slug}/dashboard/images/professional?page=${
-              currentPage + 1
-            }&limit=${limit}&search=${encodeURIComponent(search)}`}
-            className={`px-4 py-2 rounded ${
-              currentPage === totalPages
-                ? "bg-gray-600 cursor-not-allowed text-gray-400"
-                : "bg-blue-600 text-white hover:bg-blue-700"
-            }`}
-            aria-disabled={currentPage === totalPages}
-            tabIndex={totalPages === currentPage ? -1 : 0}
-          >
-            Próxima
-          </Link>
-        </nav>
-      )}
+      {/* BackLink inferior */}
+      <div className="mt-6">
+        <BackLink slug={slug} to="dashboard/images" />
+      </div>
     </section>
   );
 }

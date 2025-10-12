@@ -141,7 +141,7 @@ export default async function ServicesPage({
             {servicesData?.services.map((service) => (
               <li
                 key={service.id}
-                className="border border-[var(--color-gray-light)] rounded-xl p-5 flex flex-col justify-between hover:shadow-md transition bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] h-full"
+                className="border border-[var(--color-gray-medium)] rounded-xl p-5 flex flex-col justify-between hover:shadow-md transition bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] h-full"
               >
                 <div className="flex flex-col items-start text-left">
                   <h2 className="text-lg font-semibold text-[var(--foreground)]">

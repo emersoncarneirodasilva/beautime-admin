@@ -95,7 +95,7 @@ export default async function EditAvailabilityPage({
       <form
         id="update-availability-form"
         action={updateAvailability}
-        className="bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] rounded-2xl shadow-lg p-8 transition-colors duration-300 hover:shadow-xl space-y-6"
+        className="bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] border border-[var(--color-gray-medium)] rounded-2xl shadow-lg p-8 transition-colors duration-300 hover:shadow-xl space-y-6"
       >
         <input type="hidden" name="availabilityId" value={availability.id} />
         <input type="hidden" name="professionalId" value={id} />

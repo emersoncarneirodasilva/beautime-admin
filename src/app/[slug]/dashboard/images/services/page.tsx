@@ -1,10 +1,27 @@
-import Link from "next/link";
+import { Metadata } from "next";
 import AccessDenied from "@/components/Auth/AccessDenied";
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
-import { fetchSalonImages } from "@/libs/api/fetchSalonImages";
 import { fetchServices } from "@/libs/api/fetchServices";
+import { fetchServiceImages } from "@/libs/api/fetchServiceImages";
 import { Section } from "@/components/Images/ImageGallerySection";
 import { ImageType } from "@/types";
+import ErrorSection from "@/components/Error/ErrorSection";
+import ActionButton from "@/components/Buttons/ActionButton";
+import BackLink from "@/components/Buttons/BackLink";
+import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
+
+/* Metadata */
+export async function generateMetadata(): Promise<Metadata> {
+  const token = await verifyAdminAuth();
+  if (!token) return { title: "Acesso negado" };
+
+  const salon = await fetchSalonByAdmin(token);
+
+  return {
+    title: `Beautime Admin - ${salon.name} - Galeria de Imagens dos Serviços`,
+    description: `Gerencie as imagens dos serviços do salão ${salon.name}.`,
+  };
+}
 
 interface Params {
   slug: string;
@@ -28,134 +45,93 @@ export default async function GalleryServiceImagesPage({
 
   const { slug } = await params;
   const query = await searchParams;
-
-  const page = Number(query?.page || 1);
-  const limit = Number(query?.limit || 10);
   const search = query?.search || "";
 
-  // Busca imagens de serviços (type=service) e serviços
-  const [{ images, totalPages, currentPage }, { services }] = await Promise.all(
-    [
-      fetchSalonImages({
-        token,
-        type: "service",
-        page,
-        limit,
-        search,
-      }),
-      fetchServices(token, 1, 100), // buscar todos os serviços para tentar casar nomes
-    ]
-  );
+  // Buscar todos os serviços
+  let services: { id: string; name: string }[] = [];
+  try {
+    const servicesResponse = await fetchServices(token, 1, 100);
+    services = servicesResponse.services;
+  } catch {
+    return (
+      <ErrorSection
+        title="Erro ao carregar serviços"
+        message="Não foi possível carregar a lista de serviços."
+      />
+    );
+  }
 
-  // Agrupar imagens pelo campo `type`
-  const groupedByType = images.reduce(
-    (acc: Record<string, ImageType[]>, img) => {
-      const key = img.type || "Sem Categoria";
-      if (!acc[key]) acc[key] = [];
-      acc[key].push(img);
-      return acc;
-    },
-    {}
-  );
+  if (services.length === 0) {
+    return (
+      <p className="text-center text-gray-500">Nenhum serviço encontrado.</p>
+    );
+  }
+
+  // Buscar imagens de cada serviço
+  const imagesData: Record<string, ImageType[]> = {};
+  for (const service of services) {
+    try {
+      const imgs = await fetchServiceImages(service.id, token);
+      if (imgs.length > 0) imagesData[service.name] = imgs;
+    } catch {
+      console.warn(`Falha ao carregar imagens do serviço ${service.name}`);
+    }
+  }
 
   return (
-    <section className="p-4 space-y-6 max-w-6xl mx-auto">
-      <div className="flex justify-between items-center">
-        <Link
-          href={`/${slug}/dashboard/images`}
-          className="text-blue-600 hover:underline"
-        >
-          ← Voltar para galeria
-        </Link>
-      </div>
-
-      <h1 className="text-2xl font-semibold text-center">
-        💇 Imagens dos Serviços
-      </h1>
-
-      {/* Busca */}
-      <form method="GET" className="max-w-md mx-auto mb-4 flex gap-2">
-        <input
-          type="search"
-          name="search"
-          defaultValue={search}
-          placeholder="Buscar por tipo de imagem..."
-          className="flex-grow border border-gray-300 rounded px-4 py-2"
+    <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-8">
+      {/* Header */}
+      <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+        <h1 className="text-3xl font-bold text-[var(--foreground)]">
+          Imagens dos Serviços
+        </h1>
+        <ActionButton
+          href={`/${slug}/dashboard/images/upload`}
+          text="Nova Imagem"
+          className="self-start sm:self-auto"
         />
-        <select
-          name="limit"
-          defaultValue={String(limit)}
-          className="p-2 rounded border border-gray-300 bg-black"
+      </header>
+      {/* Busca */}
+      <section>
+        <form
+          className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-10"
+          method="GET"
         >
-          <option value="5">5 por página</option>
-          <option value="10">10 por página</option>
-          <option value="20">20 por página</option>
-        </select>
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 rounded hover:bg-blue-700 hover:cursor-pointer transition"
-        >
-          Buscar
-        </button>
-      </form>
-
-      {/* Se não encontrar imagens */}
-      {images.length === 0 ? (
-        <p className="text-center text-gray-400 mt-12">
-          Nenhuma imagem encontrada.
+          <input
+            type="search"
+            name="search"
+            defaultValue={search}
+            placeholder="Buscar por nome do serviço..."
+            className="flex-grow border border-[var(--color-gray-medium)] rounded-lg px-4 py-2.5 bg-[var(--color-white)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition"
+          />
+          <button
+            type="submit"
+            className="bg-[var(--color-action)] text-[var(--text-on-action)] px-6 py-2.5 rounded-lg font-medium hover:bg-[var(--color-action-hover)] transition w-full sm:w-auto cursor-pointer"
+          >
+            Filtrar
+          </button>
+        </form>
+      </section>
+      {/* Lista de imagens agrupadas */}
+      {Object.keys(imagesData).length === 0 ? (
+        <p className="text-center text-gray-500">
+          Nenhuma imagem encontrada para os serviços.
         </p>
       ) : (
-        Object.entries(groupedByType).map(([type, imgs]) => {
-          // Tentar encontrar serviço que tenha nome contido no tipo da imagem (matching simples)
-          const serviceMatch = services.find((s) =>
-            type.toLowerCase().includes(s.name.toLowerCase())
-          );
-          const title = serviceMatch ? serviceMatch.name : type;
-
-          return (
-            <Section key={type} title={title} images={imgs} token={token} />
-          );
-        })
+        Object.entries(imagesData).map(([serviceName, imgs]) => (
+          <Section
+            key={serviceName}
+            title={serviceName}
+            images={imgs}
+            token={token}
+          />
+        ))
       )}
 
-      {/* Paginação */}
-      {totalPages > 1 && (
-        <nav className="flex justify-center gap-4 mt-6" aria-label="Paginação">
-          <Link
-            href={`/${slug}/dashboard/images/services?page=${
-              currentPage - 1
-            }&limit=${limit}&search=${encodeURIComponent(search)}`}
-            className={`px-4 py-2 rounded ${
-              currentPage === 1
-                ? "bg-gray-600 cursor-not-allowed text-gray-400"
-                : "bg-blue-600 text-white hover:bg-blue-700"
-            }`}
-            aria-disabled={currentPage === 1}
-            tabIndex={currentPage === 1 ? -1 : 0}
-          >
-            Anterior
-          </Link>
-
-          <span className="text-gray-300 flex items-center">
-            Página {currentPage} de {totalPages}
-          </span>
-
-          <Link
-            href={`/${slug}/dashboard/images/services?page=${
-              currentPage + 1
-            }&limit=${limit}&search=${encodeURIComponent(search)}`}
-            className={`px-4 py-2 rounded ${
-              currentPage === totalPages
-                ? "bg-gray-600 cursor-not-allowed text-gray-400"
-                : "bg-blue-600 text-white hover:bg-blue-700"
-            }`}
-            aria-disabled={currentPage === totalPages}
-            tabIndex={totalPages === currentPage ? -1 : 0}
-          >
-            Próxima
-          </Link>
-        </nav>
-      )}
+      {/* BackLink */}
+      <div className="mt-6">
+        <BackLink slug={slug} to="dashboard/images" />
+      </div>
     </section>
   );
 }

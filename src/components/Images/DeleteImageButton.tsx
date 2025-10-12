@@ -1,17 +1,16 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { deleteImageById } from "@/libs/api/deleteImageById";
 
 type Props = {
   id: string;
   token: string;
+  onDelete?: () => void;
 };
 
-export function DeleteImageButton({ id, token }: Props) {
+export function DeleteImageButton({ id, token, onDelete }: Props) {
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   async function handleDelete() {
     const confirmed = confirm("Tem certeza que deseja excluir esta imagem?");
@@ -21,7 +20,7 @@ export function DeleteImageButton({ id, token }: Props) {
 
     try {
       await deleteImageById(id, token);
-      router.refresh();
+      onDelete?.();
     } catch (err) {
       alert("Erro ao excluir imagem.");
       console.error(err);

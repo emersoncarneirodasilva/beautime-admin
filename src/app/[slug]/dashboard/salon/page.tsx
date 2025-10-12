@@ -53,7 +53,7 @@ export default async function SalonPage({
       </header>
 
       {/* Card principal */}
-      <article className="rounded-2xl shadow-lg p-6 md:p-8 bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] space-y-8 transition-colors">
+      <article className="rounded-2xl shadow-lg p-6 md:p-8 bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] border border-[var(--color-gray-medium)] space-y-8 transition-colors">
         {/* Logo e nome */}
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
           <div className="w-28 h-28 rounded-full overflow-hidden border border-gray-300 dark:border-gray-600 shadow-md relative flex-shrink-0">

@@ -145,7 +145,7 @@ export default async function ServicesOnProfessionalsPage({
         {professionalsWithServices.map((professional) => (
           <article
             key={professional.id}
-            className="bg-[var(--color-white)] rounded-xl shadow p-4 sm:p-6 space-y-4"
+            className="bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] border border-[var(--color-gray-medium)] rounded-xl shadow p-4 sm:p-6 space-y-4"
           >
             {/* Header profissional */}
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 border-b border-[var(--color-gray-medium)] pb-4">
@@ -220,7 +220,7 @@ export default async function ServicesOnProfessionalsPage({
 
               <select
                 name="serviceId"
-                className="flex-1 border rounded px-2 py-1 text-sm bg-[var(--color-gray-light)] text-[var(--foreground)]"
+                className="flex-1 border border-[var(--text-secondary)] rounded px-2 py-1 text-sm bg-[var(--color-gray-light)] text-[var(--foreground)]"
                 defaultValue=""
                 required
               >

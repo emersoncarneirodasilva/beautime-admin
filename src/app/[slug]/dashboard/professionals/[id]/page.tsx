@@ -83,7 +83,7 @@ export default async function ProfessionalPage({
       </header>
 
       {/* Card principal */}
-      <div className="bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] rounded-2xl shadow-lg p-8 md:p-12 flex flex-col gap-8 transition-all duration-300 hover:shadow-2xl">
+      <div className="bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] border border-[var(--color-gray-medium)] rounded-2xl shadow-lg p-8 md:p-12 flex flex-col gap-8 transition-all duration-300 hover:shadow-2xl">
         {/* Avatar + Nome */}
         <div className="flex flex-col items-center text-center gap-4">
           <div className="relative w-44 h-44 rounded-full overflow-hidden border-5 border-[var(--color-primary)] shadow-md hover:scale-[1.02] transition-transform duration-300">

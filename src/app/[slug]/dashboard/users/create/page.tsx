@@ -50,7 +50,7 @@ export default async function CreateUserPage({
       <form
         id="create-user-form"
         action={createUser}
-        className="space-y-6 bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] rounded-2xl shadow-md p-8 transition-colors"
+        className="space-y-6 border border-[var(--color-gray-medium)] bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] rounded-2xl shadow-md p-8 transition-colors"
       >
         <input type="hidden" name="slug" value={slug} />
 

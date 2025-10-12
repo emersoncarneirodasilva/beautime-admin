@@ -61,7 +61,7 @@ export default async function CreateAvailabilityPage({
       <form
         id="create-availability-form"
         action={handleCreateAvailability}
-        className="bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] rounded-2xl shadow-lg p-8 space-y-6"
+        className="bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] border border-[var(--color-gray-medium)] rounded-2xl shadow-lg p-8 space-y-6"
       >
         <input type="hidden" name="slug" value={slug} />
         <input type="hidden" name="professionalId" value={id} />

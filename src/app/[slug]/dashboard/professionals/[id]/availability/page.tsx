@@ -98,7 +98,7 @@ export default async function AvailabilityPage({
           {availability.map((slot) => (
             <li
               key={slot.id}
-              className="bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] rounded-xl shadow-sm p-4 flex flex-col lg:flex-row justify-between gap-2 transition hover:shadow-md"
+              className="bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] border border-[var(--color-gray-medium)] rounded-xl shadow-sm p-4 flex flex-col lg:flex-row justify-between gap-2 transition hover:shadow-md"
             >
               {/* Horário */}
               <div className="text-[var(--foreground)] font-medium text-sm sm:text-base mb-2 lg:mb-0">

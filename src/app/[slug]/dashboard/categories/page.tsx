@@ -129,7 +129,7 @@ export default async function CategoriesPage({
           {categoriesData.categories.map((category) => (
             <div
               key={category.id}
-              className="bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] rounded-xl shadow-sm p-4 flex flex-col justify-between gap-4 hover:shadow-md transition"
+              className="bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] border border-[var(--color-gray-medium)] rounded-xl shadow-sm p-4 flex flex-col justify-between gap-4 hover:shadow-md transition"
             >
               <h2 className="text-lg font-semibold text-[var(--foreground)]">
                 {category.name}

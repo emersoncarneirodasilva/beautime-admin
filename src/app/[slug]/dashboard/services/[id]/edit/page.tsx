@@ -78,7 +78,7 @@ export default async function EditServicePage({
       <form
         id="update-service-form"
         action={updateService}
-        className="bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] rounded-2xl shadow-lg p-8 space-y-6 transition-colors duration-300 hover:shadow-xl"
+        className="bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] border border-[var(--color-gray-medium)] rounded-2xl shadow-lg p-8 space-y-6 transition-colors duration-300 hover:shadow-xl"
       >
         <input type="hidden" name="slug" value={slug} />
         <input type="hidden" name="id" value={service.id} />

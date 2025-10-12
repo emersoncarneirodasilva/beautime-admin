@@ -65,7 +65,7 @@ export default async function CreateServicePage({
       <form
         id="create-service-form"
         action={createService}
-        className="space-y-6 bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] rounded-2xl shadow-md p-8 transition-colors"
+        className="space-y-6 bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] border border-[var(--color-gray-medium)] rounded-2xl shadow-md p-8 transition-colors"
       >
         <input type="hidden" name="slug" value={slug} />
         <input type="hidden" name="token" value={token} />

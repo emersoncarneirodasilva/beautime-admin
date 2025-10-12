@@ -36,7 +36,7 @@ export default function UsersList({ users, slug }: Props) {
         return (
           <li
             key={user.id}
-            className="flex flex-col p-5 rounded-xl border border-[var(--color-gray-light)] transition-all hover:shadow-md bg-[var(--color-white)] dark:bg-[var(--color-gray-light)]"
+            className="flex flex-col p-5 rounded-xl border border-[var(--color-gray-medium)] transition-all hover:shadow-md bg-[var(--color-white)] dark:bg-[var(--color-gray-light)]"
           >
             <div className="flex flex-col gap-2">
               <p

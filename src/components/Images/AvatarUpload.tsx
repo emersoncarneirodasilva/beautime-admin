@@ -32,7 +32,7 @@ export default function AvatarUpload({
       </label>
 
       <div className="relative group">
-        <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-blue-600 shadow-md transition-transform duration-300 group-hover:scale-105">
+        <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-blue-500 shadow-md transition-transform duration-300 group-hover:scale-105">
           <Image
             src={preview || "/images/default-avatar.png"}
             alt={altText || title}
@@ -46,7 +46,7 @@ export default function AvatarUpload({
         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center rounded-full">
           <label
             htmlFor={fieldName}
-            className="bg-blue-600 text-white text-sm px-4 py-2 rounded-lg cursor-pointer font-medium shadow hover:bg-blue-700 transition"
+            className="bg-blue-500 text-[var(--text-on-action)] text-sm px-4 py-2 rounded-lg cursor-pointer font-medium shadow hover:bg-blue-600 transition"
           >
             Alterar
           </label>

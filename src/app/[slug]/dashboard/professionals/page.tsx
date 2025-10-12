@@ -130,7 +130,7 @@ export default async function ProfessionalsPage({
               (professional: ProfessionalsDTO) => (
                 <li
                   key={professional.id}
-                  className="border border-[var(--color-gray-light)] rounded-xl p-5 flex flex-col sm:flex-row items-center sm:items-start gap-4 hover:shadow-md transition bg-[var(--color-white)] dark:bg-[var(--color-gray-light)]"
+                  className="border border-[var(--color-gray-medium)] rounded-xl p-5 flex flex-col sm:flex-row items-center sm:items-start gap-4 hover:shadow-md transition bg-[var(--color-white)] dark:bg-[var(--color-gray-light)]"
                 >
                   <Image
                     src={professional.avatarUrl || "/images/default-avatar.png"}

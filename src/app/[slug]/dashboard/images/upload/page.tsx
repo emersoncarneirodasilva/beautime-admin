@@ -3,6 +3,25 @@ import { fetchProfessionals } from "@/libs/api/fetchProfessionals";
 import { fetchServices } from "@/libs/api/fetchServices";
 import AccessDenied from "@/components/Auth/AccessDenied";
 import { createImage } from "./actions/createImage";
+import ErrorToastFromParams from "@/components/Error/ErrorToastFromParams";
+import BackLink from "@/components/Buttons/BackLink";
+import CreateButton from "@/components/Buttons/CreateButton";
+import { Metadata } from "next";
+import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
+import ImageTargets from "@/components/Images/ImageTargets";
+
+// Metadata
+export async function generateMetadata(): Promise<Metadata> {
+  const token = await verifyAdminAuth();
+  if (!token) return { title: "Acesso negado" };
+
+  const salon = await fetchSalonByAdmin(token);
+
+  return {
+    title: `Beautime Admin - ${salon.name} - Enviar Imagem`,
+    description: `Faça upload de imagens para o salão ${salon.name}, incluindo fotos do salão, profissionais ou serviços.`,
+  };
+}
 
 interface Params {
   slug: string;
@@ -24,85 +43,74 @@ export default async function UploadImagePage({
   ]);
 
   return (
-    <div className="max-w-xl mx-auto mt-10 p-4 space-y-6">
-      <h1 className="text-2xl font-bold">📤 Enviar Imagem</h1>
+    <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-8">
+      <ErrorToastFromParams />
 
-      <form action={createImage} className="space-y-4">
+      <header>
+        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-8">
+          Enviar Imagem
+        </h1>
+        <p className="text-[var(--text-secondary)]">
+          Faça upload de uma imagem para o salão, profissional ou serviço.
+        </p>
+      </header>
+
+      <form
+        id="upload-image-form"
+        action={createImage}
+        className="space-y-6 border border-[var(--color-gray-medium)] bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] rounded-2xl shadow-md p-8 transition-colors"
+      >
         <input type="hidden" name="slug" value={slug} />
 
+        {/* Upload de Imagem */}
         <div>
-          <label className="block text-sm mb-1">URL da Imagem</label>
+          <label
+            htmlFor="banner"
+            className="block font-medium mb-2 text-[var(--foreground)]"
+          >
+            Upload da Imagem
+          </label>
           <input
-            type="url"
-            name="url"
+            type="file"
+            id="banner"
+            name="banner"
+            accept="image/*"
             required
-            className="w-full border rounded px-3 py-2"
+            className="w-full px-4 py-3 rounded-xl border border-[var(--color-gray-medium)] focus:ring-2 focus:ring-[var(--color-action)] focus:outline-none transition"
           />
         </div>
 
+        {/* Descrição / tipo */}
         <div>
-          <label className="block text-sm mb-1">Descrição (tipo)</label>
+          <label
+            htmlFor="type"
+            className="block font-medium mb-2 text-[var(--foreground)]"
+          >
+            Descrição (tipo)
+          </label>
           <input
             type="text"
+            id="type"
             name="type"
             required
-            className="w-full border rounded px-3 py-2"
+            placeholder="Ex: capa, perfil, destaque..."
+            className="w-full px-4 py-3 rounded-xl border border-[var(--color-gray-medium)] focus:ring-2 focus:ring-[var(--color-action)] focus:outline-none transition"
           />
         </div>
 
-        <div>
-          <label className="block text-sm mb-1">Tipo de imagem</label>
-          <select
-            name="target"
-            required
-            className="w-full border rounded px-3 py-2 bg-black"
-          >
-            <option value="">Selecione</option>
-            <option value="salon">Imagem do Salão</option>
-            <option value="professional">Imagem de Profissional</option>
-            <option value="service">Imagem de Serviço</option>
-          </select>
-        </div>
+        <ImageTargets professionals={professionals} services={services} />
 
-        <div>
-          <label className="block text-sm mb-1">
-            Profissional (se aplicável)
-          </label>
-          <select
-            name="professionalId"
-            className="w-full border rounded px-3 py-2 bg-black"
-          >
-            <option value="">Nenhum</option>
-            {professionals.map((professional: { id: string; name: string }) => (
-              <option key={professional.id} value={professional.id}>
-                {professional.name}
-              </option>
-            ))}
-          </select>
+        {/* Botão de envio */}
+        <div className="flex justify-end">
+          <CreateButton
+            formId="upload-image-form"
+            label="Enviar Imagem"
+            iconType="image"
+          />
         </div>
-
-        <div>
-          <label className="block text-sm mb-1">Serviço (se aplicável)</label>
-          <select
-            name="serviceId"
-            className="w-full border rounded px-3 py-2 bg-black"
-          >
-            <option value="">Nenhum</option>
-            {services.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 hover:cursor-pointer transition"
-        >
-          Enviar
-        </button>
       </form>
-    </div>
+
+      <BackLink slug={slug} to="dashboard/images" />
+    </section>
   );
 }

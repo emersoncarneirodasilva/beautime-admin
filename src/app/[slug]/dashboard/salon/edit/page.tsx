@@ -52,7 +52,7 @@ export default async function EditSalonPage({
       <form
         id="edit-salon-form"
         action={updateSalon}
-        className="space-y-8 bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] rounded-2xl shadow-md p-8 transition-colors"
+        className="space-y-8 border border-[var(--color-gray-medium)] bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] rounded-2xl shadow-md p-8 transition-colors"
       >
         <input type="hidden" name="slug" value={slug} />
 
