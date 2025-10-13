@@ -61,12 +61,6 @@ export default async function GalleryServiceImagesPage({
     );
   }
 
-  if (services.length === 0) {
-    return (
-      <p className="text-center text-gray-500">Nenhum serviço encontrado.</p>
-    );
-  }
-
   // Buscar imagens de cada serviço
   const imagesData: Record<string, ImageType[]> = {};
   for (const service of services) {
@@ -79,7 +73,7 @@ export default async function GalleryServiceImagesPage({
   }
 
   return (
-    <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-8">
+    <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 flex flex-col justify-between min-h-[calc(100vh-80px)] space-y-8">
       {/* Header */}
       <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)]">
@@ -91,6 +85,7 @@ export default async function GalleryServiceImagesPage({
           className="self-start sm:self-auto"
         />
       </header>
+
       {/* Busca */}
       <section>
         <form
@@ -112,23 +107,26 @@ export default async function GalleryServiceImagesPage({
           </button>
         </form>
       </section>
-      {/* Lista de imagens agrupadas */}
-      {Object.keys(imagesData).length === 0 ? (
-        <p className="text-center text-gray-500">
-          Nenhuma imagem encontrada para os serviços.
-        </p>
-      ) : (
-        Object.entries(imagesData).map(([serviceName, imgs]) => (
-          <Section
-            key={serviceName}
-            title={serviceName}
-            images={imgs}
-            token={token}
-          />
-        ))
-      )}
 
-      {/* BackLink */}
+      {/* Lista de imagens ou mensagem centralizada */}
+      <div className="flex-1 flex flex-col justify-center">
+        {Object.keys(imagesData).length === 0 ? (
+          <p className="text-center text-gray-500 text-lg">
+            Nenhuma imagem encontrada para os serviços.
+          </p>
+        ) : (
+          Object.entries(imagesData).map(([serviceName, imgs]) => (
+            <Section
+              key={serviceName}
+              title={serviceName}
+              images={imgs}
+              token={token}
+            />
+          ))
+        )}
+      </div>
+
+      {/* BackLink inferior */}
       <div className="mt-6">
         <BackLink slug={slug} to="dashboard/images" />
       </div>

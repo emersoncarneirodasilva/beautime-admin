@@ -103,9 +103,11 @@ export default async function NotificationsPage({
 
       {/* Lista */}
       {notifications.data.length === 0 ? (
-        <p className="text-center text-[var(--text-secondary)] mt-10">
-          Nenhuma notificação encontrada para os filtros aplicados.
-        </p>
+        <div className="flex flex-1 justify-center items-center h-[60vh]">
+          <p className="text-center text-gray-500 text-lg">
+            Nenhuma notificação encontrada para os filtros aplicados.
+          </p>
+        </div>
       ) : (
         <div className="space-y-4">
           {await Promise.all(
@@ -179,15 +181,17 @@ export default async function NotificationsPage({
       )}
 
       {/* Paginação */}
-      <Pagination
-        currentPage={page}
-        totalPages={notifications.totalPages}
-        hrefBuilder={(p) =>
-          `?page=${p}&limit=${limit}&isRead=${
-            resolvedParams.isRead || ""
-          }&search=${encodeURIComponent(search)}`
-        }
-      />
+      {notifications.data.length !== 0 && (
+        <Pagination
+          currentPage={page}
+          totalPages={notifications.totalPages}
+          hrefBuilder={(p) =>
+            `?page=${p}&limit=${limit}&isRead=${
+              resolvedParams.isRead || ""
+            }&search=${encodeURIComponent(search)}`
+          }
+        />
+      )}
     </section>
   );
 }

@@ -74,7 +74,6 @@ export default async function UsersPage({
           className="self-start sm:self-auto"
         />
       </header>
-
       {/* Formulário de busca */}
       <section>
         <form
@@ -109,20 +108,22 @@ export default async function UsersPage({
           </div>
         </form>
       </section>
-
       {/* Lista de usuários */}
       <section>
         <UsersList users={usersData.users} slug={slug} />
       </section>
 
       {/* Paginação */}
-      <Pagination
-        currentPage={page}
-        totalPages={usersData.totalPages}
-        hrefBuilder={(p) =>
-          `?page=${p}&limit=${limit}&search=${encodeURIComponent(search)}`
-        }
-      />
+
+      {usersData && (
+        <Pagination
+          currentPage={page}
+          totalPages={usersData.totalPages}
+          hrefBuilder={(p) =>
+            `?page=${p}&limit=${limit}&search=${encodeURIComponent(search)}`
+          }
+        />
+      )}
     </section>
   );
 }

@@ -121,9 +121,11 @@ export default async function ProfessionalsPage({
       {/* Lista de profissionais */}
       <section>
         {professionalsData.professionals.length === 0 ? (
-          <p className="text-center text-gray-500">
-            Nenhum profissional encontrado para os filtros aplicados.
-          </p>
+          <div className="flex flex-1 justify-center items-center h-[60vh]">
+            <p className="text-center text-gray-500 text-lg">
+              Nenhum profissional encontrado para os filtros aplicados.
+            </p>
+          </div>
         ) : (
           <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             {professionalsData.professionals.map(
@@ -161,13 +163,15 @@ export default async function ProfessionalsPage({
       </section>
 
       {/* Paginação */}
-      <Pagination
-        currentPage={page}
-        totalPages={professionalsData.totalPages}
-        hrefBuilder={(p) =>
-          `?page=${p}&limit=${limit}&search=${encodeURIComponent(search)}`
-        }
-      />
+      {professionalsData.professionals.length !== 0 && (
+        <Pagination
+          currentPage={page}
+          totalPages={professionalsData.totalPages}
+          hrefBuilder={(p) =>
+            `?page=${p}&limit=${limit}&search=${encodeURIComponent(search)}`
+          }
+        />
+      )}
     </section>
   );
 }

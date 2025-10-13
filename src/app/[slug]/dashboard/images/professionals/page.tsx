@@ -48,7 +48,6 @@ export default async function GalleryProfessionalImagesPage({
   const search = query?.search || "";
   const page = Number(query?.page || 1);
 
-  // 1️⃣ Buscar profissionais com filtro de busca
   let professionalsData;
   try {
     professionalsData = await fetchProfessionals({
@@ -68,15 +67,6 @@ export default async function GalleryProfessionalImagesPage({
 
   const professionals = professionalsData?.professionals || [];
 
-  if (professionals.length === 0) {
-    return (
-      <p className="text-center text-gray-500">
-        Nenhum profissional encontrado.
-      </p>
-    );
-  }
-
-  // 2️⃣ Buscar imagens de cada profissional e agrupar pelo nome
   const imagesData: Record<string, ImageType[]> = {};
 
   for (const prof of professionals) {
@@ -91,7 +81,7 @@ export default async function GalleryProfessionalImagesPage({
   }
 
   return (
-    <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-8">
+    <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 flex flex-col justify-between min-h-[calc(100vh-80px)]">
       {/* Header */}
       <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
@@ -129,20 +119,22 @@ export default async function GalleryProfessionalImagesPage({
       </section>
 
       {/* Lista de imagens agrupadas */}
-      {Object.keys(imagesData).length === 0 ? (
-        <p className="text-center text-gray-500">
-          Nenhuma imagem encontrada para os profissionais.
-        </p>
-      ) : (
-        Object.entries(imagesData).map(([profName, imgs]) => (
-          <Section
-            key={profName}
-            title={profName}
-            images={imgs}
-            token={token}
-          />
-        ))
-      )}
+      <div className="flex-1 flex flex-col justify-center">
+        {Object.keys(imagesData).length === 0 ? (
+          <p className="text-center text-gray-500 text-lg">
+            Nenhuma imagem encontrada para os profissionais.
+          </p>
+        ) : (
+          Object.entries(imagesData).map(([profName, imgs]) => (
+            <Section
+              key={profName}
+              title={profName}
+              images={imgs}
+              token={token}
+            />
+          ))
+        )}
+      </div>
 
       {/* BackLink inferior */}
       <div className="mt-6">

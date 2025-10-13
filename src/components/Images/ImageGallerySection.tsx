@@ -25,7 +25,7 @@ export function Section({ title, images: initialImages, token }: SectionProps) {
   if (!images || images.length === 0) return null;
 
   return (
-    <section className="space-y-6">
+    <section className="space-y-6 mb-6">
       <h3 className="text-xl font-semibold text-[var(--foreground)] border-b border-[var(--color-gray-medium)] pb-2">
         {title}
       </h3>

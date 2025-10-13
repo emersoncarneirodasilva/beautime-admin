@@ -121,9 +121,11 @@ export default async function CategoriesPage({
 
       {/* Lista de Categorias */}
       {categoriesData.categories.length === 0 ? (
-        <p className="text-center text-gray-500 mt-12">
-          Nenhuma categoria encontrada.
-        </p>
+        <div className="flex flex-1 justify-center items-center h-[60vh]">
+          <p className="text-center text-gray-500 text-lg">
+            Nenhuma categoria encontrada para os filtros aplicados.
+          </p>
+        </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {categoriesData.categories.map((category) => (
@@ -163,13 +165,15 @@ export default async function CategoriesPage({
       )}
 
       {/* Paginação */}
-      <Pagination
-        currentPage={page}
-        totalPages={categoriesData.totalPages}
-        hrefBuilder={(p) =>
-          `?page=${p}&limit=${limit}&search=${encodeURIComponent(search)}`
-        }
-      />
+      {categoriesData.categories.length !== 0 && (
+        <Pagination
+          currentPage={page}
+          totalPages={categoriesData.totalPages}
+          hrefBuilder={(p) =>
+            `?page=${p}&limit=${limit}&search=${encodeURIComponent(search)}`
+          }
+        />
+      )}
     </section>
   );
 }

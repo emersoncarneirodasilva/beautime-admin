@@ -130,9 +130,11 @@ export default async function AppointmentHistoryPage({
 
       {/* Lista */}
       {historyData.appointmentsHistory.length === 0 ? (
-        <p className="text-center text-[var(--text-secondary)] mt-10">
-          Nenhum agendamento encontrado para os filtros aplicados.
-        </p>
+        <div className="flex flex-1 justify-center items-center h-[60vh]">
+          <p className="text-center text-gray-500 text-lg">
+            Nenhum agendamento encontrado para os filtros aplicados.
+          </p>
+        </div>
       ) : (
         <div className="space-y-4">
           {historyData.appointmentsHistory.map((appt) => (
@@ -192,15 +194,17 @@ export default async function AppointmentHistoryPage({
       )}
 
       {/* Paginação */}
-      <Pagination
-        currentPage={page}
-        totalPages={totalPages}
-        hrefBuilder={(p) =>
-          `?page=${p}&limit=${limit}&status=${status}&search=${encodeURIComponent(
-            search
-          )}`
-        }
-      />
+      {historyData.appointmentsHistory.length !== 0 && (
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          hrefBuilder={(p) =>
+            `?page=${p}&limit=${limit}&status=${status}&search=${encodeURIComponent(
+              search
+            )}`
+          }
+        />
+      )}
     </section>
   );
 }

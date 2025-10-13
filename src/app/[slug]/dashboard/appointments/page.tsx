@@ -146,9 +146,11 @@ export default async function AppointmentsPage({
       {/* Lista */}
       <section className="space-y-4">
         {data.appointments.length === 0 ? (
-          <p className="text-center text-gray-400 mt-10">
-            Nenhum agendamento encontrado para os filtros aplicados.
-          </p>
+          <div className="flex flex-1 justify-center items-center h-[60vh]">
+            <p className="text-center text-gray-500 text-lg">
+              Nenhum agendamento encontrado para os filtros aplicados.
+            </p>
+          </div>
         ) : (
           data.appointments.map((appointment: Appointment) => (
             <div
@@ -240,15 +242,17 @@ export default async function AppointmentsPage({
       </section>
 
       {/* Paginação */}
-      <Pagination
-        currentPage={page}
-        totalPages={data.totalPages}
-        hrefBuilder={(p) =>
-          `?page=${p}&limit=${limit}&appointmentStatus=${status}&paymentStatus=${paymentStatus}&search=${encodeURIComponent(
-            search
-          )}`
-        }
-      />
+      {data.appointments.length !== 0 && (
+        <Pagination
+          currentPage={page}
+          totalPages={data.totalPages}
+          hrefBuilder={(p) =>
+            `?page=${p}&limit=${limit}&appointmentStatus=${status}&paymentStatus=${paymentStatus}&search=${encodeURIComponent(
+              search
+            )}`
+          }
+        />
+      )}
     </section>
   );
 }

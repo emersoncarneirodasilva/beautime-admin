@@ -98,6 +98,11 @@ export default async function ServicesOnProfessionalsPage({
     );
 
     professionalsWithServices.push(...results);
+
+    // 🧠 Adiciona uma pequena pausa entre os blocos para evitar sobrecarga no servidor
+    if (i + chunkSize < professionals.length) {
+      await new Promise((resolve) => setTimeout(resolve, 300));
+    }
   }
 
   return (
@@ -141,128 +146,140 @@ export default async function ServicesOnProfessionalsPage({
       </form>
 
       {/* Professionals list */}
-      <section className="space-y-8">
-        {professionalsWithServices.map((professional) => (
-          <article
-            key={professional.id}
-            className="bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] border border-[var(--color-gray-medium)] rounded-xl shadow p-4 sm:p-6 space-y-4"
-          >
-            {/* Header profissional */}
-            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 border-b border-[var(--color-gray-medium)] pb-4">
-              <div className="relative w-20 h-20 rounded-full overflow-hidden border-4 border-[var(--color-primary)] shadow flex-shrink-0 transition-transform duration-300 hover:scale-[1.05]">
-                <Link
-                  href={`/${slug}/dashboard/professionals/${professional.id}`}
-                  aria-label={`Ver perfil de ${professional.name}`}
-                >
-                  <Image
-                    src={professional.avatarUrl || "/images/default-avatar.png"}
-                    alt={`Foto de ${professional.name}`}
-                    fill
-                    className="object-cover"
-                  />
-                </Link>
-              </div>
-              <div className="flex-1 text-center sm:text-left space-y-1">
-                <h2 className="font-semibold text-lg text-[var(--foreground)]">
-                  {professional.name}
-                </h2>
-                <p className="text-sm text-[var(--text-secondary)]">
-                  {professional.email}
-                </p>
-              </div>
-            </div>
-
-            {/* Serviços vinculados */}
-            <ul className="ml-0 sm:ml-6 list-disc text-sm text-[var(--foreground)] space-y-1">
-              {professional.services.length > 0 ? (
-                professional.services.map((service: ServicePreview) => (
-                  <li
-                    key={service.id}
-                    className="flex justify-between items-center"
-                  >
-                    <span>{service.service.name}</span>
-                    <form
-                      id={`unlink-form-${service.id}`}
-                      action={unlinkServiceFromProfessional}
-                    >
-                      <input type="hidden" name="slug" value={slug} />
-                      <input
-                        type="hidden"
-                        name="associationId"
-                        value={service.id}
-                      />
-                      <RemoveServiceLink
-                        formId={`unlink-form-${service.id}`}
-                        className="text-[var(--color-error)] text-xs hover:underline ml-2"
-                      />
-                    </form>
-                  </li>
-                ))
-              ) : (
-                <li className="italic text-[var(--text-secondary)]">
-                  Nenhum serviço vinculado
-                </li>
-              )}
-            </ul>
-
-            {/* Form de vínculo */}
-            <form
-              id={`link-form-${professional.id}`}
-              action={linkServiceToProfessional}
-              className="flex flex-col sm:flex-row gap-2 pt-4"
+      {professionals.length === 0 ? (
+        <div className="flex flex-1 justify-center items-center h-[50vh]">
+          <p className="text-center text-gray-500 text-lg">
+            Nenhum profissional encontrado.
+          </p>
+        </div>
+      ) : (
+        <section className="space-y-8">
+          {professionalsWithServices.map((professional) => (
+            <article
+              key={professional.id}
+              className="bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] border border-[var(--color-gray-medium)] rounded-xl shadow p-4 sm:p-6 space-y-4"
             >
-              <input type="hidden" name="slug" value={slug} />
-              <input
-                type="hidden"
-                name="professionalId"
-                value={professional.id}
-              />
+              {/* Header profissional */}
+              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 border-b border-[var(--color-gray-medium)] pb-4">
+                <div className="relative w-20 h-20 rounded-full overflow-hidden border-4 border-[var(--color-primary)] shadow flex-shrink-0 transition-transform duration-300 hover:scale-[1.05]">
+                  <Link
+                    href={`/${slug}/dashboard/professionals/${professional.id}`}
+                    aria-label={`Ver perfil de ${professional.name}`}
+                  >
+                    <Image
+                      src={
+                        professional.avatarUrl || "/images/default-avatar.png"
+                      }
+                      alt={`Foto de ${professional.name}`}
+                      fill
+                      className="object-cover"
+                    />
+                  </Link>
+                </div>
+                <div className="flex-1 text-center sm:text-left space-y-1">
+                  <h2 className="font-semibold text-lg text-[var(--foreground)]">
+                    {professional.name}
+                  </h2>
+                  <p className="text-sm text-[var(--text-secondary)]">
+                    {professional.email}
+                  </p>
+                </div>
+              </div>
 
-              <select
-                name="serviceId"
-                className="flex-1 border border-[var(--text-secondary)] rounded px-2 py-1 text-sm bg-[var(--color-gray-light)] text-[var(--foreground)]"
-                defaultValue=""
-                required
-              >
-                <option value="" disabled>
-                  Selecione serviço
-                </option>
-                {allServices.map((service: Service) => {
-                  const isLinked = professional.services.some(
-                    (linked: { service: { id: string } }) =>
-                      linked.service.id === service.id
-                  );
-                  return (
-                    <option
+              {/* Serviços vinculados */}
+              <ul className="ml-0 sm:ml-6 list-disc text-sm text-[var(--foreground)] space-y-1">
+                {professional.services.length > 0 ? (
+                  professional.services.map((service: ServicePreview) => (
+                    <li
                       key={service.id}
-                      value={service.id}
-                      disabled={isLinked}
+                      className="flex justify-between items-center"
                     >
-                      {service.name}
-                    </option>
-                  );
-                })}
-              </select>
+                      <span>{service.service.name}</span>
+                      <form
+                        id={`unlink-form-${service.id}`}
+                        action={unlinkServiceFromProfessional}
+                      >
+                        <input type="hidden" name="slug" value={slug} />
+                        <input
+                          type="hidden"
+                          name="associationId"
+                          value={service.id}
+                        />
+                        <RemoveServiceLink
+                          formId={`unlink-form-${service.id}`}
+                          className="text-[var(--color-error)] text-xs hover:underline ml-2"
+                        />
+                      </form>
+                    </li>
+                  ))
+                ) : (
+                  <li className="italic text-[var(--text-secondary)]">
+                    Nenhum serviço vinculado
+                  </li>
+                )}
+              </ul>
 
-              <AddServiceButton
-                formId={`link-form-${professional.id}`}
-                className="bg-[var(--color-action)] text-[var(--text-on-action)] px-4 py-1 rounded text-sm hover:bg-[var(--color-action-hover)]"
-              />
-            </form>
-          </article>
-        ))}
-      </section>
+              {/* Form de vínculo */}
+              <form
+                id={`link-form-${professional.id}`}
+                action={linkServiceToProfessional}
+                className="flex flex-col sm:flex-row gap-2 pt-4"
+              >
+                <input type="hidden" name="slug" value={slug} />
+                <input
+                  type="hidden"
+                  name="professionalId"
+                  value={professional.id}
+                />
+
+                <select
+                  name="serviceId"
+                  className="flex-1 border border-[var(--text-secondary)] rounded px-2 py-1 text-sm bg-[var(--color-gray-light)] text-[var(--foreground)]"
+                  defaultValue=""
+                  required
+                >
+                  <option value="" disabled>
+                    Selecione serviço
+                  </option>
+                  {allServices.map((service: Service) => {
+                    const isLinked = professional.services.some(
+                      (linked: { service: { id: string } }) =>
+                        linked.service.id === service.id
+                    );
+                    return (
+                      <option
+                        key={service.id}
+                        value={service.id}
+                        disabled={isLinked}
+                      >
+                        {service.name}
+                      </option>
+                    );
+                  })}
+                </select>
+
+                <AddServiceButton
+                  formId={`link-form-${professional.id}`}
+                  className="bg-[var(--color-action)] text-[var(--text-on-action)] px-4 py-1 rounded text-sm hover:bg-[var(--color-action-hover)]"
+                />
+              </form>
+            </article>
+          ))}
+        </section>
+      )}
 
       {/* Paginação */}
-      <footer className="mt-10">
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          hrefBuilder={(p) =>
-            `?page=${p}&limit=${limit}&search=${encodeURIComponent(search)}`
-          }
-        />
-      </footer>
+      {professionals.length !== 0 && (
+        <footer className="mt-10">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            hrefBuilder={(p) =>
+              `?page=${p}&limit=${limit}&search=${encodeURIComponent(search)}`
+            }
+          />
+        </footer>
+      )}
     </section>
   );
 }

@@ -67,9 +67,11 @@ export default async function BusinessHoursPage({
       {/* Lista de horários */}
       <section>
         {businessHours.length === 0 ? (
-          <p className="text-center text-gray-500">
-            Nenhum horário cadastrado ainda.
-          </p>
+          <div className="flex flex-1 justify-center items-center h-[60vh]">
+            <p className="text-center text-gray-500 text-lg">
+              Nenhum horário cadastrado ainda.
+            </p>
+          </div>
         ) : (
           <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {businessHours.map((hour) => (
