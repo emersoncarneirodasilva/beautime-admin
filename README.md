@@ -121,10 +121,7 @@ Configurar variáveis de ambiente (.env):
 
 Exemplo mínimo:
 
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
-FRONTEND_URL=http://localhost:3000
-
+NEXT_PUBLIC_API_URL="https://beautime-backend.onrender.com/api"
 
 Ajuste os valores para o seu ambiente local ou produção.
 
