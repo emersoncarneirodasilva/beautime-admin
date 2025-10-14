@@ -109,7 +109,7 @@ Nesta parte descrevemos como configurar o projeto localmente, fazer deploy e a o
 1. **Clonar o repositório:**
 
 ```bash
-git clone <REPO_URL>
+git clone (https://github.com/emersoncarneirodasilva/beautime-admin)
 cd beautime-admin
 ```
 Instalar dependências:
