@@ -48,10 +48,12 @@ export default async function AvailabilityPage({
 
   let availability: Availability[];
   let professionalName = "";
+  let professionalId;
   try {
     availability = await fetchAvailabilityByProfessional(id, token);
     const professional = await fetchProfessionalById(id, token);
     professionalName = professional.name;
+    professionalId = professional.id;
   } catch (error) {
     return (
       <ErrorSection
@@ -137,7 +139,11 @@ export default async function AvailabilityPage({
 
       {/* Botão Voltar */}
       <div className="mt-6 flex justify-start w-full sm:w-auto">
-        <BackLink slug={slug} to="dashboard/professionals" label="Voltar" />
+        <BackLink
+          slug={slug}
+          to={`dashboard/professionals/${professionalId}`}
+          label="Voltar"
+        />
       </div>
     </section>
   );

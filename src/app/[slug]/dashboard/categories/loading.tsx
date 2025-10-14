@@ -1,9 +1,5 @@
-export default function CategoriesLoading() {
-  return (
-    <section className="grid place-items-center min-h-screen">
-      <div>
-        <p>Carregando Categorias...</p>
-      </div>
-    </section>
-  );
+import Spinner from "@/components/ui/Spinner";
+
+export default function Loading() {
+  return <Spinner fullscreen text="Carregando categorias..." />;
 }

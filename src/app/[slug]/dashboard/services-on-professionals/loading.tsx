@@ -1,7 +1,5 @@
+import Spinner from "@/components/ui/Spinner";
+
 export default function Loading() {
-  return (
-    <section className="grid place-items-center min-h-screen">
-      <p>Carregando...</p>
-    </section>
-  );
+  return <Spinner fullscreen text="Carregando profissionais..." />;
 }
