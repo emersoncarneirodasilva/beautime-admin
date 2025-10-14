@@ -2,6 +2,7 @@ import Image from "next/image";
 import ThemeToggle from "@/components/Theme/ThemeToggle";
 import { handleLogin } from "./actions/handleLogin";
 import { Metadata } from "next";
+import ErrorToastFromParams from "@/components/Error/ErrorToastFromParams";
 
 export const metadata: Metadata = {
   title: "Beautime Admin - Login",
@@ -11,6 +12,8 @@ export const metadata: Metadata = {
 export default function LoginPage() {
   return (
     <main className="min-h-screen flex items-center justify-center bg-[var(--background)] text-[var(--foreground)] transition-colors relative px-4">
+      <ErrorToastFromParams />
+
       <ThemeToggle />
 
       <div className="bg-[var(--color-white)] rounded-2xl shadow-lg w-full max-w-md sm:max-w-lg md:max-w-xl p-6 sm:p-8 flex flex-col items-center transition-colors">
@@ -46,6 +49,7 @@ export default function LoginPage() {
           <input
             type="password"
             name="password"
+            minLength={6}
             placeholder="Senha"
             required
             className="border border-[var(--color-gray-medium)] dark:border-[var(--color-gray-border)] rounded-lg px-4 py-3 w-full bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] text-[var(--foreground)] placeholder:text-[var(--color-gray-medium)] dark:placeholder:text-[var(--color-gray-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition"

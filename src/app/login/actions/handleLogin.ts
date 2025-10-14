@@ -10,20 +10,23 @@ export async function handleLogin(formData: FormData) {
   const password = formData.get("password")?.toString();
 
   if (!email || !password) {
-    throw new Error("E-mail ou senha inválidos.");
+    redirect(`/login?error=${encodeURIComponent("Credenciais inválidas.")}`);
   }
 
-  // Chama a API de login
-  const data = await postLogin(email, password);
+  let data;
+  try {
+    data = await postLogin(email, password);
+  } catch (err: unknown) {
+    const message =
+      err instanceof Error ? err.message : "Credenciais inválidas.";
+    redirect(`/login?error=${encodeURIComponent(message)}`);
+  }
 
-  // Corrigido: data.token já é a string do JWT
-  const token = data.token;
-
+  const token = data?.token;
   if (!token) {
-    throw new Error("Token inválido!");
+    redirect(`/login?error=${encodeURIComponent("Token inválido!")}`);
   }
 
-  // Armazena o token em cookie httpOnly
   const cookieStore = await cookies();
   cookieStore.set("token", token, {
     httpOnly: true,
@@ -32,13 +35,22 @@ export async function handleLogin(formData: FormData) {
     path: "/",
   });
 
-  // Busca informações do salão associado ao admin
-  const salon = await fetchSalonByAdmin(token);
+  let salon;
+  try {
+    salon = await fetchSalonByAdmin(token);
+  } catch (err: unknown) {
+    let message = "Erro ao buscar informações do salão.";
 
-  if (!salon?.slug) {
-    throw new Error("Salão não encontrado.");
+    if (err instanceof Error) {
+      message = err.message;
+    }
+
+    redirect(`/login?error=${encodeURIComponent(message)}`);
   }
 
-  // Redireciona para o dashboard do salão
+  if (!salon?.slug) {
+    redirect(`/login?error=${encodeURIComponent("Salão não encontrado.")}`);
+  }
+
   redirect(`/${salon.slug}/dashboard/`);
 }
