@@ -7,7 +7,15 @@ import { Service } from "@/types";
 import Image from "next/image";
 import { Metadata } from "next";
 import ActionButton from "@/components/Buttons/ActionButton";
-import { Pencil, Trash2 } from "lucide-react";
+import {
+  CalendarDays,
+  Clock,
+  Pencil,
+  RefreshCcw,
+  Tag,
+  Trash2,
+  Wallet,
+} from "lucide-react";
 import { deleteService } from "./edit/actions/deleteService";
 import DeleteButton from "@/components/Buttons/DeleteButton";
 import BackLink from "@/components/Buttons/BackLink";
@@ -95,29 +103,43 @@ export default async function ServicePage({
           />
         </div>
 
-        {/* Nome do serviço */}
+        {/* Nome e categoria */}
         <h2 className="text-2xl sm:text-3xl font-bold text-center text-[var(--foreground)]">
           {service.name}
         </h2>
 
-        {/* Categoria */}
-        <p className="text-center text-base sm:text-lg text-gray-500 mb-6">
-          Categoria: {service.category?.name || "Sem categoria"}
+        <p className="text-center text-base sm:text-lg text-gray-500 mb-6 flex justify-center items-center gap-2">
+          <Tag className="w-4 h-4 text-[var(--color-primary)]" />
+          Categoria:{" "}
+          <span className="text-[var(--color-primary)] font-medium">
+            {service.category?.name || "Sem categoria"}
+          </span>
         </p>
+
+        {/* Descrição */}
+        {service.description && (
+          <p className="text-[var(--text-secondary)] leading-relaxed border-l-4 border-[var(--color-primary)]/60 pl-4">
+            {service.description}
+          </p>
+        )}
 
         {/* Informações */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-6 text-[var(--foreground)]">
-          <div>
+          <div className="flex items-center gap-2">
+            <Wallet className="w-4 h-4 text-[var(--color-primary)]" />
             <strong>Preço:</strong> R$ {service.price.toFixed(2)}
           </div>
-          <div>
+          <div className="flex items-center gap-2">
+            <Clock className="w-4 h-4 text-[var(--color-primary)]" />
             <strong>Duração:</strong> {service.duration} min
           </div>
-          <div>
+          <div className="flex items-center gap-2">
+            <CalendarDays className="w-4 h-4 text-[var(--color-primary)]" />
             <strong>Criado em:</strong>{" "}
             {new Date(service.createdAt).toLocaleDateString()}
           </div>
-          <div>
+          <div className="flex items-center gap-2">
+            <RefreshCcw className="w-4 h-4 text-[var(--color-primary)]" />
             <strong>Atualizado em:</strong>{" "}
             {new Date(service.updatedAt).toLocaleDateString()}
           </div>
@@ -154,7 +176,7 @@ export default async function ServicePage({
         </div>
       </div>
 
-      {/* Link Voltar (inferior esquerdo) */}
+      {/* Link Voltar */}
       <div className="flex justify-start -mt-8">
         <BackLink slug={slug} to="dashboard/services" label="Voltar" />
       </div>
