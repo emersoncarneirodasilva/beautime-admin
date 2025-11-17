@@ -18,3 +18,4 @@ export * from "./serviceOnProfessional";
 export * from "./images";
 export * from "./professional";
 export * from "./salon";
+export * from "./serviceProfessional";

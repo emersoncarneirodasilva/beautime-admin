@@ -12,6 +12,14 @@ export default function NotFound() {
   useEffect(() => setMounted(true), []);
   if (!mounted) return null;
 
+  const handleGoBack = () => {
+    if (window.history.length > 1) {
+      router.back();
+    } else {
+      router.push("/");
+    }
+  };
+
   return (
     <main className="min-h-screen flex flex-col items-center justify-center bg-[var(--background)] p-4">
       <div className="flex flex-col items-center text-center space-y-4 max-w-sm">
@@ -21,10 +29,10 @@ export default function NotFound() {
           A página que você está procurando não foi encontrada.
         </p>
         <button
-          onClick={() => router.push("/")}
+          onClick={handleGoBack}
           className="mt-2 px-4 py-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-[var(--text-white-fixed)] rounded-md text-sm transition cursor-pointer"
         >
-          Voltar para a página inicial
+          Voltar
         </button>
       </div>
     </main>

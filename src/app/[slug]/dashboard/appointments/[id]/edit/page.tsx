@@ -8,7 +8,7 @@ import SubmitButton from "@/components/Buttons/SubmitButton";
 import BackLink from "@/components/Buttons/BackLink";
 import { Metadata } from "next";
 import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
-import { StatusBadge } from "@/components/Appointment/StatusBadge"; // ✅ Importa o componente
+import { StatusBadge } from "@/components/Appointment/StatusBadge";
 
 interface Params {
   slug: string;

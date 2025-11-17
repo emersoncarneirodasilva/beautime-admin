@@ -17,6 +17,7 @@ import {
   History,
   X,
   Menu as MenuIcon,
+  PenIcon,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -59,10 +60,16 @@ export default function Sidebar({ slug }: SidebarProps) {
       label: "Agendamentos",
       items: [
         {
+          label: "Agendar",
+          href: `/${slug}/dashboard/appointment`,
+          icon: PenIcon,
+        },
+        {
           label: "Agendamentos",
           href: `/${slug}/dashboard/appointments`,
           icon: Calendar,
         },
+
         {
           label: "Histórico",
           href: `/${slug}/dashboard/appointment-history`,
@@ -104,9 +111,12 @@ export default function Sidebar({ slug }: SidebarProps) {
 
       {/* Sidebar Desktop */}
       <aside className="hidden md:flex fixed left-0 top-16 h-[calc(100vh-50px)] w-50 bg-[var(--color-gray-light)] text-[var(--foreground)] flex-col shadow-lg transition-colors">
-        <nav className="flex-1 flex flex-col gap-1 p-2 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500">
+        <nav className="flex-1 flex flex-col gap-1 p-2 overflow-y-auto sidebar-scroll">
           {menuItems.map((block, idx) => (
-            <div key={idx} className="mt-4">
+            <div
+              key={idx}
+              className={`mt-4 ${idx === menuItems.length - 1 ? "pb-6" : ""}`}
+            >
               {block.items ? (
                 <>
                   <h3 className="px-4 py-2 text-gray-500 dark:text-gray-400 uppercase text-xs tracking-wider">

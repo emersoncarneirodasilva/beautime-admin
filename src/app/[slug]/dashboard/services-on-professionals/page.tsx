@@ -35,6 +35,7 @@ export async function generateMetadata(): Promise<Metadata> {
 interface Params {
   slug: string;
 }
+
 interface SearchParams {
   page?: string;
   limit?: string;
@@ -58,7 +59,7 @@ export default async function ServicesOnProfessionalsPage({
   const limit = Number(searchQuery?.limit ?? "10");
   const search = searchQuery?.search ?? "";
 
-  // Busca profissionais
+  // Busca todos os profissionais
   const { professionals, totalPages, currentPage } = await fetchProfessionals({
     token,
     page,
@@ -99,7 +100,7 @@ export default async function ServicesOnProfessionalsPage({
 
     professionalsWithServices.push(...results);
 
-    // 🧠 Adiciona uma pequena pausa entre os blocos para evitar sobrecarga no servidor
+    // Adiciona uma pequena pausa entre os blocos para evitar sobrecarga no servidor
     if (i + chunkSize < professionals.length) {
       await new Promise((resolve) => setTimeout(resolve, 300));
     }

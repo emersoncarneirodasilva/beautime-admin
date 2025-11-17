@@ -109,7 +109,6 @@ export default async function AppointmentsPage({
             <option value="">Todos os Status</option>
             <option value="PENDING">Pendente</option>
             <option value="CONFIRMED">Confirmado</option>
-            <option value="CANCELLED">Cancelado</option>
           </select>
 
           <select
@@ -120,7 +119,6 @@ export default async function AppointmentsPage({
             <option value="">Todos os Pagamentos</option>
             <option value="PENDING">Pendente</option>
             <option value="PAID">Pago</option>
-            <option value="REFUNDED">Reembolsado</option>
             <option value="PARTIALLY_PAID">Parcialmente Pago</option>
           </select>
 
