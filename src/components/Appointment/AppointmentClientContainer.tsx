@@ -26,6 +26,8 @@ export default function AppointmentClientContainer({
   const [scheduledTime, setScheduledTime] = useState<string | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleCreate = async () => {
     if (
       !userId ||
@@ -38,6 +40,8 @@ export default function AppointmentClientContainer({
       return;
     }
 
+    setIsLoading(true);
+
     try {
       await createAppointmentAction({
         token,
@@ -48,8 +52,11 @@ export default function AppointmentClientContainer({
         scheduledTime,
         method: paymentMethod,
       });
+
+      setIsLoading(false);
     } catch (err) {
       console.error(err);
+      setIsLoading(false);
     }
   };
 
@@ -85,6 +92,7 @@ export default function AppointmentClientContainer({
 
       <button
         disabled={
+          isLoading ||
           !userId ||
           !serviceOnProfessionalId ||
           !scheduledDate ||
@@ -92,9 +100,15 @@ export default function AppointmentClientContainer({
           !paymentMethod
         }
         onClick={handleCreate}
-        className="px-6 py-3 bg-[var(--color-action)] text-[var(--text-on-action)] rounded-lg disabled:opacity-50 hover:bg-[var(--color-action-hover)] disabled:cursor-not-allowed transition-colors cursor-pointer"
+        className={`
+          px-6 py-3 rounded-lg transition-colors cursor-pointer
+          bg-[var(--color-action)] text-[var(--text-on-action)]
+          hover:bg-[var(--color-action-hover)]
+          disabled:opacity-50 disabled:cursor-not-allowed
+          ${isLoading ? "animate-pulse" : ""}
+        `}
       >
-        Criar Agendamento
+        {isLoading ? "Carregando..." : "Criar Agendamento"}
       </button>
     </div>
   );
