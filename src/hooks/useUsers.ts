@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import fetchUsers from "@/libs/api/fetchUsers";
 import { UserType } from "@/types";
 
@@ -14,7 +14,7 @@ export function useUsers(token: string) {
 
   const totalPages = Math.ceil(total / limit);
 
-  async function load() {
+  const load = useCallback(async () => {
     setLoading(true);
 
     const data = await fetchUsers({ token, page, limit, search });
@@ -23,11 +23,11 @@ export function useUsers(token: string) {
     setTotal(data.total);
 
     setLoading(false);
-  }
+  }, [token, page, limit, search]);
 
   useEffect(() => {
     load();
-  }, [page, search]);
+  }, [load]);
 
   return {
     users,

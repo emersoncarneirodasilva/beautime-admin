@@ -62,7 +62,7 @@ export default async function createAppointmentAction(
     try {
       const json = await res.json();
       backendMsg = json.message || backendMsg;
-    } catch (_) {}
+    } catch {}
 
     redirect(
       `/${slug}/dashboard/appointment/error-bridge?error=${encodeURIComponent(
