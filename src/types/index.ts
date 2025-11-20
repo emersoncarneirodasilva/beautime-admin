@@ -19,3 +19,4 @@ export * from "./images";
 export * from "./professional";
 export * from "./salon";
 export * from "./serviceProfessional";
+export * from "./AppointmentsByProfessional";

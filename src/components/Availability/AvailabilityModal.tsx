@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useAvailability } from "@/hooks/useAvailability";
+import { useAppointments } from "@/hooks/useAppointments";
 import { getNextDates } from "@/utils/dateHelpers";
 import DayItem from "@/components/Availability/DayItem";
 import ModalPagination from "../Pagination/ModalPagination";
@@ -23,11 +24,21 @@ export default function AvailabilityModal({
     endTime: string;
   }) => void;
 }) {
-  const { availability, loading } = useAvailability(token, professionalId);
+  const { availability, loading: loadingAvailability } = useAvailability(
+    token,
+    professionalId
+  );
+  const { appointments, loading: loadingAppointments } = useAppointments(
+    token,
+    professionalId
+  );
+
+  const loading = loadingAvailability || loadingAppointments;
 
   const [page, setPage] = useState(1);
   const daysPerPage = 7;
 
+  // Filtra datas futuras com base na disponibilidade do profissional
   const allNextDates = useMemo(() => {
     const dates = getNextDates(60);
     return dates.filter((d) =>
@@ -43,21 +54,12 @@ export default function AvailabilityModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div
-        className="
-          w-full max-w-lg 
-          bg-[var(--color-white)] text-[var(--foreground)]
-          rounded-2xl shadow-2xl 
-          p-6 space-y-6 
-          transition-all
-        "
-      >
+      <div className="w-full max-w-lg bg-[var(--color-white)] text-[var(--foreground)] rounded-2xl shadow-2xl p-6 space-y-6 transition-all">
         {/* HEADER */}
         <header className="flex justify-between items-center pb-2 border-b border-[var(--color-gray-medium)]">
           <h2 className="text-2xl font-semibold tracking-tight">
             Selecionar Horário
           </h2>
-
           <button
             onClick={onClose}
             className="text-[var(--text-secondary)] hover:text-[var(--color-error)] text-2xl leading-none transition cursor-pointer"
@@ -66,15 +68,8 @@ export default function AvailabilityModal({
           </button>
         </header>
 
-        {/* LISTA DE DIAS/ HORÁRIOS */}
-        <div
-          className="
-            max-h-80 overflow-y-auto 
-            rounded-md border border-[var(--color-gray-medium)]
-            shadow-inner bg-[var(--color-gray-light)]
-            divide-y divide-[var(--color-gray-medium)] sidebar-scroll
-          "
-        >
+        {/* LISTA DE DIAS/HORÁRIOS */}
+        <div className="max-h-80 overflow-y-auto rounded-md border border-[var(--color-gray-medium)] shadow-inner bg-[var(--color-gray-light)] divide-y divide-[var(--color-gray-medium)] sidebar-scroll">
           {loading ? (
             <p className="p-4 text-center text-[var(--text-secondary)] animate-pulse">
               Carregando...
@@ -89,6 +84,7 @@ export default function AvailabilityModal({
                 key={date.toISOString()}
                 date={date}
                 slots={availability.filter((a) => a.weekday === date.getDay())}
+                appointments={appointments}
                 serviceDuration={serviceDuration}
                 onSelect={onSelect}
               />
@@ -96,7 +92,7 @@ export default function AvailabilityModal({
           )}
         </div>
 
-        {/* Paginação dos dias */}
+        {/* PAGINAÇÃO */}
         {!loading && allNextDates.length > daysPerPage && (
           <ModalPagination
             page={page}
