@@ -1,23 +1,20 @@
 import Image from "next/image";
 import ThemeToggle from "@/components/Theme/ThemeToggle";
-import { handleLogin } from "./actions/handleLogin";
 import { Metadata } from "next";
-import ErrorToastFromParams from "@/components/Error/ErrorToastFromParams";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Beautime Admin - Login",
-  description: "Painel de administração do aplicativo Beautime",
+  title: "Beautime Admin - Recuperar Acesso",
+  description: "Recuperação de acesso do painel Beautime",
 };
 
-export default async function LoginPage() {
+export default async function ForgotPasswordPage() {
   return (
     <main className="min-h-screen flex items-center justify-center bg-[var(--background)] text-[var(--foreground)] transition-colors relative px-4">
-      <ErrorToastFromParams />
-
       <ThemeToggle />
 
       <div className="bg-[var(--color-white)] rounded-2xl shadow-lg w-full max-w-md sm:max-w-lg md:max-w-xl p-6 sm:p-8 flex flex-col items-center transition-colors">
+        {/* Logo + Nome */}
         <div className="mb-6 flex flex-col items-center">
           <Image
             src="/images/logo.png"
@@ -34,22 +31,19 @@ export default async function LoginPage() {
             Admin
           </span>
         </div>
+
+        {/* Subtítulo */}
         <h2 className="text-base sm:text-lg md:text-xl text-[var(--text-secondary)] mb-6 text-center">
-          Entre com sua conta
+          Esqueceu seu e-mail de login? Digite o endereço de e-mail associado à
+          sua conta para enviarmos instruções de recuperação.
         </h2>
-        <form action={handleLogin} className="w-full space-y-4">
+
+        {/* Formulário */}
+        <form className="w-full space-y-4">
           <input
             type="email"
             name="email"
-            placeholder="E-mail"
-            required
-            className="border border-[var(--color-gray-medium)] dark:border-[var(--color-gray-border)] rounded-lg px-4 py-3 w-full bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] text-[var(--foreground)] placeholder:text-[var(--color-gray-medium)] dark:placeholder:text-[var(--color-gray-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition"
-          />
-          <input
-            type="password"
-            name="password"
-            minLength={6}
-            placeholder="Senha"
+            placeholder="Seu e-mail"
             required
             className="border border-[var(--color-gray-medium)] dark:border-[var(--color-gray-border)] rounded-lg px-4 py-3 w-full bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] text-[var(--foreground)] placeholder:text-[var(--color-gray-medium)] dark:placeholder:text-[var(--color-gray-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition"
           />
@@ -58,25 +52,17 @@ export default async function LoginPage() {
             type="submit"
             className="w-full py-3 sm:py-4 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white font-semibold rounded-lg transition-colors text-base sm:text-lg cursor-pointer"
           >
-            Entrar
+            Enviar instruções
           </button>
         </form>
+
         <p className="text-center mt-4 text-[var(--text-secondary)] text-sm sm:text-base">
-          Não tem uma conta?{" "}
-          <a
-            href="mailto:mersiocarneiro87@gmail.com"
-            className="text-[var(--color-primary)] font-medium hover:underline"
-          >
-            Entre em contato
-          </a>
-        </p>
-        <p className="text-center mt-1 text-[var(--text-secondary)] text-sm sm:text-base">
-          Esqueceu sua senha?{" "}
+          Lembrou sua senha?{" "}
           <Link
-            href="/forgot-password"
+            href="/login"
             className="text-[var(--color-primary)] font-medium hover:underline"
           >
-            Clique aqui!
+            Voltar ao login
           </Link>
         </p>
       </div>
