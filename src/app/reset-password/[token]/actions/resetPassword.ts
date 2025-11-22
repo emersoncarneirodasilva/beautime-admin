@@ -5,14 +5,14 @@ import { fetchResetPassword } from "@/libs/api/fetchResetPassword";
 
 export async function resetPasswordAction(formData: FormData) {
   const token = formData.get("token")?.toString();
-  const password = formData.get("new-password")?.toString();
-  const confirm = formData.get("confirm-password")?.toString();
+  const newPassword = formData.get("new-password")?.toString();
+  const confirmPassword = formData.get("confirm-password")?.toString();
 
   if (!token) {
     redirect(`/reset-password?error=${encodeURIComponent("Token inválido.")}`);
   }
 
-  if (!password || !confirm) {
+  if (!newPassword || !confirmPassword) {
     redirect(
       `/reset-password/${token}?error=${encodeURIComponent(
         "Preencha todos os campos."
@@ -20,7 +20,7 @@ export async function resetPasswordAction(formData: FormData) {
     );
   }
 
-  if (password !== confirm) {
+  if (newPassword !== confirmPassword) {
     redirect(
       `/reset-password/${token}?error=${encodeURIComponent(
         "As senhas não coincidem."
@@ -30,7 +30,7 @@ export async function resetPasswordAction(formData: FormData) {
 
   let result;
   try {
-    result = await fetchResetPassword(token, password);
+    result = await fetchResetPassword(token, newPassword);
   } catch (err: unknown) {
     const message =
       err instanceof Error

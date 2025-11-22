@@ -8,7 +8,7 @@ export type ApiResponse<T = unknown> = {
 
 export async function fetchResetPassword(
   token: string,
-  password: string
+  newPassword: string
 ): Promise<ApiResponse> {
   try {
     const response = await fetch(
@@ -16,7 +16,7 @@ export async function fetchResetPassword(
       {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, password }),
+        body: JSON.stringify({ token, newPassword }),
       }
     );
 
