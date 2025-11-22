@@ -14,7 +14,7 @@ export async function fetchResetPassword(
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/users/password/reset`,
       {
-        method: "POST",
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token, password }),
       }
