@@ -1,7 +1,10 @@
-import Image from "next/image";
-import ThemeToggle from "@/components/Theme/ThemeToggle";
 import { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
+import ThemeToggle from "@/components/Theme/ThemeToggle";
+import { forgotPasswordAction } from "./actions/forgotPassword";
+import LoginButtonSubmit from "@/components/Buttons/LoginButtonSubmit";
+import ErrorToastFromParams from "@/components/Error/ErrorToastFromParams";
 
 export const metadata: Metadata = {
   title: "Beautime Admin - Recuperar Acesso",
@@ -11,6 +14,8 @@ export const metadata: Metadata = {
 export default async function ForgotPasswordPage() {
   return (
     <main className="min-h-screen flex items-center justify-center bg-[var(--background)] text-[var(--foreground)] transition-colors relative px-4">
+      <ErrorToastFromParams />
+
       <ThemeToggle />
 
       <div className="bg-[var(--color-white)] rounded-2xl shadow-lg w-full max-w-md sm:max-w-lg md:max-w-xl p-6 sm:p-8 flex flex-col items-center transition-colors">
@@ -34,12 +39,16 @@ export default async function ForgotPasswordPage() {
 
         {/* Subtítulo */}
         <h2 className="text-base sm:text-lg md:text-xl text-[var(--text-secondary)] mb-6 text-center">
-          Esqueceu seu e-mail de login? Digite o endereço de e-mail associado à
-          sua conta para enviarmos instruções de recuperação.
+          Esqueceu sua senha? Enviaremos um link de recuperação para o e-mail
+          cadastrado na sua conta.
         </h2>
 
         {/* Formulário */}
-        <form className="w-full space-y-4">
+        <form
+          action={forgotPasswordAction}
+          id="forgot-password-submit"
+          className="w-full space-y-4"
+        >
           <input
             type="email"
             name="email"
@@ -48,12 +57,7 @@ export default async function ForgotPasswordPage() {
             className="border border-[var(--color-gray-medium)] dark:border-[var(--color-gray-border)] rounded-lg px-4 py-3 w-full bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] text-[var(--foreground)] placeholder:text-[var(--color-gray-medium)] dark:placeholder:text-[var(--color-gray-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition"
           />
 
-          <button
-            type="submit"
-            className="w-full py-3 sm:py-4 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white font-semibold rounded-lg transition-colors text-base sm:text-lg cursor-pointer"
-          >
-            Enviar instruções
-          </button>
+          <LoginButtonSubmit title="Enviar" id="forgot-password-submit" />
         </form>
 
         <p className="text-center mt-4 text-[var(--text-secondary)] text-sm sm:text-base">

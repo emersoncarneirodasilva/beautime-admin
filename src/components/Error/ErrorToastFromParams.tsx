@@ -9,7 +9,20 @@ export default function ErrorToastFromParams() {
 
   if (!errorParam) return null;
 
-  const decodedMessage = decodeURIComponent(errorParam);
+  let decodedMessage = decodeURIComponent(errorParam);
+
+  try {
+    const parsed = JSON.parse(decodedMessage);
+
+    if (Array.isArray(parsed) && parsed[0]?.message) {
+      let msg = parsed[0].message;
+
+      // TRADUÇÃO LOCAL
+      if (msg === "Invalid email") msg = "E-mail inválido!";
+
+      decodedMessage = msg;
+    }
+  } catch {}
 
   return <ErrorToast message={decodedMessage} />;
 }

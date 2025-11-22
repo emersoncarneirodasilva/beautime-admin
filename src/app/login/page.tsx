@@ -4,6 +4,7 @@ import { handleLogin } from "./actions/handleLogin";
 import { Metadata } from "next";
 import ErrorToastFromParams from "@/components/Error/ErrorToastFromParams";
 import Link from "next/link";
+import LoginButtonSubmit from "@/components/Buttons/LoginButtonSubmit";
 
 export const metadata: Metadata = {
   title: "Beautime Admin - Login",
@@ -37,7 +38,11 @@ export default async function LoginPage() {
         <h2 className="text-base sm:text-lg md:text-xl text-[var(--text-secondary)] mb-6 text-center">
           Entre com sua conta
         </h2>
-        <form action={handleLogin} className="w-full space-y-4">
+        <form
+          action={handleLogin}
+          id="login-submit"
+          className="w-full space-y-4"
+        >
           <input
             type="email"
             name="email"
@@ -54,12 +59,7 @@ export default async function LoginPage() {
             className="border border-[var(--color-gray-medium)] dark:border-[var(--color-gray-border)] rounded-lg px-4 py-3 w-full bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] text-[var(--foreground)] placeholder:text-[var(--color-gray-medium)] dark:placeholder:text-[var(--color-gray-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition"
           />
 
-          <button
-            type="submit"
-            className="w-full py-3 sm:py-4 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white font-semibold rounded-lg transition-colors text-base sm:text-lg cursor-pointer"
-          >
-            Entrar
-          </button>
+          <LoginButtonSubmit title="Entrar" id="login-submit" />
         </form>
         <p className="text-center mt-4 text-[var(--text-secondary)] text-sm sm:text-base">
           Não tem uma conta?{" "}
