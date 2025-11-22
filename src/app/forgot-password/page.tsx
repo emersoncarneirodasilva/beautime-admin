@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import ThemeToggle from "@/components/Theme/ThemeToggle";
 import { forgotPasswordAction } from "./actions/forgotPassword";
-import LoginButtonSubmit from "@/components/Buttons/LoginButtonSubmit";
+import ForgotButtonSubmit from "@/components/Buttons/LoginButtonSubmit";
 import ErrorToastFromParams from "@/components/Error/ErrorToastFromParams";
 
 export const metadata: Metadata = {
@@ -57,7 +57,7 @@ export default async function ForgotPasswordPage() {
             className="border border-[var(--color-gray-medium)] dark:border-[var(--color-gray-border)] rounded-lg px-4 py-3 w-full bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] text-[var(--foreground)] placeholder:text-[var(--color-gray-medium)] dark:placeholder:text-[var(--color-gray-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition"
           />
 
-          <LoginButtonSubmit title="Enviar" id="forgot-password-submit" />
+          <ForgotButtonSubmit title="Enviar" id="forgot-password-submit" />
         </form>
 
         <p className="text-center mt-4 text-[var(--text-secondary)] text-sm sm:text-base">
