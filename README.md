@@ -58,18 +58,15 @@ O objetivo do Beautime Admin é fornecer uma interface robusta, moderna e escal�
 
 # 🏗 Arquitetura do Sistema
 
-[ Beautime Admin (Next.js) ]
-|
-↓
-[ Backend API – Node + Express (Render) ]
-|
-↓
-[ PostgreSQL (Supabase) ]
-|
-↓
-[ Buckets de Imagem / Upload / Perfis / Assets ]
-
-
+```Bash
+Beautime Admin (Next.js)
+          ↓
+Backend API (Node + Express – Render)
+          ↓
+PostgreSQL (Supabase)
+          ↓
+Buckets: imagens, uploads, perfis, assets
+```
 **Fluxo de autenticação:**
 1. Admin faz login pelo painel  
 2. API retorna um token JWT  
