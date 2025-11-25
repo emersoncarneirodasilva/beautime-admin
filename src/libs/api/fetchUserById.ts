@@ -9,7 +9,7 @@ export default async function fetchUserById(
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    cache: "no-store",
+    next: { tags: ["users"] },
   });
 
   if (!res.ok) {

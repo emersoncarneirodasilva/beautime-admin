@@ -2,6 +2,7 @@
 
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
 import { sanitizeFile } from "@/utils/sanitizeFile";
+import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function updateService(formData: FormData) {
@@ -53,6 +54,9 @@ export async function updateService(formData: FormData) {
       )}`
     );
   }
+
+  // limpa o cache de serviços
+  revalidateTag("services");
 
   redirect(`/${slug}/dashboard/services/${id}`);
 }

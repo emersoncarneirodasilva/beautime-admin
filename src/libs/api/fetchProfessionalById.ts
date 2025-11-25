@@ -12,7 +12,7 @@ export async function fetchProfessionalById(
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
-      cache: "no-store",
+      next: { tags: ["professionals"] },
     }
   );
 

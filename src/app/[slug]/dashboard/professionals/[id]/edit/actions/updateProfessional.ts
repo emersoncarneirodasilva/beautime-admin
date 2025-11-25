@@ -2,6 +2,7 @@
 
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
 import { sanitizeFile } from "@/utils/sanitizeFile";
+import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function updateProfessional(formData: FormData) {
@@ -54,6 +55,8 @@ export async function updateProfessional(formData: FormData) {
     );
   }
 
-  // Redireciona para a página do profissional
+  // Invalida o cache dos profissionais
+  revalidateTag("professionals");
+
   redirect(`/${slug}/dashboard/professionals/${id}`);
 }

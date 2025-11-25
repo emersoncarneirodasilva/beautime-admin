@@ -2,6 +2,7 @@
 
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
 import { sanitizeFile } from "@/utils/sanitizeFile";
+import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function updateSalon(formData: FormData) {
@@ -41,6 +42,9 @@ export async function updateSalon(formData: FormData) {
     console.error("Erro ao atualizar salão:", errorResponse);
     throw new Error(errorResponse.message || "Erro ao atualizar salão.");
   }
+
+  // Revalida o cache de todo o salão
+  revalidateTag("salon");
 
   redirect(`/${slug}/dashboard/salon`);
 }

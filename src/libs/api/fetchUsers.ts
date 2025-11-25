@@ -33,7 +33,7 @@ export default async function fetchUsers({
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      cache: "no-store",
+      next: { tags: ["users"] },
     }
   );
 

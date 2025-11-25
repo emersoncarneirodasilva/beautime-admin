@@ -26,7 +26,7 @@ export async function fetchProfessionals({
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
-      cache: "no-store",
+      next: { tags: ["professionals"] },
     }
   );
 

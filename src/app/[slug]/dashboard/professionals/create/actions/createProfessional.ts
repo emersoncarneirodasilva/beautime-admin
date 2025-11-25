@@ -2,6 +2,7 @@
 
 import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
 import { sanitizeFile } from "@/utils/sanitizeFile";
+import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -53,12 +54,16 @@ export async function createProfessional(formData: FormData) {
 
     // Pega a mensagem do backend diretamente
     const backendMessage = errorData?.message || "Erro desconhecido";
+
     redirect(
       `/${salon.slug}/dashboard/professionals/create?error=${encodeURIComponent(
         backendMessage
       )}`
     );
   }
+
+  // Invalida o cache dos profissionais
+  revalidateTag("professionals");
 
   redirect(`/${salon.slug}/dashboard/professionals`);
 }

@@ -1,6 +1,7 @@
 "use server";
 
 import { deleteProfessionalById } from "@/libs/api/deleteProfessionalById";
+import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -20,6 +21,9 @@ export async function deleteProfessional(formData: FormData) {
   }
 
   await deleteProfessionalById(id, token);
+
+  // Invalida o cache dos profissionais
+  revalidateTag("professionals");
 
   redirect(`/${slug}/dashboard/professionals`);
 }

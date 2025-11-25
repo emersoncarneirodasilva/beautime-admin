@@ -1,15 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { UserType } from "@/types";
 import { useSalon } from "@/context/SalonContext";
-import { deleteUser } from "@/libs/api/deleteUser";
 import { getUserIdFromToken } from "@/utils/getUserIdFromToken";
 import BackLink from "../Buttons/BackLink";
 import RoleToggleButton from "./RoleToggleButton";
 import ActionButton from "../Buttons/ActionButton";
 import { Pencil, Bell, Trash2 } from "lucide-react";
+import { deleteUserAction } from "@/app/[slug]/dashboard/users/[id]/actions/deleteUserAction";
 
 interface Props {
   user: UserType;
@@ -19,7 +18,6 @@ interface Props {
 
 export default function UserDetails({ user, token, slug }: Props) {
   const salon = useSalon();
-  const router = useRouter();
   const loggedUserId = getUserIdFromToken(token);
   const isOwner = loggedUserId === salon.createdBy;
 
@@ -35,8 +33,7 @@ export default function UserDetails({ user, token, slug }: Props) {
 
     try {
       setLoadingDelete(true);
-      await deleteUser(user.id, token);
-      router.push(`/${slug}/dashboard/users`);
+      await deleteUserAction(user.id, token, slug);
     } catch (error) {
       setActionError((error as Error).message);
       setLoadingDelete(false); // volta ao normal caso dê erro

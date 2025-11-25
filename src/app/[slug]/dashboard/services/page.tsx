@@ -3,13 +3,13 @@
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
 import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
 import { Metadata } from "next";
-import { Service } from "@/types";
 import { formatCurrency } from "@/utils/formatCurrency";
 import AccessDenied from "@/components/Auth/AccessDenied";
 import ErrorSection from "@/components/Error/ErrorSection";
 import ActionButton from "@/components/Buttons/ActionButton";
 import Pagination from "@/components/Pagination";
 import { Banknote, Clock3 } from "lucide-react";
+import { fetchServices } from "@/libs/api/fetchServices";
 
 export async function generateMetadata(): Promise<Metadata> {
   const token = await verifyAdminAuth();
@@ -50,27 +50,10 @@ export default async function ServicesPage({
   const limit = Number(query?.limit || 10);
   const search = query?.search || "";
 
-  let servicesData: {
-    total: number;
-    totalPages: number;
-    currentPage: number;
-    services: Service[];
-  } | null = null;
+  let servicesData;
 
   try {
-    const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}/services`);
-    url.searchParams.set("page", String(page));
-    url.searchParams.set("limit", String(limit));
-    if (search) url.searchParams.set("search", search);
-
-    const res = await fetch(url.toString(), {
-      headers: { Authorization: `Bearer ${token}` },
-      cache: "no-store",
-    });
-
-    if (!res.ok) throw new Error("Erro ao carregar serviços.");
-
-    servicesData = await res.json();
+    servicesData = await fetchServices(token, page, limit, search);
   } catch (error) {
     return (
       <ErrorSection

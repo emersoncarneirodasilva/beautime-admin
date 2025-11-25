@@ -19,7 +19,7 @@ export async function fetchCategories(
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      cache: "no-store",
+      next: { tags: ["categories"] },
     }
   );
 

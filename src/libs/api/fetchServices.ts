@@ -29,7 +29,7 @@ export async function fetchServices(
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      cache: "no-store",
+      next: { tags: ["services"] },
     }
   );
 

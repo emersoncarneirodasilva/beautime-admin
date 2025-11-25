@@ -7,7 +7,7 @@ export async function fetchSalonByAdmin(token: string) {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
-      cache: "no-store",
+      next: { tags: ["salon"] },
     }
   );
 

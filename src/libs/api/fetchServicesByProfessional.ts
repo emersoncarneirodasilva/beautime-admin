@@ -10,6 +10,7 @@ export async function fetchServicesByProfessional(
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      next: { tags: ["services-on-professionals"] },
     }
   );
 

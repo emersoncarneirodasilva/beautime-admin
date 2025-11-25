@@ -1,7 +1,8 @@
 "use server";
 
 import { deleteBusinessHour } from "@/libs/api/deleteBusinessHour";
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
+import { redirect } from "next/navigation";
 
 export async function handleDeleteBusinessHour(formData: FormData) {
   try {
@@ -16,7 +17,10 @@ export async function handleDeleteBusinessHour(formData: FormData) {
 
     await deleteBusinessHour(hourId, token);
 
-    revalidatePath(`/${slug}/dashboard/business-hours`);
+    // Limpa o cache da página de horários
+    revalidateTag("business-hours");
+
+    redirect(`/${slug}/dashboard/business-hours`);
   } catch (error) {
     console.error("Erro ao excluir horário:", error);
   }

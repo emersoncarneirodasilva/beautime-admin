@@ -9,7 +9,7 @@ export async function fetchServiceById(
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    cache: "no-store",
+    next: { tags: ["services"] },
   });
 
   if (res.status === 404) {

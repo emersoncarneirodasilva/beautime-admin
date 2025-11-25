@@ -4,11 +4,11 @@ import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
 import { fetchAppointmentById } from "@/libs/api/fetchAppointmentById";
 import { updateAppointment } from "./actions/updateAppointment";
 import { Appointment } from "@/types";
-import SubmitButton from "@/components/Buttons/SubmitButton";
 import BackLink from "@/components/Buttons/BackLink";
 import { Metadata } from "next";
 import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
 import { StatusBadge } from "@/components/Appointment/StatusBadge";
+import ConfirmSubmitButton from "@/components/Buttons/ConfirmSubmitButton";
 
 interface Params {
   slug: string;
@@ -148,7 +148,12 @@ export default async function EditAppointmentPage({
 
         {/* Botão de salvar */}
         <div className="flex justify-end mt-6">
-          <SubmitButton formId="edit-appointment-form" />
+          <ConfirmSubmitButton
+            formId="edit-appointment-form"
+            originalStatus={appointment.status}
+            originalPaymentStatus={appointment.payment.status}
+            originalPaymentMethod={appointment.payment.method}
+          />
         </div>
       </form>
 

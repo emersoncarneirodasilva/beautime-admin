@@ -8,7 +8,7 @@ export async function fetchBusinessHours(
       method: "GET",
       Authorization: `Bearer ${token}`,
     },
-    cache: "no-store",
+    next: { tags: ["business-hours"] },
   });
 
   if (!res.ok) throw new Error("Erro ao buscar horários");

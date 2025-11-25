@@ -1,6 +1,7 @@
 "use server";
 
 import { updateBusinessHour } from "@/libs/api/updateBusinessHour";
+import { revalidateTag } from "next/cache";
 
 export async function handleUpdateBusinessHour(formData: FormData) {
   const id = formData.get("id") as string;
@@ -10,4 +11,7 @@ export async function handleUpdateBusinessHour(formData: FormData) {
   const endTime = formData.get("endTime") as string;
 
   await updateBusinessHour({ slug, id, token, startTime, endTime });
+
+  // Invalida o cache de business hours
+  revalidateTag("business-hours");
 }
