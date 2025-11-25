@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import ConfirmModal from "../Modal/ConfirmModal";
+import { Save } from "lucide-react";
 
 interface ConfirmSubmitButtonProps {
   formId: string;
@@ -98,7 +99,14 @@ export default function ConfirmSubmitButton({
         : "bg-[var(--color-action)] hover:bg-[var(--color-action-hover)] cursor-pointer"
     }`}
       >
-        {loading ? "Salvando..." : "Salvar Alterações"}
+        {loading ? (
+          "Salvando..."
+        ) : (
+          <span className="flex items-center gap-2">
+            <Save className="w-5 h-5" />
+            Salvar alterações
+          </span>
+        )}
       </button>
 
       {open && (
