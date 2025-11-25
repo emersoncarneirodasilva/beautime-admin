@@ -34,7 +34,7 @@ export async function forgotPasswordAction(formData: FormData) {
 
   redirect(
     `/login?success=${encodeURIComponent(
-      "Se o e-mail existir, o link de recuperação foi enviado."
+      "O link para redefinir sua senha foi enviado para seu e-mail."
     )}`
   );
 }

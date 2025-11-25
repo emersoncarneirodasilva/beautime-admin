@@ -50,7 +50,7 @@ export async function resetPasswordAction(formData: FormData) {
 
   redirect(
     `/login?success=${encodeURIComponent(
-      "Senha redefinida com sucesso! Agora você pode fazer login."
+      "Sua senha foi redefinida com sucesso."
     )}`
   );
 }

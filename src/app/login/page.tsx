@@ -5,6 +5,7 @@ import { Metadata } from "next";
 import ErrorToastFromParams from "@/components/Error/ErrorToastFromParams";
 import Link from "next/link";
 import LoginButtonSubmit from "@/components/Buttons/LoginButtonSubmit";
+import SuccessToastAutoRedirect from "@/components/Success/SuccessToastAutoRedirect";
 
 export const metadata: Metadata = {
   title: "Beautime Admin - Login",
@@ -15,6 +16,7 @@ export default async function LoginPage() {
   return (
     <main className="min-h-screen flex items-center justify-center bg-[var(--background)] text-[var(--foreground)] transition-colors relative px-4">
       <ErrorToastFromParams />
+      <SuccessToastAutoRedirect />
 
       <ThemeToggle />
 
