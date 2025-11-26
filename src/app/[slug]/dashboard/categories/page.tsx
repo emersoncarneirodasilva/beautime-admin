@@ -154,8 +154,8 @@ export default async function CategoriesPage({
                   <input type="hidden" name="slug" value={slug} />
                   <DeleteButton
                     formId={`delete-category-form-${category.id}`}
-                    confirmMessage="Tem certeza que deseja excluir esta categoria?"
-                    className="w-full h-9 flex items-center justify-center rounded-md text-sm font-medium cursor-pointer"
+                    confirmMessage={`Tem certeza que deseja excluir a categoria "${category.name}"?`}
+                    className="w-full h-9 flex items-center justify-center rounded-md text-sm font-medium text-[var(--text-on-action)] bg-[var(--color-error)] hover:bg-[#d62828] transition shadow-sm hover:shadow-md cursor-pointer"
                   />
                 </form>
               </div>

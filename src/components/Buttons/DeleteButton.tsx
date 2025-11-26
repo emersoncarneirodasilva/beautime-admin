@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { ReactNode, useState } from "react";
+import ConfirmDialogModal from "../Modal/ConfirmDialogModal";
 
 interface DeleteButtonProps {
   formId: string;
-  text?: string | React.ReactNode;
+  text?: string | ReactNode;
   confirmMessage?: string;
   className?: string;
 }
@@ -15,35 +16,38 @@ export default function DeleteButton({
   confirmMessage = "Tem certeza que deseja excluir?",
   className = "",
 }: DeleteButtonProps) {
+  const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-
-    if (!confirm(confirmMessage)) return;
-
+  const handleConfirm = () => {
     const form = document.getElementById(formId) as HTMLFormElement | null;
-    if (!form) {
-      console.error(`Form com id "${formId}" não encontrado.`);
-      return;
-    }
-
+    if (!form) return;
     setLoading(true);
     form.requestSubmit();
   };
 
   return (
-    <button
-      type="button"
-      onClick={handleClick}
-      disabled={loading}
-      className={`${
-        loading
-          ? "bg-gray-400 cursor-not-allowed text-white"
-          : "bg-[var(--color-error)] hover:bg-[#c53030] text-[var(--text-on-action)] transition-all"
-      } ${className}`}
-    >
-      {loading ? "Excluindo..." : text}
-    </button>
+    <>
+      <button
+        type="button"
+        disabled={loading}
+        onClick={() => setOpen(true)}
+        className={`
+          ${loading ? "opacity-50 cursor-not-allowed" : ""}
+          ${className}
+        `}
+      >
+        {loading ? "Excluindo..." : text}
+      </button>
+
+      <ConfirmDialogModal
+        open={open}
+        title="Confirmar exclusão"
+        description={confirmMessage}
+        confirmText={loading ? "Excluindo..." : "Excluir"}
+        onConfirm={handleConfirm}
+        onClose={() => setOpen(false)}
+      />
+    </>
   );
 }

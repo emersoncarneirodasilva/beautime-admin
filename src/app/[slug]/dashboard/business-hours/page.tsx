@@ -125,13 +125,7 @@ export default async function BusinessHoursPage({
                       <DeleteButton
                         formId={`delete-hour-form-${hour.id}`}
                         confirmMessage="Tem certeza que deseja excluir este horário?"
-                        className="
-                          px-2.5 py-1 rounded-md font-medium
-                          text-[var(--text-on-action)]
-                          bg-[var(--color-error)]
-                          hover:bg-[#d62828]
-                          transition shadow-sm hover:shadow-md cursor-pointer text-sm
-                        "
+                        className=" px-2.5 py-1 rounded-md font-medium text-[var(--text-on-action)] bg-[var(--color-error)] hover:bg-[#d62828] transition shadow-sm hover:shadow-md cursor-pointer text-sm"
                       />
                     </form>
                   </div>

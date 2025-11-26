@@ -209,9 +209,9 @@ export default async function ProfessionalPage({
                   Excluir
                 </span>
               }
-              confirmMessage="Tem certeza que deseja excluir profissional?"
+              confirmMessage={`Tem certeza que deseja excluir o profissional "${professional.name}"?`}
               className={
-                "px-5 py-2.5 rounded-lg font-medium flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer"
+                "flex items-center justify-center gap-2 px-5 py-2.5 bg-[var(--color-error)] hover:bg-[#d62828] text-[var(--text-on-action)] rounded-lg font-medium transition-all duration-200 cursor-pointer"
               }
             />
           </form>

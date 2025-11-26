@@ -149,8 +149,8 @@ export default async function NotificationsPage({
 
                         <DeleteButton
                           formId={`delete-notification-form-${notification.id}`}
-                          confirmMessage="Tem certeza que deseja excluir esta notificação?"
-                          className="px-4 py-1.5 rounded transition cursor-pointer w-full lg:w-auto"
+                          confirmMessage="Tem certeza que deseja excluir essa notificação?"
+                          className="bg-[var(--color-error)] hover:bg-[#d62828] text-[var(--text-on-action)] px-4 py-1.5 rounded transition cursor-pointer w-full lg:w-auto"
                         />
                       </form>
                     </div>

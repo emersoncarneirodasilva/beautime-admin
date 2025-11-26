@@ -7,6 +7,8 @@ import { getUserIdFromToken } from "@/utils/getUserIdFromToken";
 import BackLink from "../Buttons/BackLink";
 import RoleToggleButton from "./RoleToggleButton";
 import ActionButton from "../Buttons/ActionButton";
+import DeleteButton from "../Buttons/DeleteButton";
+
 import { Pencil, Bell, Trash2 } from "lucide-react";
 import { deleteUserAction } from "@/app/[slug]/dashboard/users/[id]/actions/deleteUserAction";
 
@@ -22,23 +24,6 @@ export default function UserDetails({ user, token, slug }: Props) {
   const isOwner = loggedUserId === salon.createdBy;
 
   const [actionError, setActionError] = useState<string | null>(null);
-
-  const [loadingDelete, setLoadingDelete] = useState(false);
-
-  const handleDelete = async () => {
-    const confirmDelete = window.confirm(
-      "Tem certeza que deseja excluir este usuário?"
-    );
-    if (!confirmDelete) return;
-
-    try {
-      setLoadingDelete(true);
-      await deleteUserAction(user.id, token, slug);
-    } catch (error) {
-      setActionError((error as Error).message);
-      setLoadingDelete(false); // volta ao normal caso dê erro
-    }
-  };
 
   return (
     <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-8">
@@ -84,7 +69,6 @@ export default function UserDetails({ user, token, slug }: Props) {
         <div className="pt-6 space-y-4 border-t border-gray-200 dark:border-gray-700">
           {isOwner && user.id !== loggedUserId ? (
             <>
-              {/* Dono: pode promover e excluir */}
               <RoleToggleButton
                 userId={user.id}
                 initialRole={user.role}
@@ -97,7 +81,6 @@ export default function UserDetails({ user, token, slug }: Props) {
                 </p>
               )}
 
-              {/* Botões */}
               <div className="flex flex-wrap gap-4 pt-2">
                 <ActionButton
                   href={`/${slug}/dashboard/users/${user.id}/edit`}
@@ -121,23 +104,32 @@ export default function UserDetails({ user, token, slug }: Props) {
                   className="text-[var(--text-on-action)] bg-sky-600 hover:bg-sky-700 shadow-sm"
                 />
 
-                <button
-                  onClick={handleDelete}
-                  disabled={loadingDelete}
-                  className={`px-5 py-2.5 rounded-lg font-medium flex items-center gap-2 text-[var(--text-on-action)] cursor-pointer ${
-                    loadingDelete
-                      ? "bg-gray-400 cursor-not-allowed"
-                      : "bg-[var(--color-error)] hover:bg-[#c53030]"
-                  } transition-all duration-200 shadow-sm`}
+                <form
+                  id="delete-user-form"
+                  action={async () => {
+                    try {
+                      await deleteUserAction(user.id, token, slug);
+                    } catch (error) {
+                      setActionError((error as Error).message);
+                    }
+                  }}
                 >
-                  <Trash2 className="w-4 h-4" />
-                  {loadingDelete ? "Excluindo..." : "Excluir"}
-                </button>
+                  <DeleteButton
+                    formId="delete-user-form"
+                    text={
+                      <span className="flex items-center gap-2">
+                        <Trash2 className="w-4 h-4" />
+                        Excluir
+                      </span>
+                    }
+                    confirmMessage={`Tem certeza que deseja excluir o usuário "${user.name}"?`}
+                    className="px-5 py-2.5 rounded-lg font-medium flex items-center gap-2 text-[var(--text-on-action)] bg-[var(--color-error)] hover:bg-[#c53030] shadow-sm cursor-pointer transition-all duration-200"
+                  />
+                </form>
               </div>
             </>
           ) : (
             <>
-              {/* Admin comum: só atualizar e criar notificação */}
               <div className="flex flex-wrap gap-4 pt-2">
                 <ActionButton
                   href={`/${slug}/dashboard/users/${user.id}/edit`}
@@ -166,7 +158,6 @@ export default function UserDetails({ user, token, slug }: Props) {
         </div>
       </div>
 
-      {/* Rodapé */}
       <footer className="mt-6">
         <BackLink slug={slug} to="dashboard/users" />
       </footer>

@@ -169,8 +169,8 @@ export default async function ServicePage({
                   Excluir
                 </span>
               }
-              confirmMessage="Tem certeza que deseja excluir este serviço?"
-              className="px-5 py-2.5 rounded-lg font-medium flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer"
+              confirmMessage={`Tem certeza que deseja excluir o serviço "${service.name}"?`}
+              className="px-5 py-2.5 bg-[var(--color-error)] hover:bg-[#d62828] text-[var(--text-on-action)] rounded-lg font-medium flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer"
             />
           </form>
         </div>
