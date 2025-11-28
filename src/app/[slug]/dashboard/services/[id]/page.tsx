@@ -136,12 +136,12 @@ export default async function ServicePage({
           <div className="flex items-center gap-2">
             <CalendarDays className="w-4 h-4 text-[var(--color-primary)]" />
             <strong>Criado em:</strong>{" "}
-            {new Date(service.createdAt).toLocaleDateString()}
+            {new Date(service.createdAt).toLocaleDateString("pt-BR")}
           </div>
           <div className="flex items-center gap-2">
             <RefreshCcw className="w-4 h-4 text-[var(--color-primary)]" />
             <strong>Atualizado em:</strong>{" "}
-            {new Date(service.updatedAt).toLocaleDateString()}
+            {new Date(service.updatedAt).toLocaleDateString("pt-BR")}
           </div>
         </div>
 
