@@ -18,7 +18,7 @@ export default function ErrorToastFromParams() {
       let msg = parsed[0].message;
 
       // TRADUÇÃO LOCAL
-      if (msg === "Invalid email") msg = "E-mail inválido!";
+      if (msg === "Invalid email") msg = "Credenciais inválidas.";
 
       decodedMessage = msg;
     }

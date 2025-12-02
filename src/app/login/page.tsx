@@ -9,7 +9,7 @@ import SuccessToastAutoRedirect from "@/components/Success/SuccessToastAutoRedir
 
 export const metadata: Metadata = {
   title: "Beautime Admin - Login",
-  description: "Painel de administração do aplicativo Beautime",
+  description: "Tela de login do aplicativo Beautime",
 };
 
 export default async function LoginPage() {
