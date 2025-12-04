@@ -1,7 +1,7 @@
 "use server";
 
 import { createBusinessHour } from "@/libs/api/createBusinessHour";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function handleCreateBusinessHour(formData: FormData) {
@@ -22,7 +22,7 @@ export async function handleCreateBusinessHour(formData: FormData) {
   }
 
   // Limpa o cache da página de horários
-  revalidateTag("business-hours");
+  updateTag("business-hours");
 
   redirect(`/${slug}/dashboard/business-hours`);
 }

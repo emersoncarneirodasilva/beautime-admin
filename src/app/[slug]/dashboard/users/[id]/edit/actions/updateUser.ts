@@ -1,7 +1,7 @@
 "use server";
 
 import { updateUserByAdmin } from "@/libs/api/updateUserByAdmin";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function updateUser(formData: FormData) {
@@ -19,7 +19,7 @@ export async function updateUser(formData: FormData) {
   await updateUserByAdmin(id, token, data);
 
   // Invalida cache dos usuários
-  revalidateTag("users");
+  updateTag("users");
 
   redirect(`/${slug}/dashboard/users/${id}`);
 }

@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
 import { redirect } from "next/navigation";
 import { createCategoryApi } from "@/libs/api/createCategory";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 
 interface BackendError {
   message?: string;
@@ -46,7 +46,7 @@ export async function createCategory(formData: FormData) {
   }
 
   // limpa o cache da tag "categories" para atualizar a lista de categorias
-  revalidateTag("categories");
+  updateTag("categories");
 
   redirect(`/${slug}/dashboard/categories`);
 }

@@ -1,7 +1,7 @@
 "use server";
 
 import { deleteBusinessHour } from "@/libs/api/deleteBusinessHour";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function handleDeleteBusinessHour(formData: FormData) {
@@ -18,7 +18,7 @@ export async function handleDeleteBusinessHour(formData: FormData) {
     await deleteBusinessHour(hourId, token);
 
     // Limpa o cache da página de horários
-    revalidateTag("business-hours");
+    updateTag("business-hours");
 
     redirect(`/${slug}/dashboard/business-hours`);
   } catch (error) {

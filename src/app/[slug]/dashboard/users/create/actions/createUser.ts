@@ -1,7 +1,7 @@
 "use server";
 
 import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -57,7 +57,7 @@ export async function createUser(formData: FormData): Promise<void> {
   }
 
   // Invalida cache dos usuários
-  revalidateTag("users");
+  updateTag("users");
 
   redirect(`/${slug}/dashboard/users`);
 }

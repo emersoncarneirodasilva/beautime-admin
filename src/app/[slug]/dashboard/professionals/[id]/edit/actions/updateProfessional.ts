@@ -2,7 +2,7 @@
 
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
 import { sanitizeFile } from "@/utils/sanitizeFile";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function updateProfessional(formData: FormData) {
@@ -56,7 +56,7 @@ export async function updateProfessional(formData: FormData) {
   }
 
   // Invalida o cache dos profissionais
-  revalidateTag("professionals");
+  updateTag("professionals");
 
   redirect(`/${slug}/dashboard/professionals/${id}`);
 }

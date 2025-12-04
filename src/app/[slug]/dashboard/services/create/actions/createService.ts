@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
 import { sanitizeFile } from "@/utils/sanitizeFile";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 
 export async function createService(formData: FormData) {
   const token = formData.get("token") as string;
@@ -75,7 +75,7 @@ export async function createService(formData: FormData) {
   }
 
   // limpa o cache de serviços
-  revalidateTag("services");
+  updateTag("services");
 
   redirect(`/${slug}/dashboard/services`);
 }

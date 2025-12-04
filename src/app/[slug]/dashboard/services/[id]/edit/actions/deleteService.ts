@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
 import { deleteServiceRequest } from "@/libs/api/deleteService";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 
 export async function deleteService(formData: FormData) {
   const slug = formData.get("slug") as string;
@@ -22,7 +22,7 @@ export async function deleteService(formData: FormData) {
   await deleteServiceRequest(id, token);
 
   // limpa o cache de serviços
-  revalidateTag("services");
+  updateTag("services");
 
   redirect(`/${slug}/dashboard/services`);
 }

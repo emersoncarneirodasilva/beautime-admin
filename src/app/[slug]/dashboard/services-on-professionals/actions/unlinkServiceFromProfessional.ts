@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -30,7 +30,7 @@ export async function unlinkServiceFromProfessional(formData: FormData) {
     throw new Error("Erro ao desvincular serviço.");
   }
 
-  revalidateTag("services-on-professionals");
+  updateTag("services-on-professionals");
 
   redirect(`/${slug}/dashboard/services-on-professionals`);
 }

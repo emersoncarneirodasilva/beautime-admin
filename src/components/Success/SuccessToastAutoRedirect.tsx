@@ -23,7 +23,7 @@ export default function SuccessToastAutoRedirect() {
   if (!success) return null;
 
   return (
-    <div className="fixed top-4 right-4 z-50 animate-slide-in">
+    <div className="fixed top-18 right-5 z-50 animate-slide-in">
       <div className="flex items-center gap-3 bg-[var(--color-success)] text-[var(--text-on-action)] px-4 py-3 rounded-lg shadow-lg">
         <CheckCircle className="w-6 h-6" />
         <span>{success}</span>

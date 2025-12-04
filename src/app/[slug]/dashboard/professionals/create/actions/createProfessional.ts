@@ -2,7 +2,7 @@
 
 import { fetchSalonByAdmin } from "@/libs/api/fetchSalonByAdmin";
 import { sanitizeFile } from "@/utils/sanitizeFile";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -63,7 +63,7 @@ export async function createProfessional(formData: FormData) {
   }
 
   // Invalida o cache dos profissionais
-  revalidateTag("professionals");
+  updateTag("professionals");
 
   redirect(`/${salon.slug}/dashboard/professionals`);
 }

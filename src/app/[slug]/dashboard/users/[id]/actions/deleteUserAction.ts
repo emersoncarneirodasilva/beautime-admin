@@ -1,7 +1,7 @@
 "use server";
 
 import { deleteUser } from "@/libs/api/deleteUser";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function deleteUserAction(
@@ -11,7 +11,7 @@ export async function deleteUserAction(
 ) {
   await deleteUser(userId, token);
 
-  revalidateTag("users");
+  updateTag("users");
 
   redirect(`/${slug}/dashboard/users`);
 }

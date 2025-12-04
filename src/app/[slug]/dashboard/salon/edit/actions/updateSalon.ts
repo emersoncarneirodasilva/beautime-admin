@@ -2,7 +2,7 @@
 
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
 import { sanitizeFile } from "@/utils/sanitizeFile";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function updateSalon(formData: FormData) {
@@ -44,7 +44,7 @@ export async function updateSalon(formData: FormData) {
   }
 
   // Revalida o cache de todo o salão
-  revalidateTag("salon");
+  updateTag("salon");
 
   redirect(`/${slug}/dashboard/salon`);
 }

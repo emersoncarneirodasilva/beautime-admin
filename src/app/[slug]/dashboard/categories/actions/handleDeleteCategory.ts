@@ -1,7 +1,7 @@
 "use server";
 
 import { deleteCategory } from "@/libs/api/deleteCategory";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function handleDeleteCategory(formData: FormData) {
@@ -12,7 +12,7 @@ export async function handleDeleteCategory(formData: FormData) {
   await deleteCategory(id, token);
 
   // Invalida todos os caches relacionados às categorias
-  revalidateTag("categories");
+  updateTag("categories");
 
   redirect(`/${slug}/dashboard/categories`);
 }
