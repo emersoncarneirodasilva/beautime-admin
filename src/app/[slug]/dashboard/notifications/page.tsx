@@ -4,7 +4,7 @@ import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
 import fetchUserById from "@/libs/api/fetchUserById";
 import { fetchNotifications } from "@/libs/api/fetchNotifications";
 import { NotificationsResponse, NotificationType } from "@/types/notifications";
-import { formatIsoStringRaw } from "@/utils/formatIsoStringRaw";
+import { formatIsoWithTimezone } from "@/utils/formatIsoWithTimezone";
 import { Mail, User, CalendarDays } from "lucide-react";
 import Pagination from "@/components/Pagination";
 import DeleteButton from "@/components/Buttons/DeleteButton";
@@ -165,7 +165,7 @@ export default async function NotificationsPage({
                     <p className="flex items-center gap-2 flex-1 min-w-0">
                       <CalendarDays className="w-5 h-5 text-[var(--color-action)]" />
                       <strong>Data:</strong>{" "}
-                      {formatIsoStringRaw(notification.createdAt)}
+                      {formatIsoWithTimezone(notification.createdAt)}
                     </p>
                     <p className="flex items-center gap-2 flex-1 min-w-0">
                       <Mail className="w-5 h-5 text-[var(--color-action)]" />

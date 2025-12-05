@@ -148,7 +148,10 @@ export default async function AppointmentHistoryPage({
                   <p className="text-lg font-semibold text-[var(--foreground)]">
                     {appt.clientName}
                   </p>
-                  <p className="text-sm text-[var(--text-secondary)]">
+                  <p className="text-sm text-gray-500 mt-1">
+                    <span className="font-medium text-gray-600">
+                      Agendado para:{" "}
+                    </span>
                     {formatIsoStringRaw(appt.scheduledAt)}
                   </p>
                 </div>

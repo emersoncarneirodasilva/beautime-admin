@@ -11,6 +11,7 @@ import { formatCurrency } from "@/utils/formatCurrency";
 import { Pencil } from "lucide-react";
 import EditButton from "@/components/Buttons/EditButton";
 import { StatusBadge } from "@/components/Appointment/StatusBadge";
+import { formatIsoWithTimezone } from "@/utils/formatIsoWithTimezone";
 
 // Metadata
 export async function generateMetadata(): Promise<Metadata> {
@@ -161,8 +162,17 @@ export default async function AppointmentsPage({
                   <p className="text-lg font-semibold text-[var(--foreground)]">
                     {appointment.user.name}
                   </p>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-gray-500 mt-1">
+                    <span className="font-medium text-gray-600">
+                      Agendado para:
+                    </span>{" "}
                     {formatIsoStringRaw(appointment.scheduledAt)}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    <span className="font-medium text-gray-600">
+                      Criado em:
+                    </span>{" "}
+                    {formatIsoWithTimezone(appointment.createdAt)}
                   </p>
                 </div>
 
