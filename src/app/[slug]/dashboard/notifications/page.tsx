@@ -112,10 +112,10 @@ export default async function NotificationsPage({
         <div className="space-y-4">
           {await Promise.all(
             notifications.data.map(async (notification: NotificationType) => {
-              const user = await fetchUserById(
-                notification.appointment.userId,
-                token
-              );
+              // Fallback para notificações sem appointment
+              const user = notification.appointment
+                ? await fetchUserById(notification.appointment.userId, token)
+                : { name: "Cliente histórico" };
 
               return (
                 <div
@@ -160,7 +160,8 @@ export default async function NotificationsPage({
                   <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 text-sm text-[var(--foreground)] mt-8">
                     <p className="flex items-center gap-2 flex-1 min-w-0">
                       <User className="w-5 h-5 text-[var(--color-action)]" />
-                      <strong>Cliente:</strong> {user.name}
+                      <strong>Cliente:</strong>{" "}
+                      {user?.name || "Cliente histórico"}
                     </p>
                     <p className="flex items-center gap-2 flex-1 min-w-0">
                       <CalendarDays className="w-5 h-5 text-[var(--color-action)]" />
