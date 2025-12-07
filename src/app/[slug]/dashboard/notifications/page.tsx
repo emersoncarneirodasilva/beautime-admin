@@ -1,15 +1,15 @@
 import { Metadata } from "next";
 import AccessDenied from "@/components/Auth/AccessDenied";
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
-import fetchUserById from "@/libs/api/fetchUserById";
 import { fetchNotifications } from "@/libs/api/fetchNotifications";
 import { NotificationsResponse, NotificationType } from "@/types/notifications";
-import { formatIsoWithTimezone } from "@/utils/formatIsoWithTimezone";
-import { Mail, User, CalendarDays } from "lucide-react";
+import { User, CalendarDays, ClipboardList } from "lucide-react";
 import Pagination from "@/components/Pagination";
 import DeleteButton from "@/components/Buttons/DeleteButton";
 import { handleDeleteNotification } from "./actions/handleDeleteNotification";
 import EditButton from "@/components/Buttons/EditButton";
+import { StatusBadge } from "@/components/Appointment/StatusBadge";
+import { formatIsoStringRaw } from "@/utils/formatIsoStringRaw";
 
 interface Params {
   slug: string;
@@ -101,7 +101,7 @@ export default async function NotificationsPage({
         </button>
       </form>
 
-      {/* Lista */}
+      {/* Lista de notificações */}
       {notifications.data.length === 0 ? (
         <div className="flex flex-1 justify-center items-center h-[60vh]">
           <p className="text-center text-gray-500 text-lg">
@@ -109,75 +109,94 @@ export default async function NotificationsPage({
           </p>
         </div>
       ) : (
-        <div className="space-y-4">
-          {await Promise.all(
-            notifications.data.map(async (notification: NotificationType) => {
-              // Fallback para notificações sem appointment
-              const user = notification.appointment
-                ? await fetchUserById(notification.appointment.userId, token)
-                : { name: "Cliente histórico" };
+        <div className="space-y-6">
+          {notifications.data.map((notification: NotificationType) => {
+            const snapshot = notification.snapshot;
+            const userName = snapshot?.data?.user?.name || "Cliente histórico";
+            const services = snapshot?.data?.services || [];
+            const afterStatus = snapshot?.data?.afterStatus || "PENDING";
+            const afterScheduledAt = snapshot?.data?.afterScheduledAt
+              ? formatIsoStringRaw(snapshot.data.afterScheduledAt)
+              : "-";
 
-              return (
-                <div
-                  key={notification.id}
-                  className="border border-[var(--color-gray-medium)] rounded-xl p-6 bg-[var(--color-white)] shadow-md hover:shadow-lg transition-all w-full"
-                >
-                  {/* Header */}
-                  <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start mb-4 gap-3">
-                    <p className="text-lg font-semibold text-[var(--foreground)] flex-1 break-words">
-                      {notification.message}
-                    </p>
+            return (
+              <div
+                key={notification.id}
+                className="bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] border border-[var(--color-gray-medium)] rounded-xl p-6 shadow-md hover:shadow-lg transition-all"
+              >
+                {/* Mensagem principal */}
+                <p className="text-lg font-semibold text-[var(--foreground)] mb-4 break-words">
+                  {notification.message}
+                </p>
 
-                    <div className="flex flex-col lg:flex-row gap-2 mt-2 lg:mt-0 flex-shrink-0">
-                      <EditButton
-                        formId=""
-                        href={`/${slug}/dashboard/notifications/${notification.id}/edit`}
-                        className="bg-[var(--color-secondary)] hover:bg-[var(--color-secondary-hover)] text-[var(--text-on-action)] px-4 py-1.5 rounded transition cursor-pointer w-full lg:w-auto"
-                      />
-                      <form
-                        id={`delete-notification-form-${notification.id}`}
-                        action={handleDeleteNotification}
-                        className="w-full lg:w-auto"
-                      >
-                        <input
-                          type="hidden"
-                          name="notificationId"
-                          value={notification.id}
-                        />
-                        <input type="hidden" name="token" value={token} />
-                        <input type="hidden" name="slug" value={slug} />
-
-                        <DeleteButton
-                          formId={`delete-notification-form-${notification.id}`}
-                          confirmMessage="Tem certeza que deseja excluir essa notificação?"
-                          className="bg-[var(--color-error)] hover:bg-[#d62828] text-[var(--text-on-action)] px-4 py-1.5 rounded transition cursor-pointer w-full lg:w-auto"
-                        />
-                      </form>
-                    </div>
+                {/* Cliente, Data e Status */}
+                <div className="flex flex-col sm:flex-row sm:justify-between items-center mb-4 gap-2 text-sm text-[var(--foreground)] w-full">
+                  <div className="flex items-center gap-2 w-full sm:w-auto justify-center sm:justify-start">
+                    <User className="w-5 h-5 text-[var(--color-primary)]" />
+                    <span>
+                      <strong>Cliente:</strong> {userName}
+                    </span>
                   </div>
 
-                  {/* Corpo */}
-                  <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 text-sm text-[var(--foreground)] mt-8">
-                    <p className="flex items-center gap-2 flex-1 min-w-0">
-                      <User className="w-5 h-5 text-[var(--color-action)]" />
-                      <strong>Cliente:</strong>{" "}
-                      {user?.name || "Cliente histórico"}
-                    </p>
-                    <p className="flex items-center gap-2 flex-1 min-w-0">
-                      <CalendarDays className="w-5 h-5 text-[var(--color-action)]" />
-                      <strong>Data:</strong>{" "}
-                      {formatIsoWithTimezone(notification.createdAt)}
-                    </p>
-                    <p className="flex items-center gap-2 flex-1 min-w-0">
-                      <Mail className="w-5 h-5 text-[var(--color-action)]" />
-                      <strong>Status:</strong>{" "}
-                      {notification.isRead ? "Lida" : "Não lida"}
-                    </p>
+                  <div className="flex items-center gap-4 flex-wrap justify-center sm:justify-end w-full sm:w-auto">
+                    <div className="flex items-center gap-2">
+                      <CalendarDays className="w-5 h-5 text-[var(--color-primary)]" />
+                      <span>
+                        <strong>Data:</strong> {afterScheduledAt}
+                      </span>
+                    </div>
+                    <StatusBadge value={afterStatus} type="appointment" />
                   </div>
                 </div>
-              );
-            })
-          )}
+
+                {/* Serviços/Profissionais + Botões */}
+                <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-2 flex-wrap">
+                  <div className="flex flex-wrap gap-4">
+                    {services.map((s) => (
+                      <div
+                        key={s.serviceId || s.serviceName}
+                        className="flex items-center gap-2 text-sm text-[var(--foreground)]"
+                      >
+                        <ClipboardList className="w-4 h-4 text-[var(--color-primary)]" />
+                        <span>{s.serviceName}</span>
+                        <User className="w-4 h-4 text-[var(--color-primary)]" />
+                        <span>{s.professionalName}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Botões só aparecem se o agendamento NÃO estiver concluído ou cancelado */}
+                  {afterStatus !== "COMPLETED" &&
+                    afterStatus !== "CANCELED" && (
+                      <div className="flex gap-2 flex-shrink-0 mt-2 sm:mt-0">
+                        <EditButton
+                          formId=""
+                          href={`/${slug}/dashboard/notifications/${notification.id}/edit`}
+                          className="bg-[var(--color-secondary)] hover:bg-[var(--color-secondary-hover)] text-[var(--text-on-action)] px-4 py-1.5 rounded transition"
+                        />
+                        <form
+                          id={`delete-notification-form-${notification.id}`}
+                          action={handleDeleteNotification}
+                        >
+                          <input
+                            type="hidden"
+                            name="notificationId"
+                            value={notification.id}
+                          />
+                          <input type="hidden" name="token" value={token} />
+                          <input type="hidden" name="slug" value={slug} />
+                          <DeleteButton
+                            formId={`delete-notification-form-${notification.id}`}
+                            confirmMessage="Tem certeza que deseja excluir essa notificação?"
+                            className="bg-[var(--color-error)] hover:bg-[#d62828] text-[var(--text-on-action)] px-4 py-1.5 rounded transition"
+                          />
+                        </form>
+                      </div>
+                    )}
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
 
