@@ -10,6 +10,7 @@ import { handleDeleteNotification } from "./actions/handleDeleteNotification";
 import EditButton from "@/components/Buttons/EditButton";
 import { StatusBadge } from "@/components/Appointment/StatusBadge";
 import { formatIsoStringRaw } from "@/utils/formatIsoStringRaw";
+import ErrorSection from "@/components/Error/ErrorSection";
 
 interface Params {
   slug: string;
@@ -51,13 +52,29 @@ export default async function NotificationsPage({
       : undefined;
   const search = resolvedParams.search || "";
 
-  const { notifications }: NotificationsResponse = await fetchNotifications({
-    token,
-    page,
-    limit,
-    isRead,
-    search,
-  });
+  let notifications: NotificationsResponse["notifications"];
+
+  try {
+    const response: NotificationsResponse = await fetchNotifications({
+      token,
+      page,
+      limit,
+      isRead,
+      search,
+    });
+
+    notifications = response.notifications;
+  } catch (error) {
+    return (
+      <ErrorSection
+        title="Erro ao carregar notificações"
+        message={(error as Error).message}
+        linkHome={`/${slug}/dashboard`}
+        linkHref={`/${slug}/dashboard/notifications`}
+        linkText="Voltar"
+      />
+    );
+  }
 
   return (
     <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-8">
@@ -172,8 +189,9 @@ export default async function NotificationsPage({
                         <EditButton
                           formId=""
                           href={`/${slug}/dashboard/notifications/${notification.id}/edit`}
-                          className="bg-[var(--color-secondary)] hover:bg-[var(--color-secondary-hover)] text-[var(--text-on-action)] px-4 py-1.5 rounded transition"
+                          className="bg-[var(--color-secondary)] hover:bg-[var(--color-secondary-hover)] text-[var(--text-on-action)] px-4 py-1.5 rounded-lg font-medium text-sm transition cursor-pointer"
                         />
+
                         <form
                           id={`delete-notification-form-${notification.id}`}
                           action={handleDeleteNotification}
@@ -185,10 +203,11 @@ export default async function NotificationsPage({
                           />
                           <input type="hidden" name="token" value={token} />
                           <input type="hidden" name="slug" value={slug} />
+
                           <DeleteButton
                             formId={`delete-notification-form-${notification.id}`}
                             confirmMessage="Tem certeza que deseja excluir essa notificação?"
-                            className="bg-[var(--color-error)] hover:bg-[#d62828] text-[var(--text-on-action)] px-4 py-1.5 rounded transition"
+                            className="bg-[var(--color-error)] hover:bg-[#d62828] text-[var(--text-on-action)] px-4 py-1.5 rounded-lg font-medium text-sm transition cursor-pointer"
                           />
                         </form>
                       </div>
