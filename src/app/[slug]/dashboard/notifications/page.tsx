@@ -3,7 +3,13 @@ import AccessDenied from "@/components/Auth/AccessDenied";
 import { verifyAdminAuth } from "@/libs/auth/verifyAdminAuth";
 import { fetchNotifications } from "@/libs/api/fetchNotifications";
 import { NotificationsResponse, NotificationType } from "@/types/notifications";
-import { User, CalendarDays, ClipboardList } from "lucide-react";
+import {
+  User,
+  CalendarDays,
+  ClipboardList,
+  UserCheck,
+  Briefcase,
+} from "lucide-react";
 import Pagination from "@/components/Pagination";
 import DeleteButton from "@/components/Buttons/DeleteButton";
 import { handleDeleteNotification } from "./actions/handleDeleteNotification";
@@ -159,7 +165,7 @@ export default async function NotificationsPage({
               >
                 {/* Mensagem principal + Lida / Não Lida */}
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
-                  <p className="text-lg font-semibold text-[var(--foreground)] break-words">
+                  <p className="text-lg text-center sm:text-start font-semibold text-[var(--foreground)] break-words">
                     {notification.message}
                   </p>
                   <span
@@ -199,18 +205,28 @@ export default async function NotificationsPage({
                     {services.map((s) => (
                       <div
                         key={`${s.service.id}-${s.professional.id}`}
-                        className="flex items-center gap-2 text-sm text-[var(--foreground)]"
+                        className="flex flex-col gap-5 text-sm text-[var(--foreground)]"
                       >
-                        <ClipboardList className="w-4 h-4 text-[var(--color-primary)]" />
-                        <span>{s.service.name}</span>
-                        <User className="w-4 h-4 text-[var(--color-primary)]" />
-                        <span>{s.professional.name}</span>
+                        <div className="flex items-center gap-2">
+                          <Briefcase className="w-5 h-5 text-[var(--color-primary)]" />
+                          <span>
+                            <strong>Serviço:</strong> {s.service.name}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <UserCheck className="w-5 h-5 text-[var(--color-primary)]" />
+                          <span>
+                            <strong>Profissional:</strong> {s.professional.name}
+                          </span>
+                        </div>
                       </div>
                     ))}
                   </div>
 
                   {afterStatus !== "COMPLETED" &&
-                    afterStatus !== "CANCELED" && (
+                    afterStatus !== "CANCELED" &&
+                    snapshot.appointmentId && (
                       <div className="flex gap-2 flex-shrink-0 mt-2 sm:mt-0">
                         <EditButton
                           formId=""
