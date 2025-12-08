@@ -77,10 +77,12 @@ export default async function NotificationsPage({
   }
 
   return (
-    <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-8">
+    <section className="max-w-6xl mx-auto px-4 sm:px-6 md:px-10 py-10 space-y-8">
       {/* Header */}
       <header className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
-        <h1 className="text-3xl font-bold">Notificações</h1>
+        <h1 className="text-3xl font-bold text-[var(--foreground)]">
+          Notificações
+        </h1>
       </header>
 
       {/* Filtros */}
@@ -120,7 +122,7 @@ export default async function NotificationsPage({
 
       {/* Lista de notificações */}
       {notifications.data.length === 0 ? (
-        <div className="flex flex-1 justify-center items-center h-[60vh]">
+        <div className="flex justify-center items-center h-[60vh]">
           <p className="text-center text-gray-500 text-lg">
             Nenhuma notificação encontrada para os filtros aplicados.
           </p>
@@ -130,7 +132,21 @@ export default async function NotificationsPage({
           {notifications.data.map((notification: NotificationType) => {
             const snapshot = notification.snapshot;
             const userName = snapshot?.data?.user?.name || "Cliente histórico";
-            const services = snapshot?.data?.services || [];
+
+            const services = (snapshot?.data?.services || []).map((s: any) => ({
+              service:
+                "service" in s
+                  ? s.service
+                  : { id: s.serviceId || "", name: s.serviceName || "" },
+              professional:
+                "professional" in s
+                  ? s.professional
+                  : {
+                      id: s.professionalId || "",
+                      name: s.professionalName || "",
+                    },
+            }));
+
             const afterStatus = snapshot?.data?.afterStatus || "PENDING";
             const afterScheduledAt = snapshot?.data?.afterScheduledAt
               ? formatIsoStringRaw(snapshot.data.afterScheduledAt)
@@ -139,15 +155,26 @@ export default async function NotificationsPage({
             return (
               <div
                 key={notification.id}
-                className="bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] border border-[var(--color-gray-medium)] rounded-xl p-6 shadow-md hover:shadow-lg transition-all"
+                className="bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] border border-[var(--color-gray-medium)] rounded-xl p-6 shadow-md hover:shadow-lg transition-all flex flex-col gap-4"
               >
-                {/* Mensagem principal */}
-                <p className="text-lg font-semibold text-[var(--foreground)] mb-4 break-words">
-                  {notification.message}
-                </p>
+                {/* Mensagem principal + Lida / Não Lida */}
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+                  <p className="text-lg font-semibold text-[var(--foreground)] break-words">
+                    {notification.message}
+                  </p>
+                  <span
+                    className={`px-2 py-0.5 text-xs rounded-full font-medium self-center text-center w-20 inline-block ${
+                      notification.isRead
+                        ? "bg-green-100 text-green-800"
+                        : "bg-yellow-100 text-yellow-800"
+                    }`}
+                  >
+                    {notification.isRead ? "Lida" : "Não lida"}
+                  </span>
+                </div>
 
                 {/* Cliente, Data e Status */}
-                <div className="flex flex-col sm:flex-row sm:justify-between items-center mb-4 gap-2 text-sm text-[var(--foreground)] w-full">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 text-sm text-[var(--foreground)]">
                   <div className="flex items-center gap-2 w-full sm:w-auto justify-center sm:justify-start">
                     <User className="w-5 h-5 text-[var(--color-primary)]" />
                     <span>
@@ -167,22 +194,21 @@ export default async function NotificationsPage({
                 </div>
 
                 {/* Serviços/Profissionais + Botões */}
-                <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-2 flex-wrap">
+                <div className="flex flex-col sm:flex-row justify-between items-center gap-4 flex-wrap">
                   <div className="flex flex-wrap gap-4">
                     {services.map((s) => (
                       <div
-                        key={s.serviceId || s.serviceName}
+                        key={`${s.service.id}-${s.professional.id}`}
                         className="flex items-center gap-2 text-sm text-[var(--foreground)]"
                       >
                         <ClipboardList className="w-4 h-4 text-[var(--color-primary)]" />
-                        <span>{s.serviceName}</span>
+                        <span>{s.service.name}</span>
                         <User className="w-4 h-4 text-[var(--color-primary)]" />
-                        <span>{s.professionalName}</span>
+                        <span>{s.professional.name}</span>
                       </div>
                     ))}
                   </div>
 
-                  {/* Botões só aparecem se o agendamento NÃO estiver concluído ou cancelado */}
                   {afterStatus !== "COMPLETED" &&
                     afterStatus !== "CANCELED" && (
                       <div className="flex gap-2 flex-shrink-0 mt-2 sm:mt-0">
@@ -191,7 +217,6 @@ export default async function NotificationsPage({
                           href={`/${slug}/dashboard/notifications/${notification.id}/edit`}
                           className="bg-[var(--color-secondary)] hover:bg-[var(--color-secondary-hover)] text-[var(--text-on-action)] px-4 py-1.5 rounded-lg font-medium text-sm transition cursor-pointer"
                         />
-
                         <form
                           id={`delete-notification-form-${notification.id}`}
                           action={handleDeleteNotification}
