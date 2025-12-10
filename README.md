@@ -33,12 +33,12 @@ O objetivo do Beautime Admin é fornecer uma interface robusta, moderna e escal�
 # 🛠 Tecnologias
 
 ## 🌐 Core
-- **Next.js 15.3.4**  
-- **React 19**  
+- **Next.js 16.0.7**  
+- **React 19.2.1**  
 - **TypeScript 5**  
 - **Server & Client Components**  
 - **Turbopack**
-
+ 
 ## 🎨 UI e Estilo
 - **Tailwind CSS 4**
 - **Lucide React** (ícones)
