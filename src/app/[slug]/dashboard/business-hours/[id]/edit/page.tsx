@@ -22,8 +22,8 @@ export async function generateMetadata({
   const token = await verifyAdminAuth();
   if (!token) return { title: "Acesso negado" };
 
-  const { id } = await params;
-  const hour = await fetchBusinessHourById(id, token);
+  const { id, slug } = await params;
+  const hour = await fetchBusinessHourById(id, slug);
   const salon = await fetchSalonByAdmin(token);
 
   return {
@@ -45,7 +45,7 @@ export default async function EditBusinessHourPage({
   if (!token) return <AccessDenied />;
 
   const { slug, id } = await params;
-  const hour = await fetchBusinessHourById(id, token);
+  const hour = await fetchBusinessHourById(id, slug);
 
   const labelClasses = "block font-medium text-[var(--foreground)] mb-2";
   const inputClasses =

@@ -37,7 +37,7 @@ export default async function BusinessHoursPage({
 
   let businessHours;
   try {
-    businessHours = await fetchBusinessHours(token);
+    businessHours = await fetchBusinessHours(slug);
   } catch (error) {
     return (
       <ErrorSection
