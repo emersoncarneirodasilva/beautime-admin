@@ -39,7 +39,7 @@ export default function DayItem({
         const times = generateTimeSlots(
           slot.startTime,
           slot.endTime,
-          serviceDuration
+          serviceDuration,
         );
 
         return (
@@ -49,7 +49,7 @@ export default function DayItem({
                 time,
                 date,
                 serviceDuration,
-                appointments
+                appointments,
               );
 
               return (
@@ -64,16 +64,26 @@ export default function DayItem({
                         : "bg-[var(--color-action)] hover:bg-[var(--color-action-hover)] text-[var(--text-on-action)] cursor-pointer"
                     }
                   `}
-                  onClick={() =>
-                    !occupied &&
-                    onSelect({
-                      date: date.toISOString().split("T")[0],
-                      startTime: time,
-                      endTime: minutesToTime(
-                        timeToMinutes(time) + serviceDuration
-                      ),
-                    })
-                  }
+                  onClick={() => {
+                    if (!occupied) {
+                      // 1. Extrai o Ano, Mês e Dia respeitando o fuso horário local do navegador do Admin
+                      const year = date.getFullYear();
+                      const month = String(date.getMonth() + 1).padStart(
+                        2,
+                        "0",
+                      ); // Mês começa em 0
+                      const day = String(date.getDate()).padStart(2, "0");
+                      const localDateStr = `${year}-${month}-${day}`; // Retorna "YYYY-MM-DD" correto
+
+                      onSelect({
+                        date: localDateStr,
+                        startTime: time,
+                        endTime: minutesToTime(
+                          timeToMinutes(time) + serviceDuration,
+                        ),
+                      });
+                    }
+                  }}
                 >
                   {time}
                 </button>
