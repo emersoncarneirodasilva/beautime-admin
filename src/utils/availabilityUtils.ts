@@ -32,21 +32,16 @@ export function isTimeSlotOccupied(
     // Mantido o padrão original do seu enum do backend
     if (appointment.status === "CANCELLED") continue;
 
-    // Converte a data do agendamento que vem do Banco
-    const appointmentDate = new Date(appointment.scheduledAt);
-
-    // Formata a data do agendamento para o padrão local YYYY-MM-DD
-    const appYear = appointmentDate.getFullYear();
-    const appMonth = String(appointmentDate.getMonth() + 1).padStart(2, "0");
-    const appDay = String(appointmentDate.getDate()).padStart(2, "0");
-    const appointmentDateStr = `${appYear}-${appMonth}-${appDay}`;
+    // scheduledAt representa o horário local do salão, como também é exibido
+    // na agenda. Não converter com Date/getHours, que aplica o fuso do navegador.
+    const appointmentDateStr = appointment.scheduledAt.slice(0, 10);
 
     if (appointmentDateStr !== slotDateStr) continue;
 
     for (const svc of appointment.services) {
-      // Usando getHours() e getMinutes() locais para bater com o fuso do salão
-      const appointmentStart =
-        appointmentDate.getHours() * 60 + appointmentDate.getMinutes();
+      const appointmentStart = timeToMinutes(
+        appointment.scheduledAt.slice(11, 16),
+      );
       const appointmentEnd = appointmentStart + svc.service.duration;
 
       if (slotStart < appointmentEnd && slotEnd > appointmentStart) {
