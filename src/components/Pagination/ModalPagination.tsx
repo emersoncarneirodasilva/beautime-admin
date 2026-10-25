@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { getPaginationItems } from "./pageNumbers";
 
 interface Props {
   page: number;
@@ -13,9 +14,15 @@ export default function ModalPagination({
   totalPages,
   onPageChange,
 }: Props) {
+  const paginationItems = getPaginationItems(page, totalPages);
+
   return (
-    <nav aria-label="Paginação do seletor" className="flex items-center justify-between gap-2 border-t border-[var(--color-gray-medium)] pt-4">
+    <nav
+      aria-label="Paginação do seletor"
+      className="flex flex-wrap items-center justify-center gap-2 border-t border-[var(--color-gray-medium)] pt-4"
+    >
       <button
+        type="button"
         disabled={page === 1}
         onClick={() => onPageChange(page - 1)}
         className="ui-button ui-button--secondary"
@@ -25,16 +32,35 @@ export default function ModalPagination({
         Anterior
       </button>
 
-      <span className="text-sm text-[var(--text-secondary)]">
-        <span className="sr-only">Página </span>
-        <strong className="inline-grid h-9 min-w-9 place-items-center rounded-lg bg-[var(--color-action)] px-2 text-[var(--text-on-action)]">
-          {page}
-        </strong>
-        <span className="mx-1">de</span>
-        <strong className="text-[var(--foreground)]">{totalPages}</strong>
-      </span>
+      {paginationItems.map((item, index) =>
+        item === "ellipsis" ? (
+          <span
+            key={`ellipsis-${index}`}
+            aria-hidden="true"
+            className="px-1 text-sm font-medium text-[var(--text-secondary)]"
+          >
+            …
+          </span>
+        ) : (
+          <button
+            key={item}
+            type="button"
+            onClick={item === page ? undefined : () => onPageChange(item)}
+            aria-label={`Página ${item}`}
+            aria-current={item === page ? "page" : undefined}
+            className={`ui-button min-w-10 px-3 ${
+              item === page
+                ? "ui-button--primary"
+                : "ui-button--secondary"
+            }`}
+          >
+            {item}
+          </button>
+        )
+      )}
 
       <button
+        type="button"
         disabled={page === totalPages}
         onClick={() => onPageChange(page + 1)}
         className="ui-button ui-button--secondary"

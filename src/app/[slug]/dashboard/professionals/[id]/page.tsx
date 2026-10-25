@@ -7,6 +7,7 @@ import AccessDenied from "@/components/Auth/AccessDenied";
 import ErrorSection from "@/components/Error/ErrorSection";
 import BackLink from "@/components/Buttons/BackLink";
 import { translateWeekday } from "@/utils/translateWeekday";
+import { formatProfessionalBio } from "@/utils/formatProfessionalBio";
 import { Availability, ProfessionalDetail } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
@@ -66,7 +67,7 @@ export default async function ProfessionalPage({
   const services = await fetchServicesByProfessional(id, token);
   const availability: Availability[] = await fetchAvailabilityByProfessional(
     id,
-    token
+    token,
   );
 
   return (
@@ -110,7 +111,7 @@ export default async function ProfessionalPage({
               <i className="lucide lucide-user text-[var(--color-secondary)]"></i>{" "}
               Bio
             </h3>
-            <p>{professional.bio || "Não informada"}</p>
+            <p>{formatProfessionalBio(professional.bio) || "Não informada"}</p>
           </div>
           <div className="rounded-xl border border-[var(--color-gray-medium)] bg-[var(--color-gray-light)] p-4">
             <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">

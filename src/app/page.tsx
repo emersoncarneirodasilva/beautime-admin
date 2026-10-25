@@ -7,7 +7,7 @@ export default function HomePage() {
     <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--background)] text-[var(--foreground)] transition-colors relative px-4">
       <ThemeToggle />
 
-      <div className="flex w-full max-w-md flex-col items-center rounded-2xl border border-[var(--color-gray-medium)] bg-[var(--color-white)] p-6 shadow-sm transition-colors sm:p-8">
+      <div className="flex w-full max-w-lg flex-col items-center rounded-2xl border border-[var(--color-gray-medium)] bg-[var(--color-white)] p-6 shadow-sm transition-colors sm:p-12">
         <div className="mb-6 flex flex-col items-center">
           <Image
             src="/images/logo.png"
@@ -30,7 +30,7 @@ export default function HomePage() {
         </h2>
 
         <Link href="/login" className="w-full">
-          <button className="min-h-12 w-full rounded-lg bg-[var(--color-action)] py-3 text-base font-semibold text-[var(--text-on-action)] transition-colors hover:bg-[var(--color-action-hover)] sm:py-4 sm:text-lg">
+          <button className="min-h-12 w-full rounded-lg bg-[var(--color-action)] py-3 text-sm sm:text-base font-semibold text-[var(--text-on-action)] transition-colors hover:bg-[var(--color-action-hover)] sm:py-4 cursor-pointer">
             Fazer Login
           </button>
         </Link>

@@ -28,7 +28,7 @@ export default async function ResetPasswordPage({
 
       <ThemeToggle />
 
-      <div className="flex w-full max-w-md flex-col items-center rounded-2xl border border-[var(--color-gray-medium)] bg-[var(--color-white)] p-6 shadow-sm transition-colors sm:p-8">
+      <div className="flex w-full max-w-lg flex-col items-center rounded-2xl border border-[var(--color-gray-medium)] bg-[var(--color-white)] p-6 shadow-sm transition-colors sm:p-8">
         {/* Logo + Nome */}
         <div className="mb-6 flex flex-col items-center">
           <Image
