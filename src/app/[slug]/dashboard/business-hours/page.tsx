@@ -107,13 +107,6 @@ export default async function BusinessHoursPage({
                     <EditButton
                       formId=""
                       href={`/${slug}/dashboard/business-hours/${hour.id}/edit`}
-                      className="
-                        px-2.5 py-1 rounded-md font-medium
-                        text-[var(--text-on-action)]
-                        bg-[var(--color-secondary)]
-                        hover:bg-[var(--color-secondary-hover)]
-                        transition shadow-sm hover:shadow-md cursor-pointer text-sm
-                      "
                     />
                     <form
                       id={`delete-hour-form-${hour.id}`}
@@ -125,7 +118,6 @@ export default async function BusinessHoursPage({
                       <DeleteButton
                         formId={`delete-hour-form-${hour.id}`}
                         confirmMessage="Tem certeza que deseja excluir este horário?"
-                        className="min-h-9 rounded-lg bg-[var(--color-error)] px-3 text-sm font-medium text-[var(--text-on-error)] shadow-sm transition hover:bg-[var(--color-error-hover)]"
                       />
                     </form>
                   </div>

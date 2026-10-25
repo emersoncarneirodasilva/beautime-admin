@@ -23,9 +23,7 @@ export default function PeriodSelector() {
              px-3 py-2 rounded-lg
              bg-[var(--color-white)] text-[var(--foreground)]`;
 
-  const buttonStyle = `min-h-11 bg-[var(--color-action)] text-[var(--text-on-action)]
-             px-5 py-2 rounded-lg font-medium hover:bg-[var(--color-action-hover)]
-             cursor-pointer flex items-center gap-2 transition-colors`;
+  const buttonStyle = "ui-button ui-button--primary";
 
   // Atualiza valor padrão quando muda o tipo
   useEffect(() => {

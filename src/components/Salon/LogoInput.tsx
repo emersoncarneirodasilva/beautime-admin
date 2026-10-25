@@ -42,7 +42,7 @@ export default function LogoInput({ name, defaultLogoUrl }: LogoInputProps) {
         <div className="flex items-center gap-2">
           <label
             htmlFor={name}
-            className="min-h-10 cursor-pointer rounded-lg bg-[var(--color-action)] px-4 py-2 text-sm font-medium text-[var(--text-on-action)] shadow-sm transition-colors hover:bg-[var(--color-action-hover)]"
+            className="ui-button ui-button--primary cursor-pointer"
           >
             Selecionar
           </label>

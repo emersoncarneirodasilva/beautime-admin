@@ -104,13 +104,7 @@ export default function UserModal({ token, onClose, onSelect }: Props) {
 
                 <button
                   onClick={() => onSelect(user)}
-                  className="
-                    w-full sm:w-auto
-                    px-4 py-2 rounded-md 
-                    bg-[var(--color-action)] hover:bg-[var(--color-action-hover)]
-                    text-[var(--text-on-action)] text-sm
-                    transition cursor-pointer
-                  "
+                  className="ui-button ui-button--primary w-full sm:w-auto"
                 >
                   Selecionar
                 </button>

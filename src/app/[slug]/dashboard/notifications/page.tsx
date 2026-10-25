@@ -245,7 +245,6 @@ export default async function NotificationsPage({
                         <EditButton
                           formId=""
                           href={`/${slug}/dashboard/notifications/${notification.id}/edit`}
-                          className="bg-[var(--color-secondary)] hover:bg-[var(--color-secondary-hover)] text-[var(--text-on-action)] px-4 py-1.5 rounded-lg font-medium text-sm transition cursor-pointer"
                         />
                         <form
                           id={`delete-notification-form-${notification.id}`}
@@ -262,7 +261,6 @@ export default async function NotificationsPage({
                           <DeleteButton
                             formId={`delete-notification-form-${notification.id}`}
                             confirmMessage="Tem certeza que deseja excluir essa notificação?"
-                            className="min-h-10 rounded-lg bg-[var(--color-error)] px-4 py-1.5 text-sm font-medium text-[var(--text-on-error)] transition hover:bg-[var(--color-error-hover)]"
                           />
                         </form>
                       </div>

@@ -171,7 +171,11 @@ export default async function CreateServicePage({
         </div>
 
         <div className="flex justify-end">
-          <CreateButton formId="create-service-form" label="Criar Serviço" />
+          <CreateButton
+            formId="create-service-form"
+            label="Criar Serviço"
+            iconType="service"
+          />
         </div>
       </form>
 

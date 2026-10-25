@@ -37,7 +37,7 @@ export default function ErrorSection({
         {/* Botão principal */}
         <Link
           href={linkHref}
-          className="inline-flex min-h-11 items-center justify-center rounded-lg bg-[var(--color-action)] px-6 py-2.5 font-medium text-[var(--text-on-action)] transition-colors hover:bg-[var(--color-action-hover)]"
+          className="ui-button ui-button--primary"
         >
           {linkText}
         </Link>

@@ -171,7 +171,6 @@ export default async function ServicePage({
                 </span>
               }
               confirmMessage={`Tem certeza que deseja excluir o serviço "${service.name}"?`}
-              className="flex min-h-11 items-center justify-center gap-2 rounded-lg bg-[var(--color-error)] px-5 py-2.5 font-medium text-[var(--text-on-error)] transition-all duration-200 hover:bg-[var(--color-error-hover)]"
             />
           </form>
         </div>

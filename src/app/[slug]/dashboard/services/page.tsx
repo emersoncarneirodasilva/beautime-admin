@@ -74,6 +74,7 @@ export default async function ServicesPage({
           <ActionButton
             href={`/${slug}/dashboard/services/create`}
             text="Criar Serviço"
+            variant="secondary"
           />
         </div>
       </header>

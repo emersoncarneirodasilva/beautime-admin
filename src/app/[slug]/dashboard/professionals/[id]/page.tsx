@@ -181,7 +181,7 @@ export default async function ProfessionalPage({
             href={`/${slug}/dashboard/professionals/${id}/availability`}
             text="Gerenciar disponibilidade"
             variant="info"
-            className="mt-4 bg-[var(--color-info-soft)] text-[var(--color-info)] hover:brightness-95"
+            className="mt-4"
           />
         </div>
 
@@ -212,9 +212,6 @@ export default async function ProfessionalPage({
                 </span>
               }
               confirmMessage={`Tem certeza que deseja excluir o profissional "${professional.name}"?`}
-              className={
-                "flex min-h-11 items-center justify-center gap-2 rounded-lg bg-[var(--color-error)] px-5 py-2.5 font-medium text-[var(--text-on-error)] transition-all duration-200 hover:bg-[var(--color-error-hover)]"
-              }
             />
           </form>
         </div>

@@ -104,7 +104,7 @@ export default async function GallerySalonImagesPage({
           />
           <button
             type="submit"
-            className="bg-[var(--color-action)] text-[var(--text-on-action)] px-6 py-2.5 rounded-lg font-medium hover:bg-[var(--color-action-hover)] transition w-full sm:w-auto cursor-pointer"
+            className="ui-button ui-button--primary w-full sm:w-auto"
           >
             Filtrar
           </button>

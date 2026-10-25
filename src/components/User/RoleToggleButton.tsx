@@ -60,9 +60,6 @@ export default function RoleToggleButton({
     }
   }, [success, error]);
 
-  // Classes base idênticas ao ActionButton
-  const buttonClasses = `flex min-h-11 items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-base font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-70`;
-
   return (
     <div className="flex flex-col gap-2">
       <div>
@@ -70,11 +67,7 @@ export default function RoleToggleButton({
           <button
             onClick={handlePromote}
             disabled={loading}
-            className={`${buttonClasses} ${
-              loading
-                ? "cursor-not-allowed bg-[var(--color-gray-light)] text-[var(--text-secondary)]"
-                : "bg-[var(--color-success-soft)] text-[var(--color-success)] hover:brightness-95"
-            }`}
+            className="ui-button ui-button--success-subtle"
           >
             {loading ? "Carregando..." : "Promover a Admin"}
           </button>
@@ -84,11 +77,7 @@ export default function RoleToggleButton({
           <button
             onClick={handleDemote}
             disabled={loading}
-            className={`${buttonClasses} ${
-              loading
-                ? "cursor-not-allowed bg-[var(--color-gray-light)] text-[var(--text-secondary)]"
-                : "bg-[var(--color-warning-soft)] text-[var(--color-warning)] hover:brightness-95"
-            }`}
+            className="ui-button ui-button--warning-subtle"
           >
             {loading ? "Carregando..." : "Tornar Usuário Comum"}
           </button>

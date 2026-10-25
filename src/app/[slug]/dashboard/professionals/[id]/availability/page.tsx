@@ -113,7 +113,7 @@ export default async function AvailabilityPage({
                 <EditButton
                   formId={`availability-form-delete-${slot.id}`}
                   href={`/${slug}/dashboard/professionals/${id}/availability/${slot.id}/edit`}
-                  className="px-3 py-1.5 h-fit bg-[var(--color-secondary)] hover:bg-[var(--color-secondary-hover)] text-[var(--text-on-action)] rounded-md text-sm transition w-full lg:w-auto text-center cursor-pointer"
+                  className="w-full lg:w-auto"
                 />
 
                 <form
@@ -128,7 +128,7 @@ export default async function AvailabilityPage({
                   <DeleteButton
                     formId={`availability-form-delete-${slot.id}`}
                     confirmMessage="Deseja realmente excluir esse horário?"
-                    className="min-h-10 w-full rounded-lg bg-[var(--color-error)] px-3 py-1.5 text-sm text-[var(--text-on-error)] transition hover:bg-[var(--color-error-hover)] lg:w-auto"
+                    className="w-full lg:w-auto"
                   />
                 </form>
               </div>

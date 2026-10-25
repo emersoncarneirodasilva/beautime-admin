@@ -46,7 +46,7 @@ export default function AvatarUpload({
         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center rounded-full">
           <label
             htmlFor={fieldName}
-            className="min-h-10 rounded-lg bg-[var(--color-action)] px-4 py-2 text-sm font-medium text-[var(--text-on-action)] shadow-sm transition hover:bg-[var(--color-action-hover)]"
+            className="ui-button ui-button--primary"
           >
             Alterar
           </label>

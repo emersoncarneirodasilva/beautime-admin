@@ -18,7 +18,7 @@ export default function ModalPagination({
       <button
         disabled={page === 1}
         onClick={() => onPageChange(page - 1)}
-        className="ui-button ui-button--secondary px-3 sm:px-4"
+        className="ui-button ui-button--secondary"
         aria-label="Página anterior"
       >
         <ArrowLeft size={16} aria-hidden="true" />
@@ -37,7 +37,7 @@ export default function ModalPagination({
       <button
         disabled={page === totalPages}
         onClick={() => onPageChange(page + 1)}
-        className="ui-button ui-button--secondary px-3 sm:px-4"
+        className="ui-button ui-button--secondary"
         aria-label="Próxima página"
       >
         Próxima

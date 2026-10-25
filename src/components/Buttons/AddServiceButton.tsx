@@ -4,12 +4,10 @@ import { useState } from "react";
 
 interface AddServiceButtonProps {
   formId: string;
-  className?: string;
 }
 
 export default function AddServiceButton({
   formId,
-  className,
 }: AddServiceButtonProps) {
   const [loading, setLoading] = useState(false);
 
@@ -32,7 +30,7 @@ export default function AddServiceButton({
       type="button"
       onClick={handleClick}
       disabled={loading}
-      className={`ui-button ui-button--primary ${className} ${
+      className={`ui-button ui-button--primary ${
         loading ? "ui-button--disabled" : ""
       }`}
     >

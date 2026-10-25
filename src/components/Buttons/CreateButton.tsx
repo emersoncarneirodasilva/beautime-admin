@@ -54,7 +54,19 @@ export default function CreateButton({
       case "professional":
         return <UserCheck size={18} />;
       case "service":
-        return <Briefcase size={18} />;
+        return (
+          <span
+            className="relative inline-flex h-[18px] w-[18px] items-center justify-center"
+            aria-hidden="true"
+          >
+            <Briefcase size={18} />
+            <Plus
+              size={10}
+              strokeWidth={3}
+              className="absolute -right-1 -top-1 rounded-full bg-[var(--color-action)]"
+            />
+          </span>
+        );
       case "category":
         return <Tag size={18} />;
       case "schedule":

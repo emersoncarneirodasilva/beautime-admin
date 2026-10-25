@@ -57,11 +57,11 @@ export default function DayItem({
                   key={time}
                   disabled={occupied}
                   className={`
-                    px-3 py-2 rounded-md text-sm transition
+                    ui-button ui-button--primary ui-button--compact
                     ${
                       occupied
-                        ? "cursor-not-allowed bg-[var(--color-gray-light)] text-[var(--text-secondary)]"
-                        : "bg-[var(--color-action)] hover:bg-[var(--color-action-hover)] text-[var(--text-on-action)] cursor-pointer"
+                        ? "cursor-not-allowed"
+                        : ""
                     }
                   `}
                   onClick={() => {

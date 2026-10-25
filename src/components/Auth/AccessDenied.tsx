@@ -26,13 +26,7 @@ export default function AccessDeniedSection() {
         {/* Botão */}
         <Link
           href="/"
-          className="
-            inline-flex min-h-11 items-center justify-center rounded-lg px-6 py-2.5 font-medium
-            bg-[var(--color-action)]
-            hover:bg-[var(--color-action-hover)]
-            text-[var(--text-on-action)]
-            transition-colors cursor-pointer
-          "
+          className="ui-button ui-button--primary"
         >
           Voltar para página inicial
         </Link>

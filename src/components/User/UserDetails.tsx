@@ -101,7 +101,8 @@ export default function UserDetails({ user, token, slug }: Props) {
                       Criar Notificação
                     </span>
                   }
-                  className="bg-[var(--color-info-soft)] text-[var(--color-info)] shadow-sm hover:brightness-95"
+                  variant="info"
+                  className="shadow-sm"
                 />
 
                 <form
@@ -123,7 +124,6 @@ export default function UserDetails({ user, token, slug }: Props) {
                       </span>
                     }
                     confirmMessage={`Tem certeza que deseja excluir o usuário "${user.name}"?`}
-                    className="flex min-h-10 items-center gap-2 rounded-lg bg-[var(--color-error)] px-5 py-2.5 font-medium text-[var(--text-on-error)] shadow-sm transition-all duration-200 hover:bg-[var(--color-error-hover)]"
                   />
                 </form>
               </div>
@@ -139,7 +139,8 @@ export default function UserDetails({ user, token, slug }: Props) {
                       Atualizar
                     </span>
                   }
-                  className="bg-[var(--color-info-soft)] text-[var(--color-info)] shadow-sm hover:brightness-95"
+                  variant="info"
+                  className="shadow-sm"
                 />
 
                 <ActionButton
@@ -150,7 +151,8 @@ export default function UserDetails({ user, token, slug }: Props) {
                       Criar Notificação
                     </span>
                   }
-                  className="bg-[var(--color-info-soft)] text-[var(--color-info)] shadow-sm hover:brightness-95"
+                  variant="info"
+                  className="shadow-sm"
                 />
               </div>
             </>

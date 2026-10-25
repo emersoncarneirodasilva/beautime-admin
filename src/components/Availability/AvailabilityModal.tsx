@@ -103,7 +103,7 @@ export default function AvailabilityModal({
 
         <button
           onClick={onClose}
-          className="w-full px-4 py-2 rounded-md border border-[var(--color-gray-medium)] text-[var(--foreground)] hover:bg-[var(--color-gray-medium)/20] transition cursor-pointer"
+          className="ui-button ui-button--secondary w-full"
         >
           Fechar
         </button>

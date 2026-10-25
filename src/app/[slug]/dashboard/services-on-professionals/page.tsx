@@ -14,6 +14,7 @@ import Link from "next/link";
 import RemoveServiceLink from "@/components/Buttons/RemoveServiceLink";
 import AddServiceButton from "@/components/Buttons/AddServiceButton";
 import { fetchWithRetry } from "@/utils/fetchWithRetry";
+import { Search } from "lucide-react";
 
 // Metadata
 export async function generateMetadata(): Promise<Metadata> {
@@ -118,34 +119,43 @@ export default async function ServicesOnProfessionalsPage({
       {/* Search form */}
       <form
         method="GET"
-        className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-10"
+        className="admin-filter-form admin-filter-form--simple"
       >
-        <input
-          type="text"
-          name="search"
-          aria-label="Pesquisar profissionais"
-          defaultValue={search}
-          placeholder="Buscar profissionais..."
-          className="flex-grow border border-[var(--color-gray-medium)] rounded-lg px-4 py-2.5 bg-[var(--color-white)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition"
-        />
-        <div className="flex gap-3 mt-2 sm:mt-0">
+        <div className="admin-filter-field admin-filter-search">
+          <label htmlFor="services-professionals-search">
+            Pesquisar profissionais
+          </label>
+          <div className="admin-filter-input-wrap">
+            <Search aria-hidden="true" />
+            <input
+              id="services-professionals-search"
+              type="text"
+              name="search"
+              className="admin-filter-control"
+              aria-label="Pesquisar profissionais"
+              defaultValue={search}
+              placeholder="Buscar profissionais..."
+            />
+          </div>
+        </div>
+        <div className="admin-filter-field">
+          <label htmlFor="services-professionals-limit">
+            Exibir por página
+          </label>
           <select
+            id="services-professionals-limit"
             name="limit"
             aria-label="Resultados por página"
             defaultValue={limit.toString()}
-            className="border border-[var(--color-gray-medium)] rounded-lg px-3 py-2.5 bg-[var(--color-white)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition"
           >
             <option value="5">5 / página</option>
             <option value="10">10 / página</option>
             <option value="20">20 / página</option>
           </select>
-          <button
-            type="submit"
-            className="bg-[var(--color-action)] text-[var(--text-on-action)] px-6 py-2.5 rounded-lg font-medium hover:bg-[var(--color-action-hover)] transition cursor-pointer"
-          >
-            Filtrar
-          </button>
         </div>
+        <button type="submit" className="ui-button ui-button--primary">
+          Filtrar
+        </button>
       </form>
 
       {/* Professionals list */}
@@ -263,7 +273,6 @@ export default async function ServicesOnProfessionalsPage({
 
                 <AddServiceButton
                   formId={`link-form-${professional.id}`}
-                  className="bg-[var(--color-action)] text-[var(--text-on-action)] px-4 py-1 rounded text-sm hover:bg-[var(--color-action-hover)]"
                 />
               </form>
             </article>

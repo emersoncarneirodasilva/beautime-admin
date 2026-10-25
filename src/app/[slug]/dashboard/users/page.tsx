@@ -72,6 +72,7 @@ export default async function UsersPage({
         <ActionButton
           href={`/${slug}/dashboard/users/create`}
           text="Criar Usuário"
+          variant="secondary"
           className="self-start sm:self-auto"
         />
       </header>

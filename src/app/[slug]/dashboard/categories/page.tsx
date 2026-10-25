@@ -88,6 +88,7 @@ export default async function CategoriesPage({
           <ActionButton
             href={`/${slug}/dashboard/categories/create`}
             text="Criar Categoria"
+            variant="secondary"
           />
         </div>
       </header>
@@ -153,7 +154,7 @@ export default async function CategoriesPage({
                 <EditButton
                   formId="category-form"
                   href={`/${slug}/dashboard/categories/${category.id}/edit`}
-                  className="flex-1 flex items-center justify-center bg-[var(--color-secondary)] hover:bg-[var(--color-secondary-hover)] text-[var(--text-on-action)] rounded-md text-sm font-medium transition h-9 cursor-pointer"
+                  className="flex-1"
                 />
 
                 <form
@@ -167,7 +168,7 @@ export default async function CategoriesPage({
                   <DeleteButton
                     formId={`delete-category-form-${category.id}`}
                     confirmMessage={`Tem certeza que deseja excluir a categoria "${category.name}"?`}
-                    className="flex min-h-10 w-full items-center justify-center rounded-lg bg-[var(--color-error)] text-sm font-medium text-[var(--text-on-error)] transition hover:bg-[var(--color-error-hover)]"
+                    className="w-full"
                   />
                 </form>
               </div>

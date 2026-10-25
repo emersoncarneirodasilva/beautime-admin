@@ -80,6 +80,7 @@ export default async function ProfessionalsPage({
           <ActionButton
             href={`/${slug}/dashboard/professionals/create`}
             text="Criar Profissional"
+            variant="secondary"
           />
         </div>
       </header>
