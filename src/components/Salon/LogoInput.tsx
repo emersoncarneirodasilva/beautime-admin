@@ -42,11 +42,11 @@ export default function LogoInput({ name, defaultLogoUrl }: LogoInputProps) {
         <div className="flex items-center gap-2">
           <label
             htmlFor={name}
-            className="cursor-pointer px-3 py-2 rounded-md bg-[var(--color-primary)] text-[var(--text-white-fixed)] text-sm font-medium shadow hover:bg-[var(--color-primary-hover)] transition-colors"
+            className="min-h-10 cursor-pointer rounded-lg bg-[var(--color-action)] px-4 py-2 text-sm font-medium text-[var(--text-on-action)] shadow-sm transition-colors hover:bg-[var(--color-action-hover)]"
           >
             Selecionar
           </label>
-          <span className="text-sm text-[var(--color-gray-medium)]">
+          <span className="text-sm text-[var(--text-secondary)]">
             PNG, JPG, SVG
           </span>
         </div>

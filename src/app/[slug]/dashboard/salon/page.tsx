@@ -40,7 +40,7 @@ export default async function SalonPage({
   if (!user || !salon || salon.slug !== slug) return <AccessDenied />;
 
   return (
-    <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-8">
+    <section className="mx-auto max-w-6xl space-y-7 px-4 py-6 sm:px-6 md:px-8">
       {/* Header */}
       <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <h1 className="text-3xl font-bold">Informações do Salão</h1>
@@ -48,6 +48,7 @@ export default async function SalonPage({
           <ActionButton
             href={`/${slug}/dashboard/salon/edit`}
             text="Editar Salão"
+            variant="secondary"
           />
         )}
       </header>

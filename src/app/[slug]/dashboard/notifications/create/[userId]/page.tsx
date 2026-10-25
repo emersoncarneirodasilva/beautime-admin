@@ -45,7 +45,7 @@ export default async function CreateNotificationPage({
   const appointments = await fetchAppointmentsByUserId(userId);
 
   return (
-    <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-8">
+    <section className="mx-auto max-w-6xl space-y-7 px-4 py-6 sm:px-6 md:px-8">
       {/* Header */}
       <header className="space-y-2">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-8">

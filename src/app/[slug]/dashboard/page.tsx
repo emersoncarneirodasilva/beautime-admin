@@ -141,10 +141,10 @@ export default async function DashboardPage({ searchParams }: DashboardProps) {
       : "Anual";
 
   return (
-    <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-8">
+    <section className="mx-auto max-w-6xl space-y-7 px-4 py-6 sm:px-6 md:px-8">
       {/* Header */}
       <header>
-        <h1 className="text-3xl font-bold mb-6">Visão Geral</h1>
+        <h1 className="mb-2 text-3xl font-semibold tracking-tight">Visão Geral</h1>
         <p className="text-[var(--text-secondary)]">
           Bem-vindo(a) <span className="font-bold">{adminName}</span> ao painel
           de administração do <span className="font-bold">{salon.name}</span>.
@@ -152,12 +152,12 @@ export default async function DashboardPage({ searchParams }: DashboardProps) {
       </header>
 
       {/* Período */}
-      <section>
+      <section aria-label="Filtros do painel">
         <PeriodSelector />
       </section>
 
       {/* Estatísticas Gerais */}
-      <section className="bg-[var(--color-white)] rounded-xl shadow p-6">
+      <section aria-label="Indicadores gerais" className="rounded-xl border border-[var(--color-gray-medium)] bg-[var(--color-white)] p-4 shadow-sm sm:p-6">
         <GeneralStatsCards
           users={totalUsers}
           admins={totalAdmins}
@@ -167,8 +167,8 @@ export default async function DashboardPage({ searchParams }: DashboardProps) {
       </section>
 
       {/* Gráficos */}
-      <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-[var(--color-white)] rounded-xl shadow p-6 h-[380px]">
+      <section className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <div className="h-[380px] rounded-xl border border-[var(--color-gray-medium)] bg-[var(--color-white)] p-4 shadow-sm sm:p-6">
           <AppointmentsChart
             active={filteredActive.length}
             completed={filteredCompleted.length}
@@ -176,7 +176,7 @@ export default async function DashboardPage({ searchParams }: DashboardProps) {
             periodLabel={periodLabel}
           />
         </div>
-        <div className="bg-[var(--color-white)] rounded-xl shadow p-6 h-[380px]">
+        <div className="h-[380px] rounded-xl border border-[var(--color-gray-medium)] bg-[var(--color-white)] p-4 shadow-sm sm:p-6">
           <RevenueChart
             completedRevenue={completedRevenue}
             expectedRevenue={expectedRevenue}

@@ -8,7 +8,7 @@ import AccessDenied from "@/components/Auth/AccessDenied";
 import ErrorSection from "@/components/Error/ErrorSection";
 import ActionButton from "@/components/Buttons/ActionButton";
 import Pagination from "@/components/Pagination";
-import { Banknote, Clock3 } from "lucide-react";
+import { Banknote, Clock3, Search } from "lucide-react";
 import { fetchServices } from "@/libs/api/fetchServices";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -66,10 +66,10 @@ export default async function ServicesPage({
   }
 
   return (
-    <section className="max-w-6xl mx-auto px-4 sm:px-6 md:px-10 py-10 space-y-8">
+    <section className="mx-auto max-w-6xl space-y-7 px-4 py-6 sm:px-6 md:px-8">
       {/* Header */}
       <header className="flex flex-col sm:flex-row sm:justify-between mb-8 gap-4">
-        <h1 className="text-2xl sm:text-3xl font-bold text-left">Serviços</h1>
+        <h1>Serviços</h1>
         <div className="flex justify-start sm:justify-end">
           <ActionButton
             href={`/${slug}/dashboard/services/create`}
@@ -82,34 +82,39 @@ export default async function ServicesPage({
       <section>
         <form
           method="GET"
-          className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-10"
+          className="admin-filter-form admin-filter-form--simple"
         >
-          <input
-            type="text"
-            name="search"
-            defaultValue={search}
-            placeholder="Buscar serviços..."
-            className="flex-grow border border-[var(--color-gray-medium)] rounded-lg px-4 py-2.5 bg-[var(--color-white)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition"
-          />
-
-          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+          <div className="admin-filter-field admin-filter-search">
+            <label htmlFor="services-search">Pesquisar serviços</label>
+            <div className="admin-filter-input-wrap">
+              <Search aria-hidden="true" />
+              <input
+                id="services-search"
+                type="text"
+                name="search"
+                className="admin-filter-control"
+                aria-label="Pesquisar serviços"
+                defaultValue={search}
+                placeholder="Buscar serviços..."
+              />
+            </div>
+          </div>
+          <div className="admin-filter-field">
+            <label htmlFor="services-limit">Exibir por página</label>
             <select
+              id="services-limit"
               name="limit"
+              aria-label="Resultados por página"
               defaultValue={limit.toString()}
-              className="border border-[var(--color-gray-medium)] rounded-lg px-3 py-2.5 bg-[var(--color-white)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition"
             >
               <option value="5">5 / página</option>
               <option value="10">10 / página</option>
               <option value="20">20 / página</option>
             </select>
-
-            <button
-              type="submit"
-              className="bg-[var(--color-action)] text-[var(--text-on-action)] px-6 py-2.5 rounded-lg font-medium hover:bg-[var(--color-action-hover)] transition cursor-pointer w-full sm:w-auto"
-            >
-              Filtrar
-            </button>
           </div>
+          <button type="submit" className="ui-button ui-button--primary">
+            Filtrar
+          </button>
         </form>
       </section>
 
@@ -126,7 +131,7 @@ export default async function ServicesPage({
             {servicesData?.services.map((service) => (
               <li
                 key={service.id}
-                className="border border-[var(--color-gray-medium)] rounded-xl p-5 flex flex-col justify-between hover:shadow-md transition bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] h-full"
+                className="flex h-full flex-col justify-between rounded-xl border border-[var(--color-gray-medium)] bg-[var(--color-white)] p-5 transition-shadow hover:shadow-md"
               >
                 <div className="flex flex-col items-start text-left">
                   <h2 className="text-lg font-semibold text-[var(--foreground)]">
@@ -139,7 +144,7 @@ export default async function ServicesPage({
 
                   <div className="flex items-center justify-center sm:justify-start gap-4 text-sm font-medium mt-2">
                     {/* Valor */}
-                    <div className="flex items-center gap-1 text-amber-600 dark:text-amber-400">
+                    <div className="flex items-center gap-1 text-[var(--color-warning)]">
                       <Banknote size={18} />
                       <span>{formatCurrency(service.price)}</span>
                     </div>
@@ -169,6 +174,8 @@ export default async function ServicesPage({
         <Pagination
           currentPage={page}
           totalPages={servicesData.totalPages}
+          totalItems={servicesData.total}
+          pageSize={limit}
           hrefBuilder={(p) =>
             `?page=${p}&limit=${limit}&search=${encodeURIComponent(search)}`
           }

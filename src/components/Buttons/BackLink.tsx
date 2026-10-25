@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 interface BackLinkProps {
   slug: string;
@@ -15,9 +16,10 @@ export default function BackLink({
     <footer className="mt-6">
       <Link
         href={`/${slug}/${to}`}
-        className="text-sm text-[var(--color-primary)] hover:underline transition-colors block"
+        className="ui-button ui-button--secondary w-fit"
       >
-        ← {label}
+        <ArrowLeft size={16} aria-hidden="true" />
+        {label}
       </Link>
     </footer>
   );

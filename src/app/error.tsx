@@ -11,15 +11,15 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
   console.error("Erro global:", error);
 
   return (
-    <section className="fixed inset-0 grid place-items-center bg-black/10 backdrop-blur-sm z-50 p-4">
-      <div className="bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] rounded-2xl shadow-lg max-w-md w-full p-6 flex flex-col items-center text-center space-y-5">
+    <section className="fixed inset-0 z-50 grid place-items-center bg-[var(--background)]/90 p-4 backdrop-blur-sm">
+      <div className="flex w-full max-w-md flex-col items-center space-y-5 rounded-2xl border border-[var(--color-gray-medium)] bg-[var(--color-white)] p-6 text-center shadow-lg">
         <AlertCircle className="h-10 w-10 text-[var(--color-error)]" />
 
-        <h2 className="text-xl font-semibold text-[var(--text-secondary)]">
+        <h2 className="text-xl font-semibold text-[var(--foreground)]">
           Oops! Algo deu errado
         </h2>
 
-        <p className="text-gray-600 dark:text-[var(--text-secondary)] text-sm">
+        <p className="text-sm text-[var(--text-secondary)]">
           Não conseguimos carregar esta página. Você pode tentar novamente ou
           recarregar completamente o aplicativo.
         </p>
@@ -27,24 +27,27 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
         <div className="flex flex-col sm:flex-row gap-2 w-full justify-center">
           {/* Tenta apenas remontar a árvore React */}
           <button
+            type="button"
             onClick={() => reset()}
-            className="flex-1 px-3 py-2 bg-[var(--color-error)] hover:bg-[var(--color-error)]/90 text-[var(--text-white-fixed)] rounded-md text-sm transition cursor-pointer"
+            className="min-h-10 flex-1 rounded-lg bg-[var(--color-error)] px-3 py-2 text-sm text-[var(--text-on-error)] transition hover:bg-[var(--color-error-hover)]"
           >
             Tentar novamente
           </button>
 
           {/* F5 real */}
           <button
+            type="button"
             onClick={() => window.location.reload()}
-            className="flex-1 px-3 py-2 border border-[var(--color-secondary)] text-[var(--color-secondary)] rounded-md text-sm hover:bg-[var(--color-secondary)]/10 transition cursor-pointer"
+            className="min-h-10 flex-1 rounded-lg border border-[var(--color-gray-medium)] px-3 py-2 text-sm text-[var(--foreground)] transition hover:bg-[var(--color-gray-light)]"
           >
             Recarregar página
           </button>
         </div>
 
         <button
+          type="button"
           onClick={() => router.push("/")}
-          className="text-xs text-gray-500 hover:underline cursor-pointer"
+          className="min-h-9 rounded-lg px-3 text-xs text-[var(--text-secondary)] hover:underline"
         >
           Voltar para Home
         </button>

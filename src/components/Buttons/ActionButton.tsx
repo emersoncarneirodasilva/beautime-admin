@@ -7,12 +7,14 @@ interface ActionButtonProps {
   href: string;
   text: string | ReactNode;
   className?: string;
+  variant?: "primary" | "secondary" | "tertiary" | "danger" | "info";
 }
 
 export default function ActionButton({
   href,
   text,
   className = "",
+  variant = "primary",
 }: ActionButtonProps) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -27,10 +29,8 @@ export default function ActionButton({
       type="button"
       onClick={handleClick}
       disabled={loading}
-      className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-medium transition-all duration-200 cursor-pointer ${
-        loading
-          ? "bg-gray-400 cursor-not-allowed text-white"
-          : "bg-[var(--color-action)] text-[var(--text-on-action)] hover:bg-[var(--color-action-hover)]"
+      className={`ui-button ui-button--${variant} ${
+        loading ? "ui-button--disabled" : ""
       } ${className}`}
     >
       {loading ? "Carregando..." : text}

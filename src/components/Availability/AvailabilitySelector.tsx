@@ -24,10 +24,12 @@ export default function AvailabilitySelector({
   return (
     <div className="space-y-3">
       {chosenDate && chosenTime && (
-        <div className="p-4 rounded-lg shadow-sm border bg-[var(--color-white)] border-[var(--color-gray-light)]">
-          <p className="text-sm font-semibold text-[var(--foreground)]">
-            Selecionado:{" "}
-            <span className="font-bold">
+        <div className="mb-3 rounded-xl border border-[var(--color-gray-medium)] bg-[var(--color-white)] p-4">
+          <p className="text-xs font-semibold uppercase tracking-wide text-[var(--text-secondary)]">
+            Horário selecionado
+          </p>
+          <p className="mt-1 text-sm font-semibold text-[var(--foreground)]">
+            <span>
               {(() => {
                 const [y, m, d] = chosenDate.split("-");
                 return `${d}/${m}/${y} às ${chosenTime}`;
@@ -38,10 +40,11 @@ export default function AvailabilitySelector({
       )}
 
       <button
-        className="w-full py-3 rounded-md bg-[var(--color-action)] text-[var(--text-on-action)] font-semibold shadow hover:bg-[var(--color-action-hover)] cursor-pointer transition-all"
+        type="button"
+        className="ui-button ui-button--secondary w-full"
         onClick={() => setOpenModal(true)}
       >
-        Escolher dia e hora
+        {chosenDate && chosenTime ? "Alterar dia e horário" : "Escolher dia e horário"}
       </button>
 
       {openModal && (

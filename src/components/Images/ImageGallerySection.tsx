@@ -34,10 +34,12 @@ export function Section({ title, images: initialImages, token }: SectionProps) {
         {images.map((img, i) => (
           <li
             key={img.id}
-            className="border border-[var(--color-gray-medium)] rounded-xl overflow-hidden bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] shadow-sm hover:shadow-lg transition-all duration-300"
+            className="overflow-hidden rounded-xl border border-[var(--color-gray-medium)] bg-[var(--color-white)] shadow-sm transition-shadow duration-200 hover:shadow-md"
           >
-            <div
-              className="relative w-full aspect-[4/3] overflow-hidden group cursor-pointer"
+            <button
+              type="button"
+              aria-label={`Ampliar imagem: ${img.type}`}
+              className="group relative block aspect-[4/3] w-full cursor-pointer overflow-hidden p-0"
               onClick={() => setLightboxIndex(i)}
             >
               <Image
@@ -49,9 +51,9 @@ export function Section({ title, images: initialImages, token }: SectionProps) {
                 placeholder="blur"
                 blurDataURL="/placeholder.png"
               />
-            </div>
+            </button>
 
-            <div className="flex justify-between items-center border-t border-[var(--color-gray-medium)] px-4 py-3 text-sm text-[var(--text-secondary)] bg-gradient-to-t from-[var(--color-gray-light)] to-[var(--color-white)]">
+            <div className="flex items-center justify-between border-t border-[var(--color-gray-medium)] bg-[var(--color-gray-light)] px-4 py-3 text-sm text-[var(--text-secondary)]">
               <span className="truncate max-w-[70%]" title={img.type}>
                 {img.type}
               </span>

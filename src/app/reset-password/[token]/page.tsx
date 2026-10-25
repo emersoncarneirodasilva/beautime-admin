@@ -28,7 +28,7 @@ export default async function ResetPasswordPage({
 
       <ThemeToggle />
 
-      <div className="bg-[var(--color-white)] rounded-2xl shadow-lg w-full max-w-md sm:max-w-lg md:max-w-xl p-6 sm:p-8 flex flex-col items-center transition-colors">
+      <div className="flex w-full max-w-md flex-col items-center rounded-2xl border border-[var(--color-gray-medium)] bg-[var(--color-white)] p-6 shadow-sm transition-colors sm:p-8">
         {/* Logo + Nome */}
         <div className="mb-6 flex flex-col items-center">
           <Image
@@ -39,10 +39,10 @@ export default async function ResetPasswordPage({
             className="rounded-full mb-3 max-w-[15vw] sm:max-w-[90px] h-auto"
             priority
           />
-          <h1 className="text-3xl sm:text-4xl font-bold text-[var(--color-primary)] text-center">
+          <h1 className="text-3xl font-semibold tracking-tight text-[var(--color-primary)] text-center">
             Beautime
           </h1>
-          <span className="text-xl font-semibold text-[var(--text-secondary)] tracking-wide">
+          <span className="text-base font-medium tracking-wide text-[var(--text-secondary)]">
             Admin
           </span>
         </div>
@@ -63,6 +63,7 @@ export default async function ResetPasswordPage({
           <input
             type="password"
             name="new-password"
+            aria-label="Nova senha"
             placeholder="Nova senha"
             required
             className="border border-[var(--color-gray-medium)] dark:border-[var(--color-gray-border)] rounded-lg px-4 py-3 w-full bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] text-[var(--foreground)] placeholder:text-[var(--color-gray-medium)] dark:placeholder:text-[var(--color-gray-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition"
@@ -71,6 +72,7 @@ export default async function ResetPasswordPage({
           <input
             type="password"
             name="confirm-password"
+            aria-label="Confirme sua nova senha"
             placeholder="Confirme sua nova senha"
             required
             className="border border-[var(--color-gray-medium)] dark:border-[var(--color-gray-border)] rounded-lg px-4 py-3 w-full bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] text-[var(--foreground)] placeholder:text-[var(--color-gray-medium)] dark:placeholder:text-[var(--color-gray-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition"

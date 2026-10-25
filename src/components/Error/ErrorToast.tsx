@@ -18,9 +18,9 @@ export default function ErrorToast({ message }: ErrorToastProps) {
   if (!show) return null;
 
   return (
-    <div className="fixed top-18 right-5 z-50 p-4 bg-[var(--color-error)] text-[var(--text-on-action)] rounded-lg shadow-lg animate-slide-in">
-      <div className="flex items-center gap-3 rounded-lg shadow-lg">
-        <XCircle className="w-6 h-6" />
+    <div role="alert" className="fixed left-4 right-4 top-20 z-50 animate-slide-in rounded-xl border border-[var(--color-error)]/25 bg-[var(--color-error-soft)] p-4 text-[var(--color-error)] shadow-lg sm:left-auto sm:right-5 sm:max-w-md">
+      <div className="flex items-center gap-3">
+        <XCircle className="h-5 w-5 shrink-0" />
         <span>{message}</span>
       </div>
     </div>

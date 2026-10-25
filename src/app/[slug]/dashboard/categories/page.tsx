@@ -10,6 +10,7 @@ import Pagination from "@/components/Pagination";
 import { Category } from "@/types";
 import { Metadata } from "next";
 import { handleDeleteCategory } from "./actions/handleDeleteCategory";
+import { Search } from "lucide-react";
 
 interface Params {
   slug: string;
@@ -50,8 +51,13 @@ export default async function CategoriesPage({
   const limit = Number(query?.limit || 10);
   const search = query?.search || "";
 
-  let categoriesData: { categories: Category[]; totalPages: number } = {
+  let categoriesData: {
+    categories: Category[];
+    total: number;
+    totalPages: number;
+  } = {
     categories: [],
+    total: 0,
     totalPages: 0,
   };
 
@@ -59,6 +65,7 @@ export default async function CategoriesPage({
     const result = await fetchCategories(token, search, page, limit);
     categoriesData = {
       categories: result.categories,
+      total: result.total,
       totalPages: Math.ceil(result.total / limit),
     };
   } catch (error) {
@@ -73,12 +80,10 @@ export default async function CategoriesPage({
   }
 
   return (
-    <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-8">
+    <section className="mx-auto max-w-6xl space-y-7 px-4 py-6 sm:px-6 md:px-8">
       {/* Header */}
       <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
-        <h1 className="text-3xl font-bold text-[var(--foreground)]">
-          Categorias
-        </h1>
+        <h1>Categorias</h1>
         <div className="flex justify-start sm:justify-end">
           <ActionButton
             href={`/${slug}/dashboard/categories/create`}
@@ -90,33 +95,40 @@ export default async function CategoriesPage({
       {/* Formulário de Busca */}
       <form
         id="category-form"
-        className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-10"
+        className="admin-filter-form admin-filter-form--simple"
         method="GET"
       >
-        <input
-          type="text"
-          name="search"
-          defaultValue={search}
-          placeholder="Buscar categorias..."
-          className="flex-grow border border-[var(--color-gray-medium)] rounded-lg px-4 py-2.5 bg-[var(--color-white)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition"
-        />
-        <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+        <div className="admin-filter-field admin-filter-search">
+          <label htmlFor="categories-search">Pesquisar categorias</label>
+          <div className="admin-filter-input-wrap">
+            <Search aria-hidden="true" />
+            <input
+              id="categories-search"
+              type="text"
+              name="search"
+              className="admin-filter-control"
+              aria-label="Pesquisar categorias"
+              defaultValue={search}
+              placeholder="Buscar categorias..."
+            />
+          </div>
+        </div>
+        <div className="admin-filter-field">
+          <label htmlFor="categories-limit">Exibir por página</label>
           <select
+            id="categories-limit"
             name="limit"
+            aria-label="Resultados por página"
             defaultValue={limit.toString()}
-            className="border border-[var(--color-gray-medium)] rounded-lg px-3 py-2.5 bg-[var(--color-white)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition"
           >
             <option value="5">5 / página</option>
             <option value="10">10 / página</option>
             <option value="20">20 / página</option>
           </select>
-          <button
-            type="submit"
-            className="bg-[var(--color-action)] text-[var(--text-on-action)] px-6 py-2.5 rounded-lg font-medium hover:bg-[var(--color-action-hover)] transition cursor-pointer w-full sm:w-auto"
-          >
-            Filtrar
-          </button>
         </div>
+        <button type="submit" className="ui-button ui-button--primary">
+          Filtrar
+        </button>
       </form>
 
       {/* Lista de Categorias */}
@@ -131,7 +143,7 @@ export default async function CategoriesPage({
           {categoriesData.categories.map((category) => (
             <div
               key={category.id}
-              className="bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] border border-[var(--color-gray-medium)] rounded-xl shadow-sm p-4 flex flex-col justify-between gap-4 hover:shadow-md transition"
+              className="flex flex-col justify-between gap-4 rounded-xl border border-[var(--color-gray-medium)] bg-[var(--color-white)] p-5 shadow-sm transition-shadow hover:shadow-md"
             >
               <h2 className="text-lg font-semibold text-[var(--foreground)]">
                 {category.name}
@@ -155,7 +167,7 @@ export default async function CategoriesPage({
                   <DeleteButton
                     formId={`delete-category-form-${category.id}`}
                     confirmMessage={`Tem certeza que deseja excluir a categoria "${category.name}"?`}
-                    className="w-full h-9 flex items-center justify-center rounded-md text-sm font-medium text-[var(--text-on-action)] bg-[var(--color-error)] hover:bg-[#d62828] transition shadow-sm hover:shadow-md cursor-pointer"
+                    className="flex min-h-10 w-full items-center justify-center rounded-lg bg-[var(--color-error)] text-sm font-medium text-[var(--text-on-error)] transition hover:bg-[var(--color-error-hover)]"
                   />
                 </form>
               </div>
@@ -169,6 +181,8 @@ export default async function CategoriesPage({
         <Pagination
           currentPage={page}
           totalPages={categoriesData.totalPages}
+          totalItems={categoriesData.total}
+          pageSize={limit}
           hrefBuilder={(p) =>
             `?page=${p}&limit=${limit}&search=${encodeURIComponent(search)}`
           }

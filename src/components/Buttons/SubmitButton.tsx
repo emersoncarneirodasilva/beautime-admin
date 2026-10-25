@@ -30,13 +30,9 @@ export default function SubmitButton({ formId }: SubmitButtonProps) {
       type="button"
       onClick={handleClick}
       disabled={loading}
-      className={`flex items-center gap-2 px-6 py-3 rounded-md shadow-md font-semibold transition-all cursor-pointer
-        ${
-          loading
-            ? "bg-gray-400 cursor-not-allowed"
-            : "bg-[var(--color-action)] text-[var(--text-on-action)] hover:bg-[var(--color-action-hover)] duration-200"
-        }
-      `}
+      className={`ui-button ui-button--primary ${
+        loading ? "ui-button--disabled" : ""
+      }`}
     >
       <Save size={18} />
       {loading ? "Salvando..." : "Salvar Alterações"}

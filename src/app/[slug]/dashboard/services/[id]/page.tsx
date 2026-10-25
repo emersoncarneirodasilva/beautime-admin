@@ -80,7 +80,7 @@ export default async function ServicePage({
   }
 
   return (
-    <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-10">
+    <section className="mx-auto max-w-6xl space-y-7 px-4 py-6 sm:px-6 md:px-8">
       {/* Header */}
       <header className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)] mb-8">
@@ -155,6 +155,7 @@ export default async function ServicePage({
                 Editar
               </span>
             }
+            variant="secondary"
             className="w-fit"
           />
 
@@ -170,7 +171,7 @@ export default async function ServicePage({
                 </span>
               }
               confirmMessage={`Tem certeza que deseja excluir o serviço "${service.name}"?`}
-              className="px-5 py-2.5 bg-[var(--color-error)] hover:bg-[#d62828] text-[var(--text-on-action)] rounded-lg font-medium flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer"
+              className="flex min-h-11 items-center justify-center gap-2 rounded-lg bg-[var(--color-error)] px-5 py-2.5 font-medium text-[var(--text-on-error)] transition-all duration-200 hover:bg-[var(--color-error-hover)]"
             />
           </form>
         </div>

@@ -34,7 +34,7 @@ export default function ImageTargets({ professionals, services }: Props) {
             setSelectedProfessional("");
             setSelectedService("");
           }}
-          className="w-full px-4 py-3 rounded-xl border border-[var(--color-gray-medium)] bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] focus:ring-2 focus:ring-[var(--color-action)] focus:outline-none transition"
+          className="w-full px-4 py-3 rounded-xl border border-[var(--color-gray-medium)] bg-[var(--color-white)] focus:ring-2 focus:ring-[var(--color-action)] focus:outline-none transition"
           required
         >
           <option value="" disabled>
@@ -63,8 +63,8 @@ export default function ImageTargets({ professionals, services }: Props) {
           className={`w-full px-4 py-3 rounded-xl border border-[var(--color-gray-medium)] focus:ring-2 focus:ring-[var(--color-action)] focus:outline-none transition
             ${
               isProfessionalEnabled
-                ? "bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] cursor-auto"
-                : "bg-[var(--color-gray-light)] dark:bg-[var(--color-gray-medium)] cursor-not-allowed text-gray-400"
+                ? "bg-[var(--color-white)] cursor-auto"
+                : "bg-[var(--color-gray-light)] cursor-not-allowed text-[var(--text-secondary)]"
             }
           `}
         >
@@ -96,8 +96,8 @@ export default function ImageTargets({ professionals, services }: Props) {
           className={`w-full px-4 py-3 rounded-xl border border-[var(--color-gray-medium)] focus:ring-2 focus:ring-[var(--color-action)] focus:outline-none transition
             ${
               isServiceEnabled
-                ? "bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] cursor-auto"
-                : "bg-[var(--color-gray-light)] dark:bg-[var(--color-gray-medium)] cursor-not-allowed text-gray-400"
+                ? "bg-[var(--color-white)] cursor-auto"
+                : "bg-[var(--color-gray-light)] cursor-not-allowed text-[var(--text-secondary)]"
             }
           `}
         >

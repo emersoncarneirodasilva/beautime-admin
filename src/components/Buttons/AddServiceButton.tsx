@@ -32,7 +32,9 @@ export default function AddServiceButton({
       type="button"
       onClick={handleClick}
       disabled={loading}
-      className={`${className} transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed`}
+      className={`ui-button ui-button--primary ${className} ${
+        loading ? "ui-button--disabled" : ""
+      }`}
     >
       {loading ? "Vinculando..." : "Vincular"}
     </button>

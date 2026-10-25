@@ -8,6 +8,7 @@ import Pagination from "@/components/Pagination";
 import Image from "next/image";
 import { ProfessionalsDTO } from "@/types";
 import { Metadata } from "next";
+import { Search } from "lucide-react";
 
 export async function generateMetadata(): Promise<Metadata> {
   const token = await verifyAdminAuth();
@@ -69,7 +70,7 @@ export default async function ProfessionalsPage({
   }
 
   return (
-    <section className="max-w-6xl mx-auto px-4 sm:px-6 md:px-10 py-10 space-y-8">
+    <section className="mx-auto max-w-6xl space-y-7 px-4 py-6 sm:px-6 md:px-8">
       {/* Header */}
       <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
         <h1 className="text-2xl sm:text-3xl font-bold text-center sm:text-left">
@@ -87,34 +88,39 @@ export default async function ProfessionalsPage({
       <section>
         <form
           method="GET"
-          className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-10"
+          className="admin-filter-form admin-filter-form--simple"
         >
-          <input
-            type="text"
-            name="search"
-            defaultValue={search}
-            placeholder="Buscar profissionais..."
-            className="flex-grow border border-[var(--color-gray-medium)] rounded-lg px-4 py-2.5 bg-[var(--color-white)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition"
-          />
-
-          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+          <div className="admin-filter-field admin-filter-search">
+            <label htmlFor="professionals-search">Pesquisar profissionais</label>
+            <div className="admin-filter-input-wrap">
+              <Search aria-hidden="true" />
+              <input
+                id="professionals-search"
+                type="text"
+                name="search"
+                className="admin-filter-control"
+                aria-label="Pesquisar profissionais"
+                defaultValue={search}
+                placeholder="Buscar profissionais..."
+              />
+            </div>
+          </div>
+          <div className="admin-filter-field">
+            <label htmlFor="professionals-limit">Exibir por página</label>
             <select
+              id="professionals-limit"
               name="limit"
+              aria-label="Resultados por página"
               defaultValue={limit.toString()}
-              className="border border-[var(--color-gray-medium)] rounded-lg px-3 py-2.5 bg-[var(--color-white)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition"
             >
               <option value="5">5 / página</option>
               <option value="10">10 / página</option>
               <option value="20">20 / página</option>
             </select>
-
-            <button
-              type="submit"
-              className="bg-[var(--color-action)] text-[var(--text-on-action)] px-6 py-2.5 rounded-lg font-medium hover:bg-[var(--color-action-hover)] transition cursor-pointer w-full sm:w-auto"
-            >
-              Filtrar
-            </button>
           </div>
+          <button type="submit" className="ui-button ui-button--primary">
+            Filtrar
+          </button>
         </form>
       </section>
 
@@ -167,6 +173,8 @@ export default async function ProfessionalsPage({
         <Pagination
           currentPage={page}
           totalPages={professionalsData.totalPages}
+          totalItems={professionalsData.total}
+          pageSize={limit}
           hrefBuilder={(p) =>
             `?page=${p}&limit=${limit}&search=${encodeURIComponent(search)}`
           }

@@ -9,6 +9,7 @@ import {
   ClipboardList,
   UserCheck,
   Briefcase,
+  Search,
 } from "lucide-react";
 import Pagination from "@/components/Pagination";
 import DeleteButton from "@/components/Buttons/DeleteButton";
@@ -83,7 +84,7 @@ export default async function NotificationsPage({
   }
 
   return (
-    <section className="max-w-6xl mx-auto px-4 sm:px-6 md:px-10 py-10 space-y-8">
+    <section className="mx-auto max-w-6xl space-y-7 px-4 py-6 sm:px-6 md:px-8">
       {/* Header */}
       <header className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
         <h1 className="text-3xl font-bold text-[var(--foreground)]">
@@ -92,36 +93,49 @@ export default async function NotificationsPage({
       </header>
 
       {/* Filtros */}
-      <form className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 mb-10">
-        <input
-          type="search"
-          name="search"
-          placeholder="Buscar por mensagem ou cliente..."
-          defaultValue={search}
-          className="flex-grow border border-[var(--color-gray-medium)] rounded-lg px-4 py-2.5 bg-[var(--color-white)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition"
-        />
-        <select
-          name="isRead"
-          defaultValue={resolvedParams.isRead || ""}
-          className="border border-[var(--color-gray-medium)] rounded-lg px-3 py-2.5 bg-[var(--color-white)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition"
-        >
-          <option value="">Todas</option>
-          <option value="true">Lidas</option>
-          <option value="false">Não lidas</option>
-        </select>
-        <select
-          name="limit"
-          defaultValue={String(limit)}
-          className="border border-[var(--color-gray-medium)] rounded-lg px-3 py-2.5 bg-[var(--color-white)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition"
-        >
-          <option value="5">5 / página</option>
-          <option value="10">10 / página</option>
-          <option value="20">20 / página</option>
-        </select>
-        <button
-          type="submit"
-          className="bg-[var(--color-action)] text-[var(--text-on-action)] px-6 py-2.5 rounded-lg font-medium hover:bg-[var(--color-action-hover)] transition cursor-pointer"
-        >
+      <form method="GET" className="admin-filter-form admin-filter-form--with-status">
+        <div className="admin-filter-field admin-filter-search">
+          <label htmlFor="notifications-search">Pesquisar notificações</label>
+          <div className="admin-filter-input-wrap">
+            <Search aria-hidden="true" />
+            <input
+              id="notifications-search"
+              type="search"
+              name="search"
+              className="admin-filter-control"
+              aria-label="Pesquisar notificações"
+              placeholder="Buscar por mensagem ou cliente..."
+              defaultValue={search}
+            />
+          </div>
+        </div>
+        <div className="admin-filter-field">
+          <label htmlFor="notifications-read-status">Status de leitura</label>
+          <select
+            id="notifications-read-status"
+            name="isRead"
+            aria-label="Filtrar por status de leitura"
+            defaultValue={resolvedParams.isRead || ""}
+          >
+            <option value="">Todas</option>
+            <option value="true">Lidas</option>
+            <option value="false">Não lidas</option>
+          </select>
+        </div>
+        <div className="admin-filter-field">
+          <label htmlFor="notifications-limit">Exibir por página</label>
+          <select
+            id="notifications-limit"
+            name="limit"
+            aria-label="Resultados por página"
+            defaultValue={String(limit)}
+          >
+            <option value="5">5 / página</option>
+            <option value="10">10 / página</option>
+            <option value="20">20 / página</option>
+          </select>
+        </div>
+        <button type="submit" className="ui-button ui-button--primary">
           Filtrar
         </button>
       </form>
@@ -171,8 +185,8 @@ export default async function NotificationsPage({
                   <span
                     className={`px-2 py-0.5 text-xs rounded-full font-medium self-center text-center w-20 inline-block ${
                       notification.isRead
-                        ? "bg-green-100 text-green-800"
-                        : "bg-yellow-100 text-yellow-800"
+                        ? "bg-[var(--color-success-soft)] text-[var(--color-success)]"
+                        : "bg-[var(--color-warning-soft)] text-[var(--color-warning)]"
                     }`}
                   >
                     {notification.isRead ? "Lida" : "Não lida"}
@@ -248,7 +262,7 @@ export default async function NotificationsPage({
                           <DeleteButton
                             formId={`delete-notification-form-${notification.id}`}
                             confirmMessage="Tem certeza que deseja excluir essa notificação?"
-                            className="bg-[var(--color-error)] hover:bg-[#d62828] text-[var(--text-on-action)] px-4 py-1.5 rounded-lg font-medium text-sm transition cursor-pointer"
+                            className="min-h-10 rounded-lg bg-[var(--color-error)] px-4 py-1.5 text-sm font-medium text-[var(--text-on-error)] transition hover:bg-[var(--color-error-hover)]"
                           />
                         </form>
                       </div>
@@ -265,6 +279,8 @@ export default async function NotificationsPage({
         <Pagination
           currentPage={page}
           totalPages={notifications.totalPages}
+          totalItems={notifications.totalCount}
+          pageSize={limit}
           hrefBuilder={(p) =>
             `?page=${p}&limit=${limit}&isRead=${
               resolvedParams.isRead || ""

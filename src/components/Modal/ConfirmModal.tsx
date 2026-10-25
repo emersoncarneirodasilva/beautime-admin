@@ -21,15 +21,14 @@ export default function ConfirmModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4 backdrop-blur-sm">
       <div
-        className="
-          p-6 rounded-2xl max-w-md w-full shadow-lg
-          border border-[var(--color-gray-medium)]/30
-          bg-[var(--color-white)]
-        "
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="confirm-changes-title"
+        className="w-full max-w-md rounded-2xl border border-[var(--color-gray-medium)] bg-[var(--color-white)] p-6 shadow-2xl sm:p-7"
       >
-        <h2 className="text-xl font-semibold mb-4 text-[var(--foreground)]">
+        <h2 id="confirm-changes-title" className="mb-4 text-xl font-semibold text-[var(--foreground)]">
           Confirmar alterações
         </h2>
 
@@ -48,25 +47,14 @@ export default function ConfirmModal({
         <div className="flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="
-              px-4 py-2 rounded-md
-              border border-[var(--color-gray-medium)]/50
-              text-[var(--text-secondary)]
-              hover:bg-[var(--color-gray-light)]
-              transition-colors cursor-pointer
-            "
+            className="ui-button ui-button--secondary"
           >
             Cancelar
           </button>
 
           <button
             onClick={handleConfirm}
-            className="
-              px-4 py-2 rounded-md cursor-pointer
-              bg-[var(--color-action)] text-[var(--text-on-action)]
-              hover:bg-[var(--color-action-hover)]
-              transition-all shadow-sm active:scale-[0.98]
-            "
+            className="ui-button ui-button--primary"
           >
             Confirmar
           </button>

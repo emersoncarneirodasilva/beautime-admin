@@ -49,8 +49,8 @@ export default function RevenueChart({
     return () => observer.disconnect();
   }, []);
 
-  const titleColor = isDarkMode ? "#c4c4c4" : "#5b6674";
-  const legendColor = isDarkMode ? "#c4c4c4" : "#5b6674";
+  const titleColor = isDarkMode ? "#b0bdcc" : "#64748b";
+  const legendColor = titleColor;
 
   const data: ChartData<"bar", number[], string> = {
     labels: ["Faturamento"],
@@ -58,14 +58,18 @@ export default function RevenueChart({
       {
         label: "Realizado",
         data: [completedRevenue ?? 0],
-        backgroundColor: "rgba(16, 185, 129, 0.8)",
+        backgroundColor: isDarkMode
+          ? "rgba(117, 201, 154, 0.85)"
+          : "rgba(24, 121, 78, 0.82)",
         borderRadius: 6,
         barPercentage: 0.33,
       },
       {
         label: "Previsto",
         data: [expectedRevenue ?? 0],
-        backgroundColor: "rgba(59, 130, 246, 0.8)",
+        backgroundColor: isDarkMode
+          ? "rgba(118, 167, 250, 0.85)"
+          : "rgba(57, 119, 213, 0.82)",
         borderRadius: 6,
         barPercentage: 0.33,
       },
@@ -79,7 +83,7 @@ export default function RevenueChart({
       title: {
         display: true,
         text: `Faturamento (${periodLabel})`,
-        font: { size: 18, weight: "bold" },
+        font: { size: 16, weight: "bold" },
         color: legendColor,
         padding: { top: 10, bottom: 20 },
       },
@@ -88,8 +92,8 @@ export default function RevenueChart({
         labels: { color: titleColor, padding: 20 },
       },
       tooltip: {
-        titleColor: "#f9fafb",
-        bodyColor: "#f9fafb",
+        titleColor: "#ffffff",
+        bodyColor: "#ffffff",
         callbacks: {
           label: (tooltipItem) => {
             const value = tooltipItem.raw || 0;
@@ -104,8 +108,8 @@ export default function RevenueChart({
     scales: {
       y: {
         beginAtZero: true,
-        ticks: { color: "#6b7280", callback: (val) => `R$ ${val}` },
-        grid: { color: "#e5e7eb" },
+        ticks: { color: titleColor, callback: (val) => `R$ ${val}` },
+        grid: { color: isDarkMode ? "#364454" : "#dce3ea" },
       },
       x: {
         ticks: { display: false }, // remove os números/textos no eixo x

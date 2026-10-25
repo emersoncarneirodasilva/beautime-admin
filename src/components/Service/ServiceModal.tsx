@@ -15,23 +15,22 @@ export default function ServiceModal({ token, onSelect, onClose }: Props) {
     useServicesOnProfessionals(token);
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
       <div
-        className="
-          w-full max-w-lg 
-          bg-[var(--color-white)] text-[var(--foreground)]
-          rounded-2xl shadow-2xl 
-          p-6 space-y-6 
-          transition-all
-        "
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="select-service-title"
+        className="w-full max-w-lg space-y-5 rounded-2xl border border-[var(--color-gray-medium)] bg-[var(--color-white)] p-5 text-[var(--foreground)] shadow-2xl transition-all sm:p-6"
       >
         {/* Header */}
         <header className="flex justify-between items-center pb-2 border-b border-[var(--color-gray-medium)]">
-          <h2 className="text-2xl font-semibold tracking-tight">
+          <h2 id="select-service-title" className="text-xl font-semibold tracking-tight">
             Selecionar Serviço
           </h2>
 
           <button
+            type="button"
+            aria-label="Fechar seleção de serviço"
             onClick={onClose}
             className="
               text-[var(--text-secondary)] hover:text-[var(--color-error)] 
@@ -46,6 +45,7 @@ export default function ServiceModal({ token, onSelect, onClose }: Props) {
         <div className="relative">
           <input
             type="text"
+            aria-label="Buscar serviço ou profissional"
             placeholder="Buscar serviço ou profissional..."
             className="
               w-full px-4 py-2.5 
@@ -89,7 +89,7 @@ export default function ServiceModal({ token, onSelect, onClose }: Props) {
                   flex flex-col sm:flex-row
                   sm:items-center sm:justify-between
                   gap-3
-                  hover:bg-[var(--color-gray-medium)/30]
+                  hover:bg-[var(--color-gray-light)]
                   transition cursor-pointer
                 "
               >

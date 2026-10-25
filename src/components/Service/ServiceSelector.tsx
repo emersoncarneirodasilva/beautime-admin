@@ -34,16 +34,22 @@ export default function ServiceSelector({
   return (
     <section className="space-y-6">
       <button
+        type="button"
         onClick={() => setIsOpen(true)}
-        className="px-5 py-2.5 rounded-md bg-[var(--color-action)] text-[var(--text-on-action)] hover:bg-[var(--color-action-hover)] cursor-pointer transition-colors"
+        className="ui-button ui-button--secondary"
       >
-        Selecionar Serviço
+        {selectedService ? "Alterar serviço" : "Selecionar serviço"}
       </button>
 
       {selectedService && (
-        <div className="p-4 rounded-lg shadow-sm border bg-[var(--color-white)] border-[var(--color-gray-light)]">
-          <p className="font-semibold">{selectedService.service.name}</p>
-          <p className="text-sm text-gray-500">
+        <div className="mt-4 rounded-xl border border-[var(--color-gray-medium)] bg-[var(--color-white)] p-4">
+          <p className="text-xs font-semibold uppercase tracking-wide text-[var(--text-secondary)]">
+            Seleção atual
+          </p>
+          <p className="mt-1 font-semibold text-[var(--foreground)]">
+            {selectedService.service.name}
+          </p>
+          <p className="mt-1 text-sm text-[var(--text-secondary)]">
             Profissional: {selectedService.professional.name}
           </p>
         </div>

@@ -41,8 +41,8 @@ export default function AppointmentsChart({
     return () => observer.disconnect();
   }, []);
 
-  const titleColor = isDarkMode ? "#c4c4c4" : "#5b6674";
-  const legendColor = isDarkMode ? "#c4c4c4" : "#5b6674";
+  const titleColor = isDarkMode ? "#b0bdcc" : "#64748b";
+  const legendColor = titleColor;
 
   const data: ChartData<"doughnut", number[], string> = {
     labels: ["Ativos", "Concluídos", "Cancelados"],
@@ -51,11 +51,12 @@ export default function AppointmentsChart({
         label: "Agendamentos",
         data: [active, completed, canceled],
         backgroundColor: [
-          "rgba(250, 204, 21, 0.8)",
-          "rgba(16, 185, 129, 0.8)",
-          "rgba(239, 68, 68, 0.8)",
+          isDarkMode ? "rgba(141, 199, 230, 0.85)" : "rgba(40, 101, 138, 0.82)",
+          isDarkMode ? "rgba(117, 201, 154, 0.85)" : "rgba(24, 121, 78, 0.82)",
+          isDarkMode ? "rgba(240, 139, 149, 0.85)" : "rgba(180, 35, 54, 0.82)",
         ],
-        borderWidth: 2,
+        borderColor: isDarkMode ? "#202a35" : "#ffffff",
+        borderWidth: 3,
       },
     ],
   };
@@ -67,7 +68,7 @@ export default function AppointmentsChart({
       title: {
         display: true,
         text: `Agendamentos (${periodLabel})`,
-        font: { size: 18, weight: "bold" },
+        font: { size: 16, weight: "bold" },
         color: titleColor,
         padding: { top: 10, bottom: 20 },
       },
@@ -76,13 +77,13 @@ export default function AppointmentsChart({
         labels: {
           color: legendColor,
           usePointStyle: true, // <--- faz os retângulos virarem círculos
-          pointStyle: "circle", // opcional, por padrão é circle
-          padding: 20, // aumenta o espaçamento se quiser
+          pointStyle: "circle",
+          padding: 18,
         },
       },
       tooltip: {
-        titleColor: "#f9fafb",
-        bodyColor: "#f9fafb",
+        titleColor: "#ffffff",
+        bodyColor: "#ffffff",
         padding: 10,
         cornerRadius: 6,
         callbacks: {

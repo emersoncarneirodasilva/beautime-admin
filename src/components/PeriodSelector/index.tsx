@@ -19,13 +19,12 @@ export default function PeriodSelector() {
       )}`
   );
 
-  const labelStyle = `border border-[var(--color-gray-medium)] dark:border-[var(--color-gray-light)] 
-             px-2 py-1 rounded 
-             bg-[var(--color-gray-light)] dark:bg-[var(--color-gray-medium)] 
-             text-[var(--foreground)]`;
+  const labelStyle = `min-h-11 border border-[var(--color-gray-medium)]
+             px-3 py-2 rounded-lg
+             bg-[var(--color-white)] text-[var(--foreground)]`;
 
-  const buttonStyle = `bg-[var(--color-action)] text-[var(--text-on-action)] 
-             px-4 py-1 rounded hover:bg-[var(--color-action-hover)] 
+  const buttonStyle = `min-h-11 bg-[var(--color-action)] text-[var(--text-on-action)]
+             px-5 py-2 rounded-lg font-medium hover:bg-[var(--color-action-hover)]
              cursor-pointer flex items-center gap-2 transition-colors`;
 
   // Atualiza valor padrão quando muda o tipo
@@ -63,10 +62,11 @@ export default function PeriodSelector() {
   }
 
   return (
-    <div className="flex flex-col md:flex-row items-center gap-4 mb-6">
+    <div className="flex flex-col items-start gap-4 rounded-xl border border-[var(--color-gray-medium)] bg-[var(--color-white)] p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
       {/* Tipo de período */}
-      <div className="flex gap-4">
-        <label>
+      <fieldset className="flex flex-wrap gap-x-5 gap-y-2">
+        <legend className="sr-only">Período dos indicadores</legend>
+        <label className="inline-flex items-center gap-2 text-sm text-[var(--text-secondary)]">
           <input
             type="radio"
             value="WEEK"
@@ -76,7 +76,7 @@ export default function PeriodSelector() {
           />{" "}
           Semanal
         </label>
-        <label>
+        <label className="inline-flex items-center gap-2 text-sm text-[var(--text-secondary)]">
           <input
             type="radio"
             value="MONTH"
@@ -86,7 +86,7 @@ export default function PeriodSelector() {
           />{" "}
           Mensal
         </label>
-        <label>
+        <label className="inline-flex items-center gap-2 text-sm text-[var(--text-secondary)]">
           <input
             type="radio"
             value="YEAR"
@@ -96,7 +96,7 @@ export default function PeriodSelector() {
           />{" "}
           Anual
         </label>
-      </div>
+      </fieldset>
 
       {/* Campo dinâmico */}
       {periodType === "WEEK" && (

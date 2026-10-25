@@ -30,11 +30,13 @@ export default function EditButton({
       form={formId}
       onClick={handleClick}
       disabled={loading}
-      className={`${className ?? ""} ${
-        loading ? "opacity-70 cursor-not-allowed" : ""
+      className={`ui-button ui-button--secondary min-w-0 max-w-full ${className ?? ""} ${
+        loading ? "ui-button--disabled" : ""
       }`}
     >
-      {loading ? "Carregando..." : text}
+      <span className="inline-flex min-w-0 flex-wrap items-center justify-center gap-2 text-center leading-tight">
+        {loading ? "Carregando..." : text}
+      </span>
     </button>
   );
 }

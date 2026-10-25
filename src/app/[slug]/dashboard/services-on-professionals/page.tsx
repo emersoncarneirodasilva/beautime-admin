@@ -60,12 +60,12 @@ export default async function ServicesOnProfessionalsPage({
   const search = searchQuery?.search ?? "";
 
   // Busca todos os profissionais
-  const { professionals, totalPages, currentPage } = await fetchProfessionals({
-    token,
-    page,
-    limit,
-    search,
-  });
+  const {
+    professionals,
+    total,
+    totalPages,
+    currentPage,
+  } = await fetchProfessionals({ token, page, limit, search });
 
   // Busca todos os serviços
   const { services: allServices } = await fetchServices(token, 1, 100).catch(
@@ -107,7 +107,7 @@ export default async function ServicesOnProfessionalsPage({
   }
 
   return (
-    <section className="max-w-6xl mx-auto p-4 sm:p-6 my-4 min-h-screen text-[var(--foreground)]">
+    <section className="mx-auto min-h-[calc(100vh-4rem)] max-w-6xl px-4 py-6 text-[var(--foreground)] sm:px-6 md:px-8">
       {/* Header */}
       <header className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
         <h1 className="text-2xl sm:text-3xl font-bold">
@@ -123,6 +123,7 @@ export default async function ServicesOnProfessionalsPage({
         <input
           type="text"
           name="search"
+          aria-label="Pesquisar profissionais"
           defaultValue={search}
           placeholder="Buscar profissionais..."
           className="flex-grow border border-[var(--color-gray-medium)] rounded-lg px-4 py-2.5 bg-[var(--color-white)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition"
@@ -130,6 +131,7 @@ export default async function ServicesOnProfessionalsPage({
         <div className="flex gap-3 mt-2 sm:mt-0">
           <select
             name="limit"
+            aria-label="Resultados por página"
             defaultValue={limit.toString()}
             className="border border-[var(--color-gray-medium)] rounded-lg px-3 py-2.5 bg-[var(--color-white)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition"
           >
@@ -275,6 +277,8 @@ export default async function ServicesOnProfessionalsPage({
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
+            totalItems={total}
+            pageSize={limit}
             hrefBuilder={(p) =>
               `?page=${p}&limit=${limit}&search=${encodeURIComponent(search)}`
             }

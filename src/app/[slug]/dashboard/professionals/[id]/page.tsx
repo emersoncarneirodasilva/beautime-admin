@@ -70,7 +70,7 @@ export default async function ProfessionalPage({
   );
 
   return (
-    <section className="max-w-6xl mx-auto px-4 sm:px-6 md:px-10 py-10 space-y-10">
+    <section className="mx-auto max-w-6xl space-y-7 px-4 py-6 sm:px-6 md:px-8">
       {/* Header */}
       <header className="mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold mb-8">
@@ -83,7 +83,7 @@ export default async function ProfessionalPage({
       </header>
 
       {/* Card principal */}
-      <div className="bg-[var(--color-white)] dark:bg-[var(--color-gray-light)] border border-[var(--color-gray-medium)] rounded-2xl shadow-lg p-8 md:p-12 flex flex-col gap-8 transition-all duration-300 hover:shadow-2xl">
+      <div className="flex flex-col gap-7 rounded-2xl border border-[var(--color-gray-medium)] bg-[var(--color-white)] p-5 shadow-sm transition-colors duration-200 sm:p-7">
         {/* Avatar + Nome */}
         <div className="flex flex-col items-center text-center gap-4">
           <div className="relative w-44 h-44 rounded-full overflow-hidden border-5 border-[var(--color-primary)] shadow-md hover:scale-[1.02] transition-transform duration-300">
@@ -105,14 +105,14 @@ export default async function ProfessionalPage({
 
         {/* Info Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-[var(--color-gray-light)] dark:bg-[var(--color-white)] p-4 rounded-xl shadow-inner">
+          <div className="rounded-xl border border-[var(--color-gray-medium)] bg-[var(--color-gray-light)] p-4">
             <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
               <i className="lucide lucide-user text-[var(--color-secondary)]"></i>{" "}
               Bio
             </h3>
             <p>{professional.bio || "Não informada"}</p>
           </div>
-          <div className="bg-[var(--color-gray-light)] dark:bg-[var(--color-white)] p-4 rounded-xl shadow-inner">
+          <div className="rounded-xl border border-[var(--color-gray-medium)] bg-[var(--color-gray-light)] p-4">
             <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
               <i className="lucide lucide-mail text-[var(--color-secondary)]"></i>{" "}
               Contato
@@ -144,7 +144,7 @@ export default async function ProfessionalPage({
                 <Link
                   key={s.service.id}
                   href={`/${slug}/dashboard/services/${s.service.id}`}
-                  className="px-3 py-1 rounded-full bg-[var(--color-primary)] text-[var(--text-on-action)] hover:bg-[var(--color-primary-hover)] transition text-sm"
+                  className="inline-flex min-h-9 items-center rounded-full bg-[var(--color-action-soft)] px-3 py-1 text-sm font-medium text-[var(--color-action)] transition-colors hover:brightness-95"
                 >
                   {s.service.name}
                 </Link>
@@ -168,7 +168,7 @@ export default async function ProfessionalPage({
               {availability.map((slot) => (
                 <li
                   key={slot.id}
-                  className="px-2 py-1 bg-[var(--color-gray-light)] dark:bg-[var(--color-white)] rounded-lg text-center text-sm"
+                  className="rounded-lg border border-[var(--color-gray-medium)] bg-[var(--color-gray-light)] px-2 py-2 text-center text-sm"
                 >
                   {translateWeekday(slot.weekday)} <br /> {slot.startTime} às{" "}
                   {slot.endTime}
@@ -180,7 +180,8 @@ export default async function ProfessionalPage({
           <ActionButton
             href={`/${slug}/dashboard/professionals/${id}/availability`}
             text="Gerenciar disponibilidade"
-            className="mt-4 bg-sky-600 hover:bg-sky-700"
+            variant="info"
+            className="mt-4 bg-[var(--color-info-soft)] text-[var(--color-info)] hover:brightness-95"
           />
         </div>
 
@@ -194,6 +195,7 @@ export default async function ProfessionalPage({
                 Atualizar
               </span>
             }
+            variant="secondary"
             className="w-fit"
           />
 
@@ -211,7 +213,7 @@ export default async function ProfessionalPage({
               }
               confirmMessage={`Tem certeza que deseja excluir o profissional "${professional.name}"?`}
               className={
-                "flex items-center justify-center gap-2 px-5 py-2.5 bg-[var(--color-error)] hover:bg-[#d62828] text-[var(--text-on-action)] rounded-lg font-medium transition-all duration-200 cursor-pointer"
+                "flex min-h-11 items-center justify-center gap-2 rounded-lg bg-[var(--color-error)] px-5 py-2.5 font-medium text-[var(--text-on-error)] transition-all duration-200 hover:bg-[var(--color-error-hover)]"
               }
             />
           </form>

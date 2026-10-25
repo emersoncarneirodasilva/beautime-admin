@@ -7,16 +7,16 @@ export const StatusBadge = ({ value, type }: StatusBadgeProps) => {
   const colorMap =
     type === "appointment"
       ? {
-          CONFIRMED: "bg-emerald-100 text-emerald-700",
-          PENDING: "bg-amber-100 text-amber-700",
-          CANCELED: "bg-red-100 text-red-700",
-          COMPLETED: "bg-green-100 text-green-700",
+          CONFIRMED: "bg-[var(--color-info-soft)] text-[var(--color-info)]",
+          PENDING: "bg-[var(--color-warning-soft)] text-[var(--color-warning)]",
+          CANCELED: "bg-[var(--color-error-soft)] text-[var(--color-error)]",
+          COMPLETED: "bg-[var(--color-success-soft)] text-[var(--color-success)]",
         }
       : {
-          PAID: "bg-blue-100 text-blue-700",
-          PARTIALLY_PAID: "bg-purple-100 text-purple-700",
-          REFUNDED: "bg-orange-100 text-orange-700",
-          PENDING: "bg-gray-200 text-gray-700",
+          PAID: "bg-[var(--color-success-soft)] text-[var(--color-success)]",
+          PARTIALLY_PAID: "bg-[var(--color-warning-soft)] text-[var(--color-warning)]",
+          REFUNDED: "bg-[var(--color-info-soft)] text-[var(--color-info)]",
+          PENDING: "bg-[var(--color-gray-light)] text-[var(--text-secondary)]",
         };
 
   const translationMap =
@@ -35,14 +35,15 @@ export const StatusBadge = ({ value, type }: StatusBadgeProps) => {
         };
 
   const colors =
-    colorMap[value as keyof typeof colorMap] ?? "bg-gray-200 text-gray-700";
+    colorMap[value as keyof typeof colorMap] ??
+    "bg-[var(--color-gray-light)] text-[var(--text-secondary)]";
 
   const translatedValue =
     translationMap[value as keyof typeof translationMap] ?? value;
 
   return (
     <span
-      className={`px-2.5 py-1 rounded-full text-xs font-medium uppercase tracking-wide ${colors}`}
+      className={`inline-flex items-center rounded-full border border-current/10 px-2.5 py-1 text-[11px] font-semibold tracking-wide ${colors}`}
     >
       {translatedValue}
     </span>

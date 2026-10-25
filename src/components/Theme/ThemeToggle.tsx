@@ -30,12 +30,14 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="absolute top-6 right-6 p-2 rounded-full bg-[var(--color-gray-light)] dark:bg-[var(--color-gray-light)] transition-colors"
+      aria-label={theme === "light" ? "Ativar tema escuro" : "Ativar tema claro"}
+      type="button"
+      className="absolute right-6 top-6 grid h-11 w-11 cursor-pointer place-items-center rounded-full border border-[var(--color-gray-medium)] bg-[var(--color-white)] text-[var(--color-primary)] shadow-sm transition-colors hover:border-[var(--color-action)] hover:bg-[var(--color-gray-light)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-action)]"
     >
       {theme === "light" ? (
-        <Moon size={20} color="#146C94" />
+        <Moon size={20} />
       ) : (
-        <Sun size={20} color="#D4AF37" />
+        <Sun size={20} className="text-[var(--color-secondary)]" />
       )}
     </button>
   );

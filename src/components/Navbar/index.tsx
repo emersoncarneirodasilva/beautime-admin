@@ -39,31 +39,33 @@ export default function Navbar({ salonName, adminName }: NavbarProps) {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 h-16 bg-primary text-primary shadow-md z-50 transition-colors">
-        <div className="h-full flex items-center justify-between px-4 sm:px-6 md:px-8">
+      <nav className="fixed top-0 left-0 right-0 z-50 h-16 bg-primary text-primary shadow-sm transition-colors">
+        <div className="mx-auto flex h-full max-w-[1600px] items-center justify-between pl-16 pr-4 md:px-6 lg:px-8">
           <div className="flex items-center gap-3">
             <Image
               src="/images/logo.png"
               alt="Beautime Logo"
               width={30}
               height={30}
-              className="rounded-full invisible md:visible"
+              className="rounded-full"
               priority
             />
             {salonName && (
-              <span className="hidden sm:inline font-semibold text-md">
+              <span className="hidden truncate text-sm font-semibold sm:inline md:text-base">
                 {salonName}
               </span>
             )}
           </div>
 
-          <div className="flex items-center gap-4">
-            <span className="text-md">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <span className="hidden text-sm sm:inline md:text-base">
               Olá{adminName ? `, ${adminName}` : ""}
             </span>
             <button
               onClick={toggleTheme}
-              className="p-2 rounded hover:text-[var(--color-secondary)] hover:scale-[1.02] transition"
+              type="button"
+              aria-label={isDark ? "Ativar tema claro" : "Ativar tema escuro"}
+              className="grid h-10 w-10 cursor-pointer place-items-center rounded-lg transition-colors hover:bg-black/10 hover:text-[var(--color-secondary)]"
             >
               {isDark ? <Sun size={18} /> : <Moon size={18} />}
             </button>

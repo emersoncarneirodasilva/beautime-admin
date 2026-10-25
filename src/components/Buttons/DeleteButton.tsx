@@ -32,10 +32,9 @@ export default function DeleteButton({
         type="button"
         disabled={loading}
         onClick={() => setOpen(true)}
-        className={`
-          ${loading ? "opacity-50 cursor-not-allowed" : ""}
-          ${className}
-        `}
+        className={`ui-button ui-button--danger ${className} ${
+          loading ? "ui-button--disabled" : ""
+        }`}
       >
         {loading ? "Excluindo..." : text}
       </button>

@@ -50,7 +50,7 @@ export default async function BusinessHoursPage({
   }
 
   return (
-    <section className="max-w-6xl mx-auto px-4 sm:px-6 md:px-10 py-10 space-y-8">
+    <section className="mx-auto max-w-6xl space-y-7 px-4 py-6 sm:px-6 md:px-8">
       {/* Header */}
       <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
         <h1 className="text-2xl sm:text-3xl font-bold text-center sm:text-left">
@@ -125,7 +125,7 @@ export default async function BusinessHoursPage({
                       <DeleteButton
                         formId={`delete-hour-form-${hour.id}`}
                         confirmMessage="Tem certeza que deseja excluir este horário?"
-                        className=" px-2.5 py-1 rounded-md font-medium text-[var(--text-on-action)] bg-[var(--color-error)] hover:bg-[#d62828] transition shadow-sm hover:shadow-md cursor-pointer text-sm"
+                        className="min-h-9 rounded-lg bg-[var(--color-error)] px-3 text-sm font-medium text-[var(--text-on-error)] shadow-sm transition hover:bg-[var(--color-error-hover)]"
                       />
                     </form>
                   </div>

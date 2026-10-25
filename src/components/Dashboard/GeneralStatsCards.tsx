@@ -10,24 +10,24 @@ interface GeneralStatsCardsProps {
 }
 
 const stats = [
-  { key: "users", label: "Usuários", icon: Users, color: "bg-blue-500" },
+  { key: "users", label: "Usuários", icon: Users, color: "info" },
   {
     key: "admins",
     label: "Administradores",
     icon: UserCog,
-    color: "bg-indigo-500",
+    color: "brand",
   },
   {
     key: "services",
     label: "Serviços",
     icon: Scissors,
-    color: "bg-yellow-500",
+    color: "warning",
   },
   {
     key: "professionals",
     label: "Profissionais",
     icon: Briefcase,
-    color: "bg-emerald-500",
+    color: "success",
   },
 ];
 
@@ -49,14 +49,24 @@ export default function GeneralStatsCards({
       {stats.map(({ key, label, icon: Icon, color }) => (
         <div
           key={key}
-          className="flex items-center gap-4 bg-[var(--color-white)] rounded-xl shadow p-5 hover:shadow-md transition"
+          className="flex min-h-28 items-center gap-4 rounded-xl border border-[var(--color-gray-medium)] bg-[var(--color-white)] p-5 shadow-sm transition-shadow hover:shadow-md"
         >
-          <div className={`${color} p-3 rounded-lg text-[var(--color-white)]`}>
-            <Icon size={28} />
+          <div
+            className={`rounded-xl p-3 ${
+              color === "success"
+                ? "bg-[var(--color-success-soft)] text-[var(--color-success)]"
+                : color === "warning"
+                ? "bg-[var(--color-warning-soft)] text-[var(--color-warning)]"
+                : color === "info"
+                ? "bg-[var(--color-info-soft)] text-[var(--color-info)]"
+                : "bg-[var(--color-gray-light)] text-[var(--color-primary)]"
+            }`}
+          >
+            <Icon size={24} strokeWidth={1.8} />
           </div>
           <div>
-            <p className="text-sm text-[var(--text-secondary)]">{label}</p>
-            <p className="text-2xl font-bold text-gray-600/90">{values[key]}</p>
+            <p className="text-sm font-medium text-[var(--text-secondary)]">{label}</p>
+            <p className="mt-1 text-2xl font-semibold tracking-tight text-[var(--foreground)]">{values[key]}</p>
           </div>
         </div>
       ))}

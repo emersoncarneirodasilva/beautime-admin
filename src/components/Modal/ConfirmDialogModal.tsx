@@ -33,25 +33,22 @@ export default function ConfirmDialogModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center 
-                 bg-black/40 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4 backdrop-blur-sm"
       onClick={onClose}
     >
       <div
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="confirm-dialog-title"
+        aria-describedby="confirm-dialog-description"
         onClick={(e) => e.stopPropagation()}
-        className="
-          w-full max-w-sm p-6 rounded-xl shadow-lg
-          bg-[var(--color-white)]
-          border border-[var(--color-gray-medium)]
-          dark:bg-[var(--color-gray-light)]
-          animate-fadeIn
-        "
+        className="w-full max-w-md animate-fadeIn rounded-2xl border border-[var(--color-gray-medium)] bg-[var(--color-white)] p-6 shadow-2xl sm:p-7"
       >
-        <h2 className="text-lg font-semibold text-[var(--foreground)] mb-2">
+        <h2 id="confirm-dialog-title" className="mb-2 text-lg font-semibold text-[var(--foreground)]">
           {title}
         </h2>
 
-        <p className="text-sm text-[var(--text-secondary)] mb-6 leading-relaxed">
+        <p id="confirm-dialog-description" className="mb-6 text-sm leading-relaxed text-[var(--text-secondary)]">
           {description}
         </p>
 
@@ -59,13 +56,7 @@ export default function ConfirmDialogModal({
           {/* Botão cancelar */}
           <button
             onClick={onClose}
-            className="
-              px-4 py-2 rounded-md text-sm font-medium
-              border border-[var(--color-gray-medium)]
-              text-[var(--foreground)]
-              hover:bg-[var(--color-gray-light)]
-              transition cursor-pointer
-            "
+            className="ui-button ui-button--secondary"
           >
             {cancelText}
           </button>
@@ -73,13 +64,7 @@ export default function ConfirmDialogModal({
           {/* Botão confirmar */}
           <button
             onClick={onConfirm}
-            className="
-              px-4 py-2 rounded-md text-sm font-medium
-              bg-[var(--color-error)]
-              text-[var(--text-white-fixed)]
-              hover:bg-[#d62828]
-              transition cursor-pointer
-            "
+            className="ui-button ui-button--danger"
           >
             {confirmText}
           </button>

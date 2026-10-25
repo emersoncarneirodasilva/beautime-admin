@@ -32,7 +32,11 @@ export default function RemoveServiceLink({
   };
 
   return (
-    <a href="#" onClick={handleClick} className={`${className} cursor-pointer`}>
+    <a
+      href="#"
+      onClick={handleClick}
+      className={`ui-button ui-button--danger-subtle ui-button--compact ${className}`}
+    >
       {isSubmitting ? submittingText : defaultText}
     </a>
   );

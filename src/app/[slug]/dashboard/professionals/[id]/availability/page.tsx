@@ -66,7 +66,7 @@ export default async function AvailabilityPage({
   }
 
   return (
-    <section className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-10 space-y-8">
+    <section className="mx-auto max-w-6xl space-y-7 px-4 py-6 sm:px-6 md:px-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="w-full sm:w-auto">
@@ -128,7 +128,7 @@ export default async function AvailabilityPage({
                   <DeleteButton
                     formId={`availability-form-delete-${slot.id}`}
                     confirmMessage="Deseja realmente excluir esse horário?"
-                    className="px-3 py-1.5 bg-[var(--color-error)] text-[var(--text-on-action)] rounded-md text-sm hover:bg-red-700 transition w-full lg:w-auto cursor-pointer"
+                    className="min-h-10 w-full rounded-lg bg-[var(--color-error)] px-3 py-1.5 text-sm text-[var(--text-on-error)] transition hover:bg-[var(--color-error-hover)] lg:w-auto"
                   />
                 </form>
               </div>

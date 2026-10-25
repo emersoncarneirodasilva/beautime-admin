@@ -23,9 +23,9 @@ export default function SuccessToastAutoRedirect() {
   if (!success) return null;
 
   return (
-    <div className="fixed top-18 right-5 z-50 animate-slide-in">
-      <div className="flex items-center gap-3 bg-[var(--color-success)] text-[var(--text-on-action)] px-4 py-3 rounded-lg shadow-lg">
-        <CheckCircle className="w-6 h-6" />
+    <div role="status" className="fixed left-4 right-4 top-20 z-50 animate-slide-in sm:left-auto sm:right-5 sm:max-w-md">
+      <div className="flex items-center gap-3 rounded-xl border border-[var(--color-success)]/25 bg-[var(--color-success-soft)] px-4 py-3 text-[var(--color-success)] shadow-lg">
+        <CheckCircle className="h-5 w-5 shrink-0" />
         <span>{success}</span>
       </div>
     </div>

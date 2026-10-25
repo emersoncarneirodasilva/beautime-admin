@@ -70,7 +70,7 @@ export default async function SalonImagesPage({
   ];
 
   return (
-    <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-10">
+    <section className="mx-auto max-w-6xl space-y-7 px-4 py-6 sm:px-6 md:px-8">
       {/* Header */}
       <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <h1 className="text-3xl font-bold">Galeria de Imagens</h1>

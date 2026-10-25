@@ -9,7 +9,7 @@ interface SpinnerProps {
 
 export default function Spinner({
   size = 60,
-  color = "#3b82f6",
+  color = "var(--color-action)",
   text,
   fullscreen = false,
 }: SpinnerProps) {
@@ -19,13 +19,17 @@ export default function Spinner({
         className="animate-spin"
         style={{ width: size, height: size, color }}
       />
-      {text && <p className="text-gray-500">{text}</p>}
+      {text &&       <p className="text-[var(--text-secondary)]">{text}</p>}
     </div>
   );
 
   if (fullscreen) {
     return (
-      <section className="fixed inset-0 grid place-items-center bg-white/80 backdrop-blur-sm z-50">
+      <section
+        className="loading-overlay fixed inset-0 z-50 grid place-items-center bg-[var(--background)] text-[var(--foreground)]"
+        role="status"
+        aria-live="polite"
+      >
         {spinner}
       </section>
     );

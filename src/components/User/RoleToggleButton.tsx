@@ -61,7 +61,7 @@ export default function RoleToggleButton({
   }, [success, error]);
 
   // Classes base idênticas ao ActionButton
-  const buttonClasses = `flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-medium transition-colors text-base disabled:opacity-70 disabled:cursor-not-allowed`;
+  const buttonClasses = `flex min-h-11 items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-base font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-70`;
 
   return (
     <div className="flex flex-col gap-2">
@@ -72,8 +72,8 @@ export default function RoleToggleButton({
             disabled={loading}
             className={`${buttonClasses} ${
               loading
-                ? "bg-gray-400 text-white cursor-not-allowed"
-                : "bg-[var(--color-success)] text-[var(--text-on-action)] hover:bg-[var(--color-success)]/50 cursor-pointer"
+                ? "cursor-not-allowed bg-[var(--color-gray-light)] text-[var(--text-secondary)]"
+                : "bg-[var(--color-success-soft)] text-[var(--color-success)] hover:brightness-95"
             }`}
           >
             {loading ? "Carregando..." : "Promover a Admin"}
@@ -86,8 +86,8 @@ export default function RoleToggleButton({
             disabled={loading}
             className={`${buttonClasses} ${
               loading
-                ? "bg-gray-400 text-white cursor-not-allowed"
-                : "bg-yellow-600 text-[var(--text-on-action)] hover:bg-yellow-700 cursor-pointer"
+                ? "cursor-not-allowed bg-[var(--color-gray-light)] text-[var(--text-secondary)]"
+                : "bg-[var(--color-warning-soft)] text-[var(--color-warning)] hover:brightness-95"
             }`}
           >
             {loading ? "Carregando..." : "Tornar Usuário Comum"}
@@ -97,8 +97,8 @@ export default function RoleToggleButton({
 
       {/* Mensagem sempre abaixo */}
       <div className="min-h-[1.25rem]">
-        {error && <p className="text-red-600">{error}</p>}
-        {success && <p className="text-green-600">{success}</p>}
+        {error && <p role="alert" className="text-[var(--color-error)]">{error}</p>}
+        {success && <p role="status" className="text-[var(--color-success)]">{success}</p>}
       </div>
     </div>
   );

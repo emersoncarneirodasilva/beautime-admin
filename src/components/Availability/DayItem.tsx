@@ -60,7 +60,7 @@ export default function DayItem({
                     px-3 py-2 rounded-md text-sm transition
                     ${
                       occupied
-                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                        ? "cursor-not-allowed bg-[var(--color-gray-light)] text-[var(--text-secondary)]"
                         : "bg-[var(--color-action)] hover:bg-[var(--color-action-hover)] text-[var(--text-on-action)] cursor-pointer"
                     }
                   `}

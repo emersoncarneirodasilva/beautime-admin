@@ -35,7 +35,7 @@ export default async function CreateUserPage({
   const { slug } = await params;
 
   return (
-    <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-8">
+    <section className="mx-auto max-w-6xl space-y-7 px-4 py-6 sm:px-6 md:px-8">
       <ErrorToastFromParams />
 
       <header>

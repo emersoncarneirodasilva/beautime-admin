@@ -30,7 +30,7 @@ export default function NotFound() {
         </p>
         <button
           onClick={handleGoBack}
-          className="mt-2 px-4 py-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-[var(--text-white-fixed)] rounded-md text-sm transition cursor-pointer"
+          className="mt-2 min-h-10 rounded-lg bg-[var(--color-action)] px-5 py-2 text-sm text-[var(--text-on-action)] transition hover:bg-[var(--color-action-hover)]"
         >
           Voltar
         </button>

@@ -9,9 +9,15 @@ export default function PaymentMethodSelector({
 }: PaymentMethodSelectorProps) {
   return (
     <div className="space-y-2">
-      <p className="font-semibold">Escolha o método de pagamento:</p>
+      <label
+        htmlFor="appointment-payment-method"
+        className="block text-xs font-semibold uppercase tracking-wide text-[var(--text-secondary)]"
+      >
+        Forma de pagamento
+      </label>
       <select
-        className="border rounded px-3 py-2 w-full bg-white focus:border-none focus:ring-2 focus:ring-[var(--color-action)] transition-all"
+        id="appointment-payment-method"
+        className="w-full"
         defaultValue=""
         onChange={(e) => onSelect(e.target.value)}
       >

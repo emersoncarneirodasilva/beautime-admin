@@ -25,15 +25,21 @@ export default function UserSelector({
   return (
     <section className="space-y-6">
       <button
+        type="button"
         onClick={() => setIsOpen(true)}
-        className="px-5 py-2.5 rounded-md bg-[var(--color-action)] text-[var(--text-on-action)] hover:bg-[var(--color-action-hover)] cursor-pointer transition-colors"
+        className="ui-button ui-button--secondary"
       >
-        Selecionar Usuário
+        {selectedUser ? "Alterar usuário" : "Selecionar usuário"}
       </button>
 
       {selectedUser && (
-        <div className="p-4 rounded-lg shadow-sm border bg-[var(--color-white)] border-[var(--color-gray-light)]">
-          <p className="font-semibold">{selectedUser.name}</p>
+        <div className="mt-4 rounded-xl border border-[var(--color-gray-medium)] bg-[var(--color-white)] p-4">
+          <p className="text-xs font-semibold uppercase tracking-wide text-[var(--text-secondary)]">
+            Cliente selecionado
+          </p>
+          <p className="mt-1 font-semibold text-[var(--foreground)]">
+            {selectedUser.name}
+          </p>
           <p className="text-sm text-[var(--text-secondary)]">
             {selectedUser.email}
           </p>

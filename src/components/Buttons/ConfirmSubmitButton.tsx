@@ -92,12 +92,9 @@ export default function ConfirmSubmitButton({
         type="button"
         onClick={handleClick}
         disabled={loading}
-        className={`px-6 py-3 rounded-md shadow-md text-[var(--text-on-action)]
-    ${
-      loading
-        ? "bg-[var(--color-action)] opacity-80 animate-pulse cursor-not-allowed"
-        : "bg-[var(--color-action)] hover:bg-[var(--color-action-hover)] cursor-pointer"
-    }`}
+        className={`ui-button ui-button--primary ${
+          loading ? "ui-button--disabled animate-pulse" : ""
+        }`}
       >
         {loading ? (
           "Salvando..."

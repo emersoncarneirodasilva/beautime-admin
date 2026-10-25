@@ -31,9 +31,11 @@ export function DeleteImageButton({ id, token, onDelete }: Props) {
   return (
     <>
       <button
+        type="button"
+        aria-label={`Excluir imagem ${id}`}
         onClick={() => setOpen(true)}
         disabled={loading}
-        className="text-red-500 hover:underline disabled:opacity-50 hover:cursor-pointer"
+        className="ui-button ui-button--danger-subtle ui-button--compact"
       >
         {loading ? "Excluindo..." : "Excluir"}
       </button>

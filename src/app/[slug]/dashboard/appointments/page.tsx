@@ -8,7 +8,15 @@ import { fetchAppointments } from "@/libs/api/fetchAppointments";
 import { AppointmentResponse, Appointment } from "@/types";
 import { formatIsoStringRaw } from "@/utils/formatIsoStringRaw";
 import { formatCurrency } from "@/utils/formatCurrency";
-import { Pencil } from "lucide-react";
+import {
+  CalendarClock,
+  CalendarDays,
+  CreditCard,
+  Filter,
+  RotateCcw,
+  Search,
+  UserRound,
+} from "lucide-react";
 import EditButton from "@/components/Buttons/EditButton";
 import { StatusBadge } from "@/components/Appointment/StatusBadge";
 import { formatIsoWithTimezone } from "@/utils/formatIsoWithTimezone";
@@ -81,168 +89,241 @@ export default async function AppointmentsPage({
   }
 
   return (
-    <section className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-8">
+    <section className="mx-auto max-w-6xl space-y-7 px-4 py-6 sm:px-6 md:px-8">
       {/* Header */}
-      <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
-        <h1 className="text-3xl font-bold">Agendamentos</h1>
+      <header>
+        <div>
+          <h1>Agendamentos</h1>
+          <p>Consulte e acompanhe os horários marcados no salão.</p>
+        </div>
+        <span className="inline-flex min-h-9 items-center gap-2 rounded-full border border-[var(--color-gray-medium)] bg-[var(--color-white)] px-3.5 text-sm font-medium text-[var(--text-secondary)]">
+          <CalendarDays size={16} aria-hidden="true" />
+          {data.total} {data.total === 1 ? "agendamento" : "agendamentos"}
+        </span>
       </header>
 
       {/* Filtros */}
-      <section>
+      <section aria-label="Pesquisa e filtros">
         <form
           id="appointment-form"
           method="GET"
-          className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 mb-10"
+          className="appointments-filter-form flex flex-col gap-4"
         >
-          <input
-            type="text"
-            name="search"
-            defaultValue={search}
-            placeholder="Buscar por nome do cliente..."
-            className="flex-grow border border-[var(--color-gray-medium)] rounded-lg px-4 py-2.5 bg-[var(--color-white)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition"
-          />
+          <div className="flex items-center gap-2 text-sm font-semibold">
+            <Filter size={17} className="text-[var(--color-action)]" aria-hidden="true" />
+            <h2 className="text-sm font-semibold">Pesquisar e filtrar</h2>
+          </div>
 
-          <select
-            name="appointmentStatus"
-            defaultValue={status}
-            className="border border-[var(--color-gray-medium)] rounded-lg px-3 py-2.5 bg-[var(--color-white)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition"
-          >
-            <option value="">Todos os Status</option>
-            <option value="PENDING">Pendente</option>
-            <option value="CONFIRMED">Confirmado</option>
-          </select>
+          <div className="appointments-filter-fields grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-[minmax(16rem,1.5fr)_minmax(11rem,1fr)_minmax(11rem,1fr)_minmax(9rem,0.8fr)]">
+            <div className="min-w-0 space-y-1.5">
+              <label htmlFor="appointment-search" className="block text-xs font-semibold text-[var(--text-secondary)]">
+                Cliente
+              </label>
+              <div className="appointments-search-wrapper relative">
+                <Search size={17} aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]" />
+                <input
+                  id="appointment-search"
+                  type="text"
+                  name="search"
+                  aria-label="Pesquisar agendamentos"
+                  defaultValue={search}
+                  placeholder="Buscar por nome do cliente..."
+                  className="appointments-search-input w-full"
+                />
+              </div>
+            </div>
 
-          <select
-            name="paymentStatus"
-            defaultValue={paymentStatus}
-            className="border border-[var(--color-gray-medium)] rounded-lg px-3 py-2.5 bg-[var(--color-white)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition"
-          >
-            <option value="">Todos os Pagamentos</option>
-            <option value="PENDING">Pendente</option>
-            <option value="PAID">Pago</option>
-            <option value="PARTIALLY_PAID">Parcialmente Pago</option>
-          </select>
+            <div className="min-w-0 space-y-1.5">
+              <label htmlFor="appointment-status" className="block text-xs font-semibold text-[var(--text-secondary)]">
+                Status do agendamento
+              </label>
+              <select
+                id="appointment-status"
+                name="appointmentStatus"
+                defaultValue={status}
+                className="w-full"
+              >
+                <option value="">Todos os Status</option>
+                <option value="PENDING">Pendente</option>
+                <option value="CONFIRMED">Confirmado</option>
+              </select>
+            </div>
 
-          <select
-            name="limit"
-            defaultValue={limit.toString()}
-            className="border border-[var(--color-gray-medium)] rounded-lg px-3 py-2.5 bg-[var(--color-white)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition"
-          >
-            <option value="5">5 / página</option>
-            <option value="10">10 / página</option>
-            <option value="20">20 / página</option>
-          </select>
+            <div className="min-w-0 space-y-1.5">
+              <label htmlFor="payment-status" className="block text-xs font-semibold text-[var(--text-secondary)]">
+                Status do pagamento
+              </label>
+              <select
+                id="payment-status"
+                name="paymentStatus"
+                defaultValue={paymentStatus}
+                className="w-full"
+              >
+                <option value="">Todos os Pagamentos</option>
+                <option value="PENDING">Pendente</option>
+                <option value="PAID">Pago</option>
+                <option value="PARTIALLY_PAID">Parcialmente Pago</option>
+              </select>
+            </div>
 
-          <button
-            type="submit"
-            className="bg-[var(--color-action)] text-[var(--text-on-action)] px-6 py-2.5 rounded-lg font-medium hover:bg-[var(--color-action-hover)] transition cursor-pointer"
-          >
-            Filtrar
-          </button>
+            <div className="min-w-0 space-y-1.5">
+              <label htmlFor="appointment-limit" className="block text-xs font-semibold text-[var(--text-secondary)]">
+                Exibir por página
+              </label>
+              <select
+                id="appointment-limit"
+                name="limit"
+                aria-label="Resultados por página"
+                defaultValue={limit.toString()}
+                className="w-full"
+              >
+                <option value="5">5 / página</option>
+                <option value="10">10 / página</option>
+                <option value="20">20 / página</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="appointments-filter-actions flex flex-col-reverse gap-2 border-t border-[var(--color-gray-medium)] pt-4 sm:flex-row sm:items-center sm:justify-end">
+            {(search || status || paymentStatus) && (
+              <a
+                href={`/${slug}/dashboard/appointments?limit=${limit}`}
+                className="ui-button ui-button--secondary w-full sm:w-auto"
+              >
+                <RotateCcw size={16} aria-hidden="true" />
+                Limpar filtros
+              </a>
+            )}
+            <button type="submit" className="ui-button ui-button--primary w-full whitespace-nowrap sm:w-auto">
+              <Search size={16} aria-hidden="true" />
+              Aplicar filtro
+            </button>
+          </div>
         </form>
       </section>
 
       {/* Lista */}
-      <section className="space-y-4">
+      <section aria-label="Lista de agendamentos" className="space-y-4">
         {data.appointments.length === 0 ? (
-          <div className="flex flex-1 justify-center items-center h-[60vh]">
-            <p className="text-center text-gray-500 text-lg">
-              Nenhum agendamento encontrado para os filtros aplicados.
+          <div className="flex min-h-64 flex-col items-center justify-center rounded-2xl border border-dashed border-[var(--color-gray-border)] bg-[var(--color-white)] px-5 py-12 text-center">
+            <span className="mb-4 grid h-12 w-12 place-items-center rounded-full bg-[var(--color-action-soft)] text-[var(--color-action)]">
+              <CalendarClock size={22} aria-hidden="true" />
+            </span>
+            <h2 className="text-base font-semibold">Nenhum agendamento encontrado</h2>
+            <p className="mt-1 max-w-md text-sm leading-relaxed text-[var(--text-secondary)]">
+              Não há resultados para os filtros aplicados. Ajuste a pesquisa ou os status selecionados.
             </p>
           </div>
         ) : (
           data.appointments.map((appointment: Appointment) => (
             <div
               key={appointment.id}
-              className="border border-[var(--color-gray-medium)] rounded-xl p-6 bg-[var(--color-white)] shadow-sm hover:shadow-md transition-shadow"
+              className="overflow-hidden rounded-2xl border border-[var(--color-gray-medium)] bg-[var(--color-white)] shadow-sm transition-shadow hover:shadow-md"
             >
-              {/* Cabeçalho */}
-              <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3 pb-4 border-b border-[var(--color-gray-light)]">
-                <div>
-                  <p className="text-lg font-semibold text-[var(--foreground)]">
-                    {appointment.user.name}
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">
-                    <span className="font-medium text-gray-600">
-                      Agendado para:
-                    </span>{" "}
-                    {formatIsoStringRaw(appointment.scheduledAt)}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    <span className="font-medium text-gray-600">
-                      Criado em:
-                    </span>{" "}
-                    {formatIsoWithTimezone(appointment.createdAt)}
-                  </p>
-                </div>
-
-                {/* Status do agendamento */}
-                <div className="grid grid-cols-2 gap-2 text-center">
-                  <div>
-                    <div className="text-[10px] text-gray-400 uppercase">
-                      Agendamento
-                    </div>
-                    <StatusBadge
-                      value={appointment.status}
-                      type="appointment"
-                    />
-                  </div>
-
-                  <div>
-                    <div className="text-[10px] text-gray-400 uppercase">
-                      Pagamento
-                    </div>
-                    <StatusBadge
-                      value={appointment.payment.status}
-                      type="payment"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Corpo */}
-              <div className="py-4 flex flex-col md:flex-row md:justify-between md:items-center gap-3">
-                <div className="text-sm space-y-1">
-                  <p>
-                    <strong>Pagamento:</strong>{" "}
-                    {formatCurrency(appointment.payment.amount)}
-                  </p>
-                  <p>
-                    <strong>Método:</strong> {appointment.payment.method}
-                  </p>
-                </div>
-
-                <EditButton
-                  formId="appointment-form"
-                  className="inline-flex w-fit items-center gap-2 bg-blue-50 text-blue-700 hover:bg-blue-100 px-3 py-1.5 rounded-md text-sm font-medium duration-300 transition-colors cursor-pointer"
-                  href={`/${slug}/dashboard/appointments/${appointment.id}/edit`}
-                  text={
-                    <>
-                      <Pencil className="w-4 h-4" />
-                      Editar
-                    </>
-                  }
-                />
-              </div>
-
-              {/* Serviços */}
-              <div className="pt-4 border-t border-[var(--color-gray-light)]">
-                <strong className="block mb-2 text-sm text-[var(--foreground)]">
-                  Serviços:
-                </strong>
-                <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
-                  {appointment.services.map((s) => (
-                    <li key={s.id}>
-                      <span className="font-medium text-[var(--foreground)]">
-                        {s.service.name}
-                      </span>{" "}
-                      ({s.service.duration} min) –{" "}
-                      <span className="text-gray-500">
-                        {s.professional.name}
+              <div className="grid gap-5 p-4 sm:p-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-6">
+                <div className="min-w-0 space-y-5">
+                  <div className="flex flex-col gap-4 border-b border-[var(--color-gray-medium)] pb-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="flex min-w-0 items-start gap-3">
+                      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[var(--color-action-soft)] text-[var(--color-action)]">
+                        <CalendarClock size={20} aria-hidden="true" />
                       </span>
-                    </li>
-                  ))}
-                </ul>
+                      <div className="min-w-0">
+                        <p className="text-xs font-semibold uppercase tracking-wide text-[var(--text-secondary)]">
+                          Agendado para
+                        </p>
+                        <time
+                          dateTime={appointment.scheduledAt}
+                          className="mt-1 block break-words font-[var(--font-poppins)] text-base font-semibold text-[var(--foreground)] sm:text-lg"
+                        >
+                          {formatIsoStringRaw(appointment.scheduledAt)}
+                        </time>
+                        <p className="mt-1 text-xs text-[var(--text-secondary)]">
+                          Criado em {formatIsoWithTimezone(appointment.createdAt)}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 sm:min-w-64">
+                      <div className="min-w-0 rounded-xl border border-[var(--color-gray-medium)] bg-[var(--background)] p-2.5">
+                        <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-[var(--text-secondary)]">
+                          Agendamento
+                        </p>
+                        <StatusBadge value={appointment.status} type="appointment" />
+                      </div>
+                      <div className="min-w-0 rounded-xl border border-[var(--color-gray-medium)] bg-[var(--background)] p-2.5">
+                        <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-[var(--text-secondary)]">
+                          Pagamento
+                        </p>
+                        <StatusBadge value={appointment.payment.status} type="payment" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <section className="min-w-0">
+                      <h2 className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-[var(--text-secondary)]">
+                        <UserRound size={15} aria-hidden="true" />
+                        Cliente
+                      </h2>
+                      <p className="break-words font-semibold text-[var(--foreground)]">
+                        {appointment.user.name}
+                      </p>
+                      <p className="mt-1 break-all text-sm text-[var(--text-secondary)]">
+                        {appointment.user.email}
+                      </p>
+                      <p className="mt-0.5 text-sm text-[var(--text-secondary)]">
+                        {appointment.user.phone}
+                      </p>
+                    </section>
+
+                    <section className="min-w-0">
+                      <h2 className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-[var(--text-secondary)]">
+                        <CreditCard size={15} aria-hidden="true" />
+                        Pagamento
+                      </h2>
+                      <p className="font-[var(--font-poppins)] text-lg font-semibold text-[var(--foreground)]">
+                        {formatCurrency(appointment.payment.amount)}
+                      </p>
+                      <p className="mt-1 break-words text-sm text-[var(--text-secondary)]">
+                        {appointment.payment.method}
+                      </p>
+                    </section>
+                  </div>
+
+                  <section className="border-t border-[var(--color-gray-medium)] pt-4">
+                    <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-[var(--text-secondary)]">
+                      Serviços e profissionais
+                    </h2>
+                    <ul className="divide-y divide-[var(--color-gray-medium)]">
+                      {appointment.services.map((s) => (
+                        <li
+                          key={s.id}
+                          className="grid gap-1 py-2.5 first:pt-0 last:pb-0 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-4"
+                        >
+                          <div className="min-w-0">
+                            <p className="break-words text-sm font-semibold text-[var(--foreground)]">
+                              {s.service.name}
+                            </p>
+                            <p className="mt-0.5 break-words text-sm text-[var(--text-secondary)]">
+                              {s.professional.name}
+                            </p>
+                          </div>
+                          <span className="text-xs font-medium text-[var(--text-secondary)]">
+                            {s.service.duration} min
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                </div>
+
+                <div className="flex items-end justify-start border-t border-[var(--color-gray-medium)] pt-4 lg:items-start lg:justify-end lg:border-0 lg:pt-0">
+                  <EditButton
+                    formId="appointment-form"
+                    href={`/${slug}/dashboard/appointments/${appointment.id}/edit`}
+                    text="Editar"
+                  />
+                </div>
               </div>
             </div>
           ))
@@ -254,6 +335,8 @@ export default async function AppointmentsPage({
         <Pagination
           currentPage={page}
           totalPages={data.totalPages}
+          totalItems={data.total}
+          pageSize={limit}
           hrefBuilder={(p) =>
             `?page=${p}&limit=${limit}&appointmentStatus=${status}&paymentStatus=${paymentStatus}&search=${encodeURIComponent(
               search
